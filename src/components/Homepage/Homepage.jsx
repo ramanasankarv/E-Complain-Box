@@ -15,8 +15,8 @@ import { Box } from '@mui/system';
 import {columns,rowsData} from './TableData';
 import StyledMenuHome from './StyledMenuHome';
 import { Fragment } from 'react';
-
-
+import VerticalChart from './VerticalChart';
+import PieChart from './PieChart';
 function Homepage(props) {
   const [rows, setRows] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -43,7 +43,7 @@ function Homepage(props) {
   };
   return(
     <Fragment>
-      <Grid container px={12}>
+      <Grid container px={12} mt={12}>
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
@@ -117,6 +117,8 @@ function Homepage(props) {
         </Paper>
       </Grid>
       <TodayRecord/>
+      <VerticalChart/>
+      <PieChart/>
     </Fragment>
   );
 }

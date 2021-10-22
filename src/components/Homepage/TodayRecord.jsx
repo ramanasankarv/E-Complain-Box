@@ -40,7 +40,7 @@ function TodayRecord(props) {
     const classes = useStyles();
 
     return (
-        <Grid container px={12}>
+        <Grid container px={12} pt={8}>
             <Grid container py={2} style={{backgroundColor:"#2B7A78"}}>
                 <Typography px={2} style={{color:"#fff",fontWeight:"bolder"}}>
                     Todays Records
