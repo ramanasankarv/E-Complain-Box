@@ -1,43 +1,15 @@
 import { Box, Grid, Typography,Paper } from '@mui/material';
 import React from 'react';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 import FlagIcon from '@mui/icons-material/Flag';
 import HourglassFullIcon from '@mui/icons-material/HourglassFull';
 import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-const useStyles = makeStyles({
-    root: {
-      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-      border: 0,
-      borderRadius: 3,
-      boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-      color: 'white',
-      height: 48,
-      padding: '0 30px',
-    },
-    numbers:{
-        boxShadow: "3px 5px 8px 2px #888888;",
-        width:"18%",
-        height:"100px",
-        background:"#fff",
-        borderRadius:"10px",
-        padding:"10px",
-        textAlign:"center",
-        alignItems:"center",
-        fontSize:"35px",
-        fontWeight:"bolder"
-    },
-    grid:{
-        display:"flex",
-        justifyContent:"space-around"
-    }
-  });
-
+import { recordUseStyles } from './styles/HomePageStyles';
 
 const lightTheme = createTheme({ palette: { mode: 'light' } });
 function TodayRecord(props) {
-    const classes = useStyles();
+    const classes = recordUseStyles();
 
     return (
         <Grid container px={12} pt={8}>

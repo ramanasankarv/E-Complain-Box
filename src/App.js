@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import AppToolbar from "./Layouts/Toolbar/Toolbar";
+import AppToolbar from "./Shared/Layouts/Toolbar/Toolbar";
 import { createTheme,ThemeProvider,makeStyles } from '@mui/material/styles';
 import {
     BrowserRouter as Router,
@@ -8,7 +8,7 @@ import {
     Link
   } from "react-router-dom";
 import Login from "./components/Login/Login";
-import AppFooter from "./Layouts/Footer/Footer";
+import AppFooter from "./Shared/Layouts/Footer/Footer";
 import { Box, Container, Grid } from "@mui/material";
 import Register from "./components/Registration/Register";
 import Homepage from "./components/Homepage/Homepage";
@@ -46,7 +46,7 @@ const theme = createTheme({
             <ThemeProvider theme={theme}>
                 <Fragment>              
                     <AppToolbar/>
-                    <Grid minHeight="68vh" container
+                    <Grid minHeight="70vh" container
                         direction="row"
                         justifyContent="center"
                         alignItems="center"

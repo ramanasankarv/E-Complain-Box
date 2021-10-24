@@ -14,6 +14,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Button from '@mui/material/Button';
+import { Link } from "react-router-dom";
 
 
 export default function AppToolbar() {
@@ -82,7 +83,7 @@ export default function AppToolbar() {
       <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Typography>
-            Home
+            <Link to="/">Home</Link>
           </Typography>
         </IconButton>
         <p>Messages</p>
@@ -165,10 +166,10 @@ export default function AppToolbar() {
                   Contact Us
               </Typography>
             </IconButton>
-            <Button variant="contained" size="small"  color="success">
+            <Button variant="contained" size="small"  color="success" style={{marginRight:"10px"}} component={Link} to={'/login'}>
                 Login
             </Button>
-            <Button variant="contained" color="success" size="small" >
+            <Button variant="contained" color="success" size="small" component={Link} to={'/register'}>
                 Registration
             </Button>
             <IconButton
