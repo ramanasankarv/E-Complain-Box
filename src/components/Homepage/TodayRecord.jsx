@@ -5,17 +5,13 @@ import HourglassFullIcon from '@mui/icons-material/HourglassFull';
 import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { recordUseStyles } from './styles/HomePageStyles';
-
+import PanelHeader from '../../Shared/common/PanelHeader';
 function TodayRecord(props) {
     const classes = recordUseStyles();
 
     return (
         <Grid container px={12} pt={8}>
-            <Grid container py={2} style={{backgroundColor:"#2B7A78"}}>
-                <Typography px={2} style={{color:"#fff",fontWeight:"bolder"}}>
-                    Todays Records
-                </Typography>
-            </Grid>
+            <PanelHeader title={"Statictics"}/>
             <Grid 
                 py={4}
                 container

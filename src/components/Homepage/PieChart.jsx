@@ -1,7 +1,7 @@
 import { Grid,Typography } from '@mui/material';
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
-
+import PanelHeader from '../../Shared/common/PanelHeader';
 const data = {
   labels: ['Health', 'Tax', 'Transport', 'Women', 'Irrigation', 'Agriculture','Home','Police','Tourism','Culture'],
   datasets: [
@@ -44,11 +44,7 @@ const data = {
 
 const PieChart = () => (
     <Grid container px={12} py={8}>
-        <Grid container py={2} style={{backgroundColor:"#2B7A78"}}>
-            <Typography px={2} style={{color:"#fff",fontWeight:"bolder"}}>
-                Todays Records
-            </Typography>
-        </Grid>
+        <PanelHeader title={"Register"}/>
         <Grid container style={{background:"#fff"}} py={4}>
           <Pie data={data} style={{width:"100%",maxHeight:"300px",fontWeight:"bolder"}}/>
         </Grid>

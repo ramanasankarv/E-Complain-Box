@@ -6,6 +6,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormHelperText } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import PanelHeader from '../../Shared/common/PanelHeader';
 const validationSchema = yup.object({
     fullname: yup
         .string('Enter your name')
@@ -60,11 +61,7 @@ function Register(props) {
     
     return (
         <Grid item bgcolor="#fff" borderRadius="5px" boxShadow={3} xs={12} sm={6}>
-            <Box py={2} bgcolor="#2B7A78" borderRadius="5px">
-                <Typography variant="h5" component="h5" px={2} color="white">
-                    Register
-                </Typography>
-            </Box>
+            <PanelHeader title={"Register"}/>
             <Box item >
                 <Grid item container alignItems="stretch">
                     <Grid item md={6} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
