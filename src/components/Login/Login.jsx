@@ -1,5 +1,5 @@
-import React,{useState,useRef} from 'react';
-import { Box, Container, Grid, Typography,Button } from "@mui/material";
+import React,{useState} from 'react';
+import { Box, Grid, Typography,Button } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -11,8 +11,7 @@ const validationSchema = yup.object({
       .required('Email is required'),
     password: yup
       .string('Enter your password')
-      .min(8, 'Password should be of minimum 8 characters length')
-      .required('Password is required'),
+      .required('Password is required')
   });
 function Login(props) {
     const [values, setValues] = useState({
@@ -25,8 +24,10 @@ function Login(props) {
           password: '',
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
-          alert(JSON.stringify(values, null, 2));
+        onSubmit: (allValues) => {
+            console.log(allValues)
+            setValues({values:allValues.values});
+            console.log(values)
         },
       });
     return (

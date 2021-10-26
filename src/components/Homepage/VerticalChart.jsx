@@ -1,6 +1,5 @@
 import { Grid,Typography } from '@mui/material';
 import React from 'react';
-import { Fragment } from 'react';
 import { Bar } from 'react-chartjs-2';
 
 const data = {
@@ -19,7 +18,7 @@ const data = {
         'rgba(255, 102, 2, 0.8)',
         'rgba(255, 102, 2, 0.8)',
         'rgba(255, 102, 2, 0.8)',
-        'rgba(255, 102, 2, 0.8)',
+        'rgba(255, 102, 2, 0.8)'
       ],
       borderColor: [
         'rgba(255, 99, 132, 1)',
@@ -31,8 +30,7 @@ const data = {
         'rgba(255, 99, 132, 1)',
         'rgba(255, 99, 132, 1)',
         'rgba(255, 99, 132, 1)',
-        'rgba(255, 99, 132, 1)',
-
+        'rgba(255, 99, 132, 1)'
       ],
       borderWidth: 1,
     },

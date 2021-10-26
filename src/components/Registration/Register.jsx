@@ -20,7 +20,8 @@ const validationSchema = yup.object({
         .required('Password is required'),
     confirmPassword: yup
         .string('Re-enter your password')
-        .required('Password is required'),
+        .required('Password is required')
+        .oneOf([yup.ref('password'), null], 'Passwords must match'),
     mobile: yup
         .string('Enter your mobile number')
         .min(8, 'Password should be of minimum 8 characters length')
@@ -31,11 +32,11 @@ const validationSchema = yup.object({
   });
 function Register(props) {
     const [values, setValues] = useState({
-        amount: '',
+        fullname: '',
+        email: '',
         password: '',
-        weight: '',
-        weightRange: '',
-        showPassword: false,
+        confirmPassword: '',
+        mobile: '',
       });
       const formik = useFormik({
         initialValues: {
@@ -47,8 +48,10 @@ function Register(props) {
             agree:false
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
-          alert(JSON.stringify(values, null, 2));
+        onSubmit: (allValues) => {
+            console.log(allValues)
+            setValues({fullname:allValues.fullname,email:allValues.email,password:allValues.password,mobile:allValues.mobile});
+            console.log(allValues.fullname)
         },
       });
       const handleChange = (prop) => (event) => {
@@ -166,14 +169,16 @@ function Register(props) {
                                     error={formik.touched.mobile && Boolean(formik.errors.mobile)}
                                     helperText={formik.touched.mobile && formik.errors.mobile}
                                 />
-                                <FormControlLabel
-                                    control={<Checkbox name="agree" value={formik.values.agree} color="primary" onChange={formik.handleChange}/>}
-                                    label={`I accept the terms and conditions`} 
-                                />
-                                <FormHelperText error>
-                                {formik.errors.agree ? formik.errors.agree : " "}
-                                </FormHelperText>
-                                <Typography px={3.5} color="red" fontSize="12px"> 
+                                <Grid item my={2}>
+                                    <FormControlLabel 
+                                        control={<Checkbox name="agree" value={formik.values.agree} color="primary" onChange={formik.handleChange}/>}
+                                        label={`I accept the terms and conditions`} 
+                                    />
+                                    <FormHelperText error>
+                                        {formik.errors.agree ? formik.errors.agree : " "}
+                                    </FormHelperText>
+                                </Grid>
+                                <Typography color="red" fontSize="12px"> 
                                     (OTP will be sent to your mobile or email address)
                                 </Typography>
 
@@ -184,9 +189,9 @@ function Register(props) {
                                 </Grid>
                                 
                                 <Button style={{color:"#fff"}}
-                                type="submit"
-                                fullWidth
-                                variant="contained"
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
                                 >
                                 Sign In
                                 </Button>

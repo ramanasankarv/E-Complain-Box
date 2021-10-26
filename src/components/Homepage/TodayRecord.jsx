@@ -1,13 +1,11 @@
-import { Box, Grid, Typography,Paper } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import FlagIcon from '@mui/icons-material/Flag';
 import HourglassFullIcon from '@mui/icons-material/HourglassFull';
 import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { recordUseStyles } from './styles/HomePageStyles';
 
-const lightTheme = createTheme({ palette: { mode: 'light' } });
 function TodayRecord(props) {
     const classes = recordUseStyles();
 
