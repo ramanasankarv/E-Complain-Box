@@ -7,9 +7,7 @@ import { FormHelperText } from '@mui/material';
 import { useFormik } from 'formik';
 import { useAuth } from "../../contexts/AuthContext"
 import * as yup from 'yup';
-
-
-
+import PanelHeader from '../../Shared/common/PanelHeader';
 
 const validationSchema = yup.object({
     fullname: yup
@@ -103,6 +101,7 @@ function Register(props) {
             </Box>
             {error && <Alert variant="danger">{error}</Alert>}
             
+            <PanelHeader title={"Register"}/>
             <Box item >
                 <Grid item container alignItems="stretch">
                     <Grid item md={6} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
