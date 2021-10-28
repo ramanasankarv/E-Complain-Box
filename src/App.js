@@ -9,6 +9,7 @@ import {
 import Login from "./components/Login/Login";
 import AppFooter from "./Shared/Layouts/Footer/Footer";
 import {  Grid } from "@mui/material";
+import { AuthProvider } from "./contexts/AuthContext";
 import Register from "./components/Registration/Register";
 import Homepage from "./components/Homepage/Homepage";
 import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
@@ -52,12 +53,14 @@ const theme = createTheme({
                         alignItems="center"
                         bgcolor="#DEF2FA"
                     >
+                        <AuthProvider>
                         <Switch>
                             <Route exact path="/login" component={Login}/> 
                             <Route exact path="/register" component={Register}/> 
                             <Route exact path="/raise" component={RaiseComplaints}/> 
                             <Route exact path="/" component={Homepage}></Route>
                         </Switch>
+                        </AuthProvider>
                     </Grid>
                     <AppFooter/>
                 </Fragment>
