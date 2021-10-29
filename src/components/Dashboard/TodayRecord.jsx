@@ -4,7 +4,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import HourglassFullIcon from '@mui/icons-material/HourglassFull';
 import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { recordUseStyles } from './styles/HomePageStyles';
+import { recordUseStyles } from './styles/HomepageStyles';
 import PanelHeader from '../../Shared/common/PanelHeader';
 function TodayRecord(props) {
     const classes = recordUseStyles();
