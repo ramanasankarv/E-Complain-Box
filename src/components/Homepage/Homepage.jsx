@@ -12,7 +12,7 @@ function Homepage(props) {
     return (
         <Grid container>
             <Grid container md={{ alignContent: 'center' }} py={5} px={12}>
-                <Grid item md={8} sm={7}>
+                <Grid item md={6} sm={6}>
                 <svg width="100%" height="337" viewBox="0 0 100% 100%" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                 <rect width="666" height="337" fill="url(#pattern0)"/>
                 <defs>
@@ -23,11 +23,12 @@ function Homepage(props) {
                 </defs>
                 </svg>
                 </Grid>
-                <Grid container item md={4} sm={5}
+                <Grid container item md={6} sm={6}
+                    py={5}
                     direction="column"
                     justifyContent="center"
                     alignItems="center"
-                    >
+                >
                     <Typography variant="h4"> 
                         E-complain Box
                     </Typography>
@@ -125,7 +126,7 @@ function Homepage(props) {
             </Grid>
             <Grid container>    
                 <Grid item md={6} px={12} sm={6} xs={12} style={{textAlign:"justify",fontWeight:"bold",display:"flex",alignItems:"center"}}>
-                    <Typography style={{textAlign:"justify",fontWeight:"bold",alignItems:"center", fontSize:"28px"}}>
+                    <Typography style={{textAlign:"justify",fontWeight:"bold",alignItems:"center", fontSize:"20px"}}>
                     E-Compain Box is a government initiative under Digital India Program to solve all citizen’s problem under one umbrella. Where citizens can files complain to any goverment from a common platform. Goverment of India has issued 350 millions to provide better experience in 21st century. 
                     </Typography>
                 </Grid>
