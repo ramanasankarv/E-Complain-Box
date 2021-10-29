@@ -20,10 +20,18 @@ import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
+
+import { useAuth } from "../../contexts/AuthContext"
+import { Link, useHistory } from "react-router-dom"
+
 const Input = styled('input')({
     display: 'none',
   });
 function RaiseComplaints(props) {
+    const [error, setError] = useState("")
+    const { currentUser, logout } = useAuth()
+    const history = useHistory()
+    currentUser.getIdToken(true).then((idToken) => {console.log(idToken)});
     const [age, setAge] = React.useState('');
     const editorRef = useRef(null);
     const log = () => {

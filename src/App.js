@@ -9,6 +9,7 @@ import {
 import Login from "./components/Login/Login";
 import AppFooter from "./Shared/Layouts/Footer/Footer";
 import {  Grid } from "@mui/material";
+import { AuthProvider } from "./contexts/AuthContext";
 import Register from "./components/Registration/Register";
 import Dashboard from "./components/Dashboard/Dashboard"; 
 import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
@@ -53,6 +54,7 @@ const theme = createTheme({
                         alignItems="center"
                         bgcolor="#DEF2FA"
                     >
+                        <AuthProvider>
                         <Switch>
                             <Route exact path="/login" component={Login}/> 
                             <Route exact path="/register" component={Register}/> 
@@ -60,6 +62,7 @@ const theme = createTheme({
                             <Route exact path="/dashboard" component={Dashboard}></Route>
                             <Route exact path="/" component={Homepage}></Route>
                         </Switch>
+                        </AuthProvider>
                     </Grid>
                     <AppFooter/>
                 </Fragment>

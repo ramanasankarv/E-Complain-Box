@@ -1,12 +1,14 @@
-import React,{useState} from 'react';
-import { Box, Grid, Typography,Button,Checkbox } from "@mui/material";
+import React, { useRef, useState } from "react"
+import { Box, Grid, Typography,Button,Checkbox,Alert } from "@mui/material";
 import TextField from '@mui/material/TextField';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormHelperText } from '@mui/material';
 import { useFormik } from 'formik';
+import { useAuth } from "../../contexts/AuthContext"
 import * as yup from 'yup';
 import PanelHeader from '../../Shared/common/PanelHeader';
+
 const validationSchema = yup.object({
     fullname: yup
         .string('Enter your name')
@@ -31,7 +33,25 @@ const validationSchema = yup.object({
         .boolean()
         .oneOf([true], "Required terms of use")
   });
+
+  function setUpRecaptcha () {
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+      "recaptcha-container",
+      {
+        size: "invisible",
+        callback: function (response) {
+          console.log("Captcha Resolved");
+          this.onSignInSubmit();
+        },
+        defaultCountry: "IN",
+      }
+    );
+  };
 function Register(props) {
+    const { signup } = useAuth();
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+    const history = useHistory()
     const [values, setValues] = useState({
         fullname: '',
         email: '',
@@ -41,16 +61,29 @@ function Register(props) {
       });
       const formik = useFormik({
         initialValues: {
-            fullname:'tusher',
-            email: 'tusher@gmail.com',
-            password: 'password',
-            confirmPassword:'password',
-            mobile:'01795355849',
+            fullname:'',
+            email: '',
+            password: '',
+            confirmPassword:'',
+            mobile:'',
             agree:false
         },
         validationSchema: validationSchema,
-        onSubmit: (allValues) => {
+        onSubmit: async (allValues) => {
             console.log(allValues)
+            try {
+                setError("")
+                setLoading(true)
+                await signup(allValues.email, allValues.password,allValues.mobile,allValues.fullname,function(status){
+                    if(status=="success")
+                        history.push("/");
+                    else
+                        setError("Failed to create an account. Already registered with your email address please log in ")
+                });
+                
+            } catch {
+                setError("Failed to create an account. Already registered with your email address please log in ")
+            }
             setValues({fullname:allValues.fullname,email:allValues.email,password:allValues.password,mobile:allValues.mobile});
             console.log(allValues.fullname)
         },
@@ -61,6 +94,13 @@ function Register(props) {
     
     return (
         <Grid item bgcolor="#fff" borderRadius="5px" boxShadow={3} xs={12} sm={6}>
+            <Box py={2} bgcolor="#2B7A78" borderRadius="5px">
+                <Typography variant="h5" component="h5" px={2} color="white">
+                    Register
+                </Typography>
+            </Box>
+            {error && <Alert variant="danger">{error}</Alert>}
+            
             <PanelHeader title={"Register"}/>
             <Box item >
                 <Grid item container alignItems="stretch">
@@ -89,6 +129,7 @@ function Register(props) {
                         
                         <Box item noValidate sx={{ mt: 1 }}>
                             <form onSubmit={formik.handleSubmit}>
+                                <div id="recaptcha-container"></div>
                                 <TextField
                                     color="primary"
                                     margin="normal"
