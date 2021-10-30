@@ -27,7 +27,7 @@ const validationSchema = yup.object({
         .oneOf([yup.ref('password'), null], 'Passwords must match'),
     mobile: yup
         .string('Enter your mobile number')
-        .min(8, 'Password should be of minimum 8 characters length')
+        .min(10, 'Password should be of minimum 10 characters length')
         .required('Password is required'),
     agree: yup
         .boolean()
@@ -59,7 +59,7 @@ function Register(props) {
         confirmPassword: '',
         mobile: '',
       });
-      const formik = useFormik({
+    const formik = useFormik({
         initialValues: {
             fullname:'',
             email: '',

@@ -1,20 +1,46 @@
-import React,{useState} from 'react';
-import { Box, Grid, Typography,Button } from "@mui/material";
+import React, { useRef, useState } from "react"
+import { Box, Grid, Typography,Button,Alert } from "@mui/material";
 import TextField from '@mui/material/TextField';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
+import { useAuth } from "../../contexts/AuthContext"
 import PanelHeader from '../../Shared/common/PanelHeader';
 import * as yup from 'yup';
+
+
+const onChangeEmailOrPhone = (event) => {
+    let email = event.target.value.includes('@');
+    if (email) {
+      setIsEmail(true);
+    } else {
+      setIsEmail(false);
+    }
+}
 const validationSchema = yup.object({
-    email: yup
-      .string('Enter your email')
-      .email('Enter a valid email')
-      .required('Email is required'),
+    email: yup.string("Enter your Email/Mobile Number")
+    // .email("Enter a valid email")
+    .required("Email/Phone Number is required")
+    .test('test-name', 'Enter Valid Email/ Mobile', 
+      function(value) {
+        const emailRegex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+        const phoneRegex = /^(\+91-|\+91|0)?\d{10}$/; // Change this regex based on requirement
+        let isValidEmail = emailRegex.test(value);
+        let isValidPhone = phoneRegex.test(value);
+        if (!isValidEmail && !isValidPhone ){
+          return false;
+        }
+        return true;
+      }),
     password: yup
       .string('Enter your password')
       .required('Password is required')
   });
 function Login(props) {
+    const { login } = useAuth()
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+    const history = useHistory()
     const [values, setValues] = useState({
         email: '',
         password: '',
@@ -25,9 +51,19 @@ function Login(props) {
           password: '',
         },
         validationSchema: validationSchema,
-        onSubmit: (allValues) => {
+        onSubmit: async (allValues) => {
             console.log(allValues)
             setValues({values:allValues.values});
+            try {
+                setError("")
+                setLoading(true)
+                await login(allValues.email, allValues.password)
+                history.push("/")
+              } catch {
+                setError("Failed to log in")
+              }
+          
+              setLoading(false)
             console.log(values)
         },
       });
@@ -57,7 +93,7 @@ function Login(props) {
                             alignItems: 'center',
                         }}
                         >
-                        
+                        {error && <Alert variant="danger">{error}</Alert>}
                         <Box item noValidate sx={{ mt: 1 }}>
                             <form onSubmit={formik.handleSubmit}>
                                 <TextField
@@ -65,8 +101,7 @@ function Login(props) {
                                 margin="normal"
                                 fullWidth
                                 id="email"
-                                type="email"
-                                label="Email Address"
+                                label="Email / Mobile"
                                 name="email"
                                 value={formik.values.email}
                                 onChange={formik.handleChange}
