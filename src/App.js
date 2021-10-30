@@ -14,6 +14,7 @@ import Register from "./components/Registration/Register";
 import Dashboard from "./components/Dashboard/Dashboard"; 
 import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
 import Homepage from "./components/Homepage/Homepage";
+import EmailVerifications from "./components/Emailverification/EmailVerifications";
 const App = () => {
 
 const theme = createTheme({
@@ -60,6 +61,7 @@ const theme = createTheme({
                             <Route exact path="/register" component={Register}/> 
                             <Route exact path="/raise" component={RaiseComplaints}/> 
                             <Route exact path="/dashboard" component={Dashboard}></Route>
+                            <Route exact path="/email-verification" component={EmailVerifications}></Route>
                             <Route exact path="/" component={Homepage}></Route>
                         </Switch>
                         </AuthProvider>
