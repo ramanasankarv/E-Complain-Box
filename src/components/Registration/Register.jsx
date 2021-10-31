@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState,useEffect } from "react"
 import { Box, Grid, Typography,Button,Checkbox,Alert } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { Link, useHistory } from 'react-router-dom';
@@ -9,6 +9,8 @@ import { useAuth } from "../../contexts/AuthContext"
 import * as yup from 'yup';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import firebase from "firebase";
+import {register} from "../../redux/actions/auth";
+import { connect } from "react-redux";
 const validationSchema = yup.object({
     fullname: yup
         .string('Enter your name')
@@ -48,7 +50,7 @@ const validationSchema = yup.object({
     );
   };
 function Register(props) {
-    const { signup } = useAuth();
+    // const { signup } = useAuth();
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const history = useHistory()
@@ -69,28 +71,30 @@ function Register(props) {
             agree:false
         },
         validationSchema: validationSchema,
-        onSubmit: async (allValues) => {
+        
+        onSubmit: async(allValues) => {
+            await new Promise((r) => setTimeout(register(allValues)));
             console.log(allValues)
-            try {
-                setError("")
-                setLoading(true)
-                await signup(allValues.email, allValues.password,allValues.mobile,allValues.fullname,function(status){
-                    if(status=="success")
-                        history.push("/");
-                    else
-                        setError("Failed to create an account. Already registered with your email address please log in ")
-                });
+                register(allValues);
+            // try {
+            //     setError("")
+            //     setLoading(true)
+            //     await signup(allValues.email, allValues.password,allValues.mobile,allValues.fullname,function(status){
+            //         if(status=="success")
+            //             history.push("/");
+            //         else
+            //             setError("Failed to create an account. Already registered with your email address please log in ")
+            //     });
                 
-            } catch {
-                setError("Failed to create an account. Already registered with your email address please log in ")
-            }
-            setValues({fullname:allValues.fullname,email:allValues.email,password:allValues.password,mobile:allValues.mobile});
-            console.log(allValues.fullname)
+            // } catch {
+            //     setError("Failed to create an account. Already registered with your email address please log in ")
+            // }
         },
       });
-      const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-      };
+      // If you're curious, you can run this Effect
+     useEffect(() => {
+      console.log({formik});
+    }, [])
     
     return (
         <Grid item bgcolor="#fff" borderRadius="5px" boxShadow={3} xs={12} sm={6} my={12}>             
@@ -244,5 +248,7 @@ function Register(props) {
         </Grid>
     );
 }
-
-export default Register;
+// const mapStateToProps =state =>({
+//     isAuthenticated: state.auth.isAuthenticated
+// })
+export default connect(null,{register})(Register);

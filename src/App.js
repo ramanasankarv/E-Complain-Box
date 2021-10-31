@@ -1,11 +1,13 @@
-import React, { Fragment } from "react";
+import React, { Fragment,useEffect } from "react";
 import AppToolbar from "./Shared/Layouts/Toolbar/Toolbar";
 import { createTheme,ThemeProvider } from '@mui/material/styles';
+import { Provider } from "react-redux";
 import {
     BrowserRouter as Router,
     Switch,
     Route,
   } from "react-router-dom";
+import { loadUser } from "./redux/actions/auth";
 import Login from "./components/Login/Login";
 import AppFooter from "./Shared/Layouts/Footer/Footer";
 import {  Grid } from "@mui/material";
@@ -14,9 +16,12 @@ import Register from "./components/Registration/Register";
 import Dashboard from "./components/Dashboard/Dashboard"; 
 import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
 import Homepage from "./components/Homepage/Homepage";
-import EmailVerifications from "./components/Emailverification/EmailVerifications";
+import store from "./redux/store";
+import EmailVerifications from "./components/Emailverification/EmailVerifications" 
 const App = () => {
-
+  // useEffect(() => {
+  //   store.dispatch(loadUser());
+  // }, []);
 const theme = createTheme({
   
   palette: {
@@ -45,6 +50,7 @@ const theme = createTheme({
   
 });
     return (
+      <Provider store={store}>
         <Router>
             <ThemeProvider theme={theme}>
                 <Fragment>              
@@ -55,7 +61,6 @@ const theme = createTheme({
                         alignItems="center"
                         bgcolor="#DEF2FA"
                     >
-                        <AuthProvider>
                         <Switch>
                             <Route exact path="/login" component={Login}/> 
                             <Route exact path="/register" component={Register}/> 
@@ -64,12 +69,13 @@ const theme = createTheme({
                             <Route exact path="/email-verification" component={EmailVerifications}></Route>
                             <Route exact path="/" component={Homepage}></Route>
                         </Switch>
-                        </AuthProvider>
                     </Grid>
                     <AppFooter/>
                 </Fragment>
             </ThemeProvider>
         </Router> 
+      </Provider>
+
     );
 };
 
