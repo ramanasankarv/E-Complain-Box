@@ -1,13 +1,13 @@
-import { Grid,Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
 import PanelHeader from '../../Shared/common/PanelHeader';
 const data = {
-  labels: ['Health', 'Tax', 'Transport', 'Women', 'Irrigation', 'Agriculture','Home','Police','Tourism','Culture'],
+  labels: ['Health', 'Tax', 'Transport', 'Women', 'Irrigation', 'Agriculture', 'Home', 'Police', 'Tourism', 'Culture'],
   datasets: [
     {
       label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3,23,30,480,50],
+      data: [12, 19, 3, 5, 2, 3, 23, 30, 480, 50],
       backgroundColor: [
         'rgba(255, 99, 132, 0.8)',
         'rgba(54, 162, 235, 0.8)',
@@ -43,12 +43,12 @@ const data = {
 
 
 const PieChart = () => (
-    <Grid container px={12} py={8}>
-        <PanelHeader title={"Register"}/>
-        <Grid container style={{background:"#fff"}} py={4}>
-          <Pie data={data} style={{width:"100%",maxHeight:"300px",fontWeight:"bolder"}}/>
-        </Grid>
+  <Grid container px={12} py={8}>
+    <PanelHeader title={"Register"} />
+    <Grid container style={{ background: "#fff" }} py={4}>
+      <Pie data={data} style={{ width: "100%", maxHeight: "300px", fontWeight: "bolder" }} />
     </Grid>
+  </Grid>
 );
 
 export default PieChart;

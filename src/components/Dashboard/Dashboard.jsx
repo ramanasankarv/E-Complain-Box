@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import TodayRecord from './TodayRecord';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box } from '@mui/system';
-import {columns,rowsData} from './TableData';
+import { columns, rowsData } from './TableData';
 import StyledMenuHome from './StyledMenuHome';
 import { Fragment } from 'react';
 import VerticalChart from './VerticalChart';
@@ -25,7 +25,7 @@ function Dashboard(props) {
 
   useEffect(() => {
     setRows(rowsData);
-  },[]);
+  }, []);
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -41,7 +41,7 @@ function Dashboard(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  return(
+  return (
     <Fragment>
       <Grid container px={12} mt={12}>
         <Paper sx={{ width: '100%' }}>
@@ -49,26 +49,26 @@ function Dashboard(props) {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  <TableCell colSpan={3} style={{backgroundColor:"#2B7A78",color:"#fff",fontWeight:"bolder"}} md={{ flexGrow: 1 }}>
+                  <TableCell colSpan={3} style={{ backgroundColor: "#2B7A78", color: "#fff", fontWeight: "bolder" }} md={{ flexGrow: 1 }}>
                     Today
                   </TableCell>
-                  <TableCell colSpan={2} style={{backgroundColor:"#2B7A78",color:"#fff"}} align="right">
-                  <Box>
-                    <Button
-                      style={{backgroundColor:"transparent",color:"#fff",fontWeight:"bold"}}
-                      id="demo-customized-button"
-                      aria-controls="demo-customized-menu"
-                      aria-haspopup="true"
-                      aria-expanded={open ? 'true' : undefined}
-                      variant="contained"
-                      disableElevation
-                      onClick={handleClick}
-                      endIcon={<KeyboardArrowDownIcon />}
-                    >
-                      Options
-                    </Button>
-                    <StyledMenuHome anchorEl={anchorEl} setAnchorEl={setAnchorEl} open={open} handleClose={handleClose}/>
-                  </Box>
+                  <TableCell colSpan={2} style={{ backgroundColor: "#2B7A78", color: "#fff" }} align="right">
+                    <Box>
+                      <Button
+                        style={{ backgroundColor: "transparent", color: "#fff", fontWeight: "bold" }}
+                        id="demo-customized-button"
+                        aria-controls="demo-customized-menu"
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        variant="contained"
+                        disableElevation
+                        onClick={handleClick}
+                        endIcon={<KeyboardArrowDownIcon />}
+                      >
+                        Options
+                      </Button>
+                      <StyledMenuHome anchorEl={anchorEl} setAnchorEl={setAnchorEl} open={open} handleClose={handleClose} />
+                    </Box>
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -78,7 +78,7 @@ function Dashboard(props) {
                       align={column.align}
                       style={{ top: 57, minWidth: column.minWidth }}
                     >
-                      <Typography style={{fontWeight:"bolder"}}>{column.label}</Typography>
+                      <Typography style={{ fontWeight: "bolder" }}>{column.label}</Typography>
                     </TableCell>
                   ))}
                 </TableRow>
@@ -86,7 +86,7 @@ function Dashboard(props) {
               <TableBody>
                 {rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row,i) => {
+                  .map((row, i) => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                         {columns.map((column) => {
@@ -116,9 +116,9 @@ function Dashboard(props) {
           />
         </Paper>
       </Grid>
-      <TodayRecord/>
-      <VerticalChart/>
-      <PieChart/>
+      <TodayRecord />
+      <VerticalChart />
+      <PieChart />
     </Fragment>
   );
 }

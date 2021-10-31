@@ -5,14 +5,14 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import MenuItem from '@mui/material/MenuItem';
-import {StyledMenu} from "./styles/HomepageStyles";
-function StyledMenuHome({anchorEl, setAnchorEl, open,handleClose}) {
-  
+import { StyledMenu } from "./styles/HomepageStyles";
+function StyledMenuHome({ anchorEl, setAnchorEl, open, handleClose }) {
+
     return (
         <StyledMenu
             id="demo-customized-menu"
             MenuListProps={{
-            'aria-labelledby': 'demo-customized-button',
+                'aria-labelledby': 'demo-customized-button',
             }}
             anchorEl={anchorEl}
             open={open}
