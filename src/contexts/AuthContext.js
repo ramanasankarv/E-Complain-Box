@@ -57,8 +57,45 @@ export function AuthProvider({ children }) {
     });
   }
 
-  function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password)
+  function login(email, password,callback) {
+    const phoneRegex = /^(\+91-|\+91|0)?\d{10}$/; // Change this regex based on requirement
+    let isValidPhone = phoneRegex.test(email); //
+    let idToken="eyJhbGciOiJSUzI1NiIsImtpZCI6IjhmYmRmMjQxZTdjM2E2NTEzNTYwNmRkYzFmZWQyYzU1MjI2MzBhODciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZmlyc3QtcHJvamVjdC0yOWRkMSIsImF1ZCI6ImZpcnN0LXByb2plY3QtMjlkZDEiLCJhdXRoX3RpbWUiOjE2MzQ5MjQzMDUsInVzZXJfaWQiOiJScXJhMGd0aEk0UmlnY3lxRVZHZEowYnd0VkYzIiwic3ViIjoiUnFyYTBndGhJNFJpZ2N5cUVWR2RKMGJ3dFZGMyIsImlhdCI6MTYzNDkyNTE0MCwiZXhwIjoxNjM0OTI4NzQwLCJlbWFpbCI6InJhbWFuYXNhbmthcnZAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInJhbWFuYXNhbmthcnZAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.bvChf2MvgobFjw5SL0dSpNGcFyVhFQcEQLU83m1axsk_k_bgpoI8dCA8I_PvCujihltXWXeNpnRJXxUffsk_51o8o06y9GVzrduL1-nOvuNNFFvv7XEJK1RFol746EU2Pk6tJVnSL2ZOxFqAQONxw6kpHNj3xdcskK1s3iv7kHroBbs15F0M_y_19_yGS0cVzkO31HCRUhbF43cwyiw6gQV3XAlwhQjPfcYOzDZQq5jwSy08_OFgLLcdqp9UT4t4bq-zthUkWa6WFCo57vqZLYjVEdQsipl4FFhkcYfWW8sJlHxBzby83ZRf10uktJg3mZRi0hnJZmSy3y10Qz0SJw";
+    console.log(isValidPhone);
+    console.log("ramana")
+    if(isValidPhone){
+      let data={
+        mobile:email
+      }
+      client({
+        method: 'post',
+        url: '/getemailbymobile',
+        headers: {
+          'AuthToken': idToken
+        },
+        data: data
+      }).then((res) => {
+        console.log(res.data.userEmail);
+        email = res.data.userEmail
+        auth.signInWithEmailAndPassword(email, password).then(function(user) {
+          callback("success");
+        },
+        function(error) {
+          console.log(error);
+          callback("fail");
+        });
+      }).catch((error) => {
+        callback("fail");
+      })
+    } 
+    else
+      auth.signInWithEmailAndPassword(email, password).then(function(user) {
+        callback("success");
+      },
+      function(error) {
+        console.log(error);
+        callback("fail");
+      });
   }
 
   function logout() {

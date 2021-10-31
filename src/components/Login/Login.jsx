@@ -57,8 +57,12 @@ function Login(props) {
             try {
                 setError("")
                 setLoading(true)
-                await login(allValues.email, allValues.password)
-                history.push("/")
+                await login(allValues.email, allValues.password,function(status){
+                  if(status=="success")
+                        history.push("/");
+                    else
+                        setError("Failed to log in. Check email/mobile & password")
+                })
               } catch {
                 setError("Failed to log in")
               }
