@@ -9,12 +9,12 @@ import {
     CLEAR_PROFILE,
     GET_PROFILE,
 } from "./types";
-// import { setAlert } from "./alert";
+//import { setAlert } from "./alert";
 import { auth } from "../../firebase";
 import axios from "axios";
 // import setAuthToken from "../utills/setAuthToken"
 const client = axios.create({
-    baseURL: "http://localhost:3030",
+    baseURL: "https://e-complainbox.herokuapp.com",
     json: true,
 });
 
@@ -85,7 +85,7 @@ const client = axios.create({
 const register = ({ fullname, email, password, mobile }) => async (dispatch) => {
 
     try {
-        debugger;
+        //debugger;
         const registrationInfo = await auth.createUserWithEmailAndPassword(
             email,
             password
@@ -101,33 +101,26 @@ const register = ({ fullname, email, password, mobile }) => async (dispatch) => 
             token: generateToken,
         };
 
-        const config = {
+        const response = await client({
+            method: 'post',
+            url: '/registration',
             headers: {
-                "Content-Type": "application/json",
-                AuthToken: generateToken,
+                'AuthToken': generateToken
             },
-        };
-
-        const response = await axios.post(
-            "http://localhost:3030/registration",
-            data,
-            config
-        );
-
+            data: data
+        })
+        localStorage.setItem("token", generateToken);
         dispatch({
             type: REGISTER_SUCCESS,
-            payload: data,
+            payload: response.data,
         });
+        
+        window.location.href = '/email-verification';
     } catch (error) {
         console.log(error);
-        // const { errors } = error.response.data
-        // dispatch({
-        //     type: Types.REGISTER_USER_FAIL,
-        //     payload: errors
-        // })
     }
 };
-const login = (email, password) => async (dispatch) => {
+const login = ({email, password}) => async (dispatch) => {
     const config = {
         headers: {
             "Content-type": "Application/json",
@@ -137,17 +130,59 @@ const login = (email, password) => async (dispatch) => {
         email,
         password,
     };
-    const body = JSON.stringify(newUser);
-    try {
-        const response = await axios.post("/api/user/login", body, config);
-        console.log(response);
-        dispatch({
-            type: LOGIN_SUCCESS,
-            payload: response.data,
+    const phoneRegex = /^(\+91-|\+91|0)?\d{10}$/; // Change this regex based on requirement
+
+    let isValidPhone = phoneRegex.test(email); //
+
+    let idToken="eyJhbGciOiJSUzI1NiIsImtpZCI6IjhmYmRmMjQxZTdjM2E2NTEzNTYwNmRkYzFmZWQyYzU1MjI2MzBhODciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZmlyc3QtcHJvamVjdC0yOWRkMSIsImF1ZCI6ImZpcnN0LXByb2plY3QtMjlkZDEiLCJhdXRoX3RpbWUiOjE2MzQ5MjQzMDUsInVzZXJfaWQiOiJScXJhMGd0aEk0UmlnY3lxRVZHZEowYnd0VkYzIiwic3ViIjoiUnFyYTBndGhJNFJpZ2N5cUVWR2RKMGJ3dFZGMyIsImlhdCI6MTYzNDkyNTE0MCwiZXhwIjoxNjM0OTI4NzQwLCJlbWFpbCI6InJhbWFuYXNhbmthcnZAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInJhbWFuYXNhbmthcnZAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.bvChf2MvgobFjw5SL0dSpNGcFyVhFQcEQLU83m1axsk_k_bgpoI8dCA8I_PvCujihltXWXeNpnRJXxUffsk_51o8o06y9GVzrduL1-nOvuNNFFvv7XEJK1RFol746EU2Pk6tJVnSL2ZOxFqAQONxw6kpHNj3xdcskK1s3iv7kHroBbs15F0M_y_19_yGS0cVzkO31HCRUhbF43cwyiw6gQV3XAlwhQjPfcYOzDZQq5jwSy08_OFgLLcdqp9UT4t4bq-zthUkWa6WFCo57vqZLYjVEdQsipl4FFhkcYfWW8sJlHxBzby83ZRf10uktJg3mZRi0hnJZmSy3y10Qz0SJw";
+
+    if(isValidPhone){
+        let data={
+            mobile:email
+        }
+        const res = await client({
+            method: 'post',
+            url: '/getemailbymobile',
+            headers: {
+              'AuthToken': idToken
+            },
+            data: data
         });
 
-        //dispatch(loadUser)
-    } catch (error) {
+        email = res.data.userEmail;
+    }
+    try {
+        const login = await auth.signInWithEmailAndPassword(email, password);
+
+        const generateToken = await auth.currentUser.getIdToken(true);
+        localStorage.setItem("token", generateToken);
+        let data={
+            email:email
+        }
+        const response = await client({
+            method: 'post',
+            url: '/userdata',
+            headers: {
+                'AuthToken': generateToken
+            },
+            data: data
+        })
+        console.log(response.data.user[0]);
+        dispatch({
+            type: LOGIN_SUCCESS,
+            payload: response.data.user[0],
+        });
+        console.log(response);
+        if(localStorage.getItem("userIsEmailVerified")=="No"){
+            window.location.href = '/email-verification';   
+        } else if(localStorage.getItem("userIsMobileVerified")=="No"){
+            window.location.href = '/mobile-verification';   
+        } else{
+            window.location.href = '/dashboard';
+        }
+
+    } catch (error){
+        console.log(error)
         const errors = error.response.data.errors;
         let err = "";
         if (error.response.data.error) {
@@ -165,9 +200,66 @@ const login = (email, password) => async (dispatch) => {
         }
         dispatch({
             type: LOGIN_FAILED,
-        });
+        });  
     }
 };
+   
+const emailverifications = ({OTP}) => async (dispatch) =>{
+    try {
+        let data ={
+            email: localStorage.getItem("userEmail"),
+            docId: localStorage.getItem("userID"),
+            otp: OTP,
+        }
+        const response = await client({
+            method: 'post',
+            url: '/emailverification',
+            headers: {
+                'AuthToken': localStorage.getItem("token")
+            },
+            data: data
+        })
+        if(response.data.message=="success"){
+            localStorage.setItem("userIsEmailVerified", "Yes"); 
+            window.location.href = '/mobile-verification';   
+        }else{
+            //('Invalid OTP!');
+            //dispatch(setAlert("Invalid OTP", "danger"));
+        }
+        console.log(response);
+    } catch (error){
+        console.log(error)  
+    }
+};
+
+const mobileverifications = ({OTP}) => async (dispatch) =>{
+    try {
+        let data ={
+            email: localStorage.getItem("userEmail"),
+            docId: localStorage.getItem("userID"),
+            otp: OTP,
+        }
+        const response = await client({
+            method: 'post',
+            url: '/mobileverification',
+            headers: {
+                'AuthToken': localStorage.getItem("token")
+            },
+            data: data
+        }).then(function (response) {
+            console.log(response.data.message)
+            if(response.data.message=="success"){
+                localStorage.setItem("userIsMobileVerified", "Yes"); 
+                window.location.href = '/dashboard';   
+            }else{
+                //dispatch(setAlert("Invalid OTP", "danger"));    
+            }
+        });
+    } catch (error){
+        console.log(error)  
+    }
+};
+
 const loadUser = () => async (dispatch) => {
     // if (localStorage.token) {
     //     setAuthToken(localStorage.token);
@@ -193,4 +285,4 @@ const logout = () => async (dispatch) => {
     });
 };
 
-export { register, loadUser, login, logout };
+export { register, loadUser, login, logout, emailverifications, mobileverifications };

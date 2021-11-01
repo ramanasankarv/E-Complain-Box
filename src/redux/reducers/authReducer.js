@@ -34,8 +34,11 @@ const registration = (state = INITIAL_STATE, action) => {
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
-      debugger;
-      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("userID", action.payload.id);
+      localStorage.setItem("userEmail", action.payload.Email);
+      localStorage.setItem("userFullName", action.payload.FullName);
+      localStorage.setItem("userIsEmailVerified", action.payload.IsEmailVerified);
+      localStorage.setItem("userIsMobileVerified", action.payload.IsMobileVerified);
       return {
         ...state,
         ...action.payload,
@@ -46,6 +49,11 @@ const registration = (state = INITIAL_STATE, action) => {
     case LOGIN_FAILED:
     case LOGOUT:
       localStorage.removeItem("token");
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("userID");
+      localStorage.removeItem("userFullName");
+      localStorage.removeItem("userIsEmailVerified");
+      localStorage.removeItem("userIsMobileVerified");
       return {
         ...state,
         token: null,

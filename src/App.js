@@ -14,6 +14,7 @@ import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
 import Homepage from "./components/Homepage/Homepage";
 import store from "./redux/store";
 import EmailVerifications from "./components/Emailverification/EmailVerifications";
+import MobileVerifications from "./components/Mobileverification/MobileVerifications";
 const App = () => {
   // useEffect(() => {
   //   store.dispatch(loadUser());
@@ -66,6 +67,11 @@ const App = () => {
                   exact
                   path="/email-verification"
                   component={EmailVerifications}
+                ></Route>
+                <Route
+                  exact
+                  path="/mobile-verification"
+                  component={MobileVerifications}
                 ></Route>
                 <Route exact path="/" component={Homepage}></Route>
               </Switch>

@@ -8,20 +8,23 @@ import { useFormik } from 'formik';
 import { useAuth } from "../../contexts/AuthContext"
 import * as yup from 'yup';
 import PanelHeader from '../../Shared/common/PanelHeader'
+import { connect } from "react-redux";
+import { emailverifications } from "../../redux/actions/auth";
 import EmailVerificationImage from "../../assets/EmailVerification.png";
 const validationSchema = yup.object({
     OTP: yup
         .string('Enter your OTP')
         .required('OTP is required')
 });
-function EmailVerifications(props) {
+function EmailVerifications({emailverifications}) {
+    const [error, setError] = useState("")
     const formik = useFormik({
         initialValues: {
             OTP: '',
         },
         validationSchema: validationSchema,
         onSubmit: async (allValues) => {
-            console.log(allValues)
+            await new Promise((r) => setTimeout(emailverifications(allValues)));
         },
     });
     return (
@@ -46,7 +49,7 @@ function EmailVerifications(props) {
                                 alignItems: 'center',
                             }}
                         >
-                            {/* {error && <Alert variant="danger">{error}</Alert>} */}
+                            {error && <Alert variant="danger">{error}</Alert>}
                             <Box item noValidate sx={{ mt: 1 }}>
                                 <form onSubmit={formik.handleSubmit}>
                                     <TextField
@@ -89,4 +92,4 @@ function EmailVerifications(props) {
     );
 }
 
-export default EmailVerifications;
+export default connect(null, { emailverifications })(EmailVerifications);

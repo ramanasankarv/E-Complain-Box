@@ -5,6 +5,8 @@ import { Link, useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { useAuth } from "../../contexts/AuthContext"
 import PanelHeader from '../../Shared/common/PanelHeader';
+import { login } from "../../redux/actions/auth";
+import { connect } from "react-redux";
 import * as yup from 'yup';
 
 
@@ -36,8 +38,7 @@ const validationSchema = yup.object({
       .string('Enter your password')
       .required('Password is required')
   });
-function Login(props) {
-    const { login } = useAuth()
+function Login({login}) {
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const history = useHistory()
@@ -52,23 +53,7 @@ function Login(props) {
         },
         validationSchema: validationSchema,
         onSubmit: async (allValues) => {
-            console.log(allValues)
-            setValues({values:allValues.values});
-            try {
-                setError("")
-                setLoading(true)
-                await login(allValues.email, allValues.password,function(status){
-                  if(status=="success")
-                        history.push("/");
-                    else
-                        setError("Failed to log in. Check email/mobile & password")
-                })
-              } catch {
-                setError("Failed to log in")
-              }
-          
-              setLoading(false)
-            console.log(values)
+          await new Promise((r) => setTimeout(login(allValues)));
         },
       });
     return (
@@ -159,5 +144,4 @@ function Login(props) {
         </Grid>
     );
 }
-
-export default Login;
+export default connect(null, { login })(Login);
