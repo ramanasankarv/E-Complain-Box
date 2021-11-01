@@ -12,7 +12,7 @@ import {
 //import { setAlert } from "./alert";
 import { auth } from "../../firebase";
 import axios from "axios";
-// import setAuthToken from "../utills/setAuthToken"
+// import setAuthToken from "../utills/setAuthToken" https://e-complainbox.herokuapp.com
 const client = axios.create({
     baseURL: "https://e-complainbox.herokuapp.com",
     json: true,
@@ -109,10 +109,11 @@ const register = ({ fullname, email, password, mobile }) => async (dispatch) => 
             },
             data: data
         })
+        console.log(response.data.message);
         localStorage.setItem("token", generateToken);
         dispatch({
             type: REGISTER_SUCCESS,
-            payload: response.data,
+            payload: response.data.message,
         });
         
         window.location.href = '/email-verification';
