@@ -9,6 +9,7 @@ import {
     CLEAR_PROFILE,
     GET_PROFILE,
 } from "./types";
+
 //import { setAlert } from "./alert";
 import { auth } from "../../firebase";
 import axios from "axios";
@@ -17,6 +18,7 @@ const client = axios.create({
     baseURL: "https://e-complainbox.herokuapp.com",
     json: true,
 });
+
 
 // const register = ({fullname,email,password,mobile}) =>{
 //     return async dispatch=>{
@@ -115,7 +117,7 @@ const register = ({ fullname, email, password, mobile }) => async (dispatch) => 
             type: REGISTER_SUCCESS,
             payload: response.data.message,
         });
-        
+        //push('/email-verification');
         window.location.href = '/email-verification';
     } catch (error) {
         console.log(error);
@@ -175,7 +177,7 @@ const login = ({email, password}) => async (dispatch) => {
         });
         console.log(response);
         if(localStorage.getItem("userIsEmailVerified")=="No"){
-            window.location.href = '/email-verification';   
+            window.location.href = '/email-verification';
         } else if(localStorage.getItem("userIsMobileVerified")=="No"){
             window.location.href = '/mobile-verification';   
         } else{
@@ -266,10 +268,21 @@ const loadUser = () => async (dispatch) => {
     //     setAuthToken(localStorage.token);
     // }
     try {
-        const response = await axios.get("/api/auth");
+        let data={
+            email:localStorage.getItem("userEmail")
+        }
+        const response = await client({
+            method: 'post',
+            url: '/userdata',
+            headers: {
+                'AuthToken': localStorage.getItem("token")
+            },
+            data: data
+        })
+        console.log(response.data.user[0]);
         dispatch({
             type: USER_LOADED,
-            payload: response.data,
+            payload: response.data.user[0],
         });
     } catch (error) {
         dispatch({
@@ -278,6 +291,7 @@ const loadUser = () => async (dispatch) => {
     }
 };
 const logout = () => async (dispatch) => {
+    await auth.signOut();
     dispatch({
         type: CLEAR_PROFILE,
     });
