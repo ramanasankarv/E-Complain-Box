@@ -73,7 +73,7 @@ function Register({ register }) {
         validationSchema: validationSchema,
 
         onSubmit: async (allValues) => {
-            await new Promise((r) => setTimeout(register(allValues)));
+            await new Promise((r) => setTimeout(register(allValues), history));
         },
     });
 
