@@ -16,9 +16,9 @@ import store from "./redux/store";
 import EmailVerifications from "./components/Emailverification/EmailVerifications";
 import MobileVerifications from "./components/Mobileverification/MobileVerifications";
 const App = () => {
-  // useEffect(() => {
-  //   store.dispatch(loadUser());
-  // }, []);
+  useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
   const theme = createTheme({
     palette: {
       primary: {

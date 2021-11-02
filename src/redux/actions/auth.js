@@ -60,7 +60,7 @@ const register =
     }
   };
 const login =
-  ({ email, password }) =>
+  ({ email, password }, history) =>
   async (dispatch) => {
     const config = {
       headers: {
@@ -120,7 +120,7 @@ const login =
       } else if (localStorage.getItem("userIsMobileVerified") == "No") {
         history.push("/mobile-verification");
       } else {
-        history.push("/dashborad");
+        history.push("/dashboard");
       }
     } catch (error) {
       console.log(error);
