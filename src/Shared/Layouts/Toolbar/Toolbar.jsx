@@ -13,19 +13,24 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Button from '@mui/material/Button';
 import { Link } from "react-router-dom";
-
-
-export default function AppToolbar() {
+import { connect } from "react-redux";
+import { logout } from "../../../redux/actions/auth";
+import { useHistory } from "react-router";
+const AppToolbar = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  console.log(props)
+  let history = useHistory();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const logout = () => {
+    props.logout();
+    history.push('/login')
+  }
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -115,7 +120,7 @@ export default function AppToolbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }} bgcolor="#fff">
-      <AppBar position="static" color="secondary" style={{color:"#fff"}}>
+      <AppBar position="static" color="secondary" style={{ color: "#fff" }}>
         <Toolbar bgcolor="#fff">
           <IconButton
             size="large"
@@ -134,7 +139,7 @@ export default function AppToolbar() {
           >
             E-ComplaintBox
           </Typography>
-          
+
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "block" } }}>
             <IconButton
@@ -143,7 +148,7 @@ export default function AppToolbar() {
               color="inherit"
             >
               <Typography>
-                  Home
+                Home
               </Typography>
             </IconButton>
             <IconButton
@@ -152,7 +157,7 @@ export default function AppToolbar() {
               color="inherit"
             >
               <Typography>
-                  About Us
+                About Us
               </Typography>
             </IconButton>
             <IconButton
@@ -161,15 +166,25 @@ export default function AppToolbar() {
               color="inherit"
             >
               <Typography>
-                  Contact Us
+                Contact Us
               </Typography>
             </IconButton>
-            <Button variant="contained" size="small"  color="success" style={{marginRight:"10px"}} component={Link} to={'/login'}>
-                Login
-            </Button>
-            <Button variant="contained" color="success" size="small" component={Link} to={'/register'}>
-                Registration
-            </Button>
+            {!props.auth.isAuthenticated ? (
+              < React.Fragment >
+                <Button variant="contained" size="small" color="success" style={{ marginRight: "10px" }} component={Link} to={'/login'}>
+                  Login
+                </Button>
+                <Button variant="contained" color="success" size="small" component={Link} to={'/register'}>
+                  Registration
+                </Button>
+              </React.Fragment>
+            ) :
+              <Button variant="contained" size="small" color="success" style={{ marginRight: "10px" }} onClick={logout}>
+                Logout
+              </Button>
+
+            }
+
             <IconButton
               size="large"
               edge="end"
@@ -198,6 +213,11 @@ export default function AppToolbar() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-    </Box>
+    </Box >
   );
 }
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps, { logout })(AppToolbar);

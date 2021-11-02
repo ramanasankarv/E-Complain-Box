@@ -13,6 +13,8 @@ const INITIAL_STATE = {
   isAuthenticated: null,
   loading: true,
   user: null,
+  IsEmailVerified: null,
+  IsMobleVerified: null,
 };
 
 const registration = (state = INITIAL_STATE, action) => {
@@ -23,6 +25,8 @@ const registration = (state = INITIAL_STATE, action) => {
         isAuthenticated: true,
         loading: false,
         user: action.payload,
+        IsEmailVerified: action.payload.IsEmailVerified,
+        IsMobleVerified: action.payload.IsMobileVerified,
       };
     case AUTH_ERROR:
       localStorage.getItem("token");
@@ -37,13 +41,22 @@ const registration = (state = INITIAL_STATE, action) => {
       localStorage.setItem("userID", action.payload.id);
       localStorage.setItem("userEmail", action.payload.Email);
       localStorage.setItem("userFullName", action.payload.FullName);
-      localStorage.setItem("userIsEmailVerified", action.payload.IsEmailVerified);
-      localStorage.setItem("userIsMobileVerified", action.payload.IsMobileVerified);
+      localStorage.setItem(
+        "userIsEmailVerified",
+        action.payload.IsEmailVerified
+      );
+      localStorage.setItem(
+        "userIsMobileVerified",
+        action.payload.IsMobileVerified
+      );
       return {
         ...state,
         ...action.payload,
         isAuthenticated: true,
         loading: false,
+        user: action.payload,
+        IsEmailVerified: action.payload.IsEmailVerified,
+        IsMobleVerified: action.payload.IsMobileVerified,
       };
     case REGISTER_FAILED:
     case LOGIN_FAILED:
@@ -59,6 +72,7 @@ const registration = (state = INITIAL_STATE, action) => {
         token: null,
         isAuthenticated: false,
         loading: false,
+        user: null,
       };
     default:
       return state;

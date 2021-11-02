@@ -17,7 +17,8 @@ import StyledMenuHome from './StyledMenuHome';
 import { Fragment } from 'react';
 import VerticalChart from './VerticalChart';
 import PieChart from './PieChart';
-function Dashboard(props) {
+import { connect } from 'react-redux';
+function Dashboard({ auth }) {
   const [rows, setRows] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [page, setPage] = React.useState(0);
@@ -43,6 +44,9 @@ function Dashboard(props) {
   };
   return (
     <Fragment>
+      {auth.user ? (<Grid container mt={12} px={12}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
+      ) : ""
+      }
       <Grid container px={12} mt={12}>
         <Paper sx={{ width: '100%' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
@@ -122,5 +126,7 @@ function Dashboard(props) {
     </Fragment>
   );
 }
-
-export default Dashboard;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps)(Dashboard);

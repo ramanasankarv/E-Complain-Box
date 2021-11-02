@@ -23,7 +23,6 @@ const register =
   ({ fullname, email, password, mobile }, history) =>
   async (dispatch) => {
     try {
-      //debugger;
       const registrationInfo = await auth.createUserWithEmailAndPassword(
         email,
         password
@@ -94,8 +93,7 @@ const login =
       email = res.data.userEmail;
     }
     try {
-      const login = await auth.signInWithEmailAndPassword(email, password);
-
+      await auth.signInWithEmailAndPassword(email, password);
       const generateToken = await auth.currentUser.getIdToken(true);
       localStorage.setItem("token", generateToken);
       let data = {

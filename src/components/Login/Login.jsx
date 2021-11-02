@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Box, Grid, Button, Alert } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { Link, useHistory } from 'react-router-dom';
@@ -18,6 +18,7 @@ const onChangeEmailOrPhone = (event) => {
     setIsEmail(false);
   }
 }
+
 const validationSchema = yup.object({
   email: yup.string("Enter your Email/Mobile Number")
     // .email("Enter a valid email")
@@ -38,7 +39,7 @@ const validationSchema = yup.object({
     .string('Enter your password')
     .required('Password is required')
 });
-function Login({ login }) {
+function Login({ login, auth }) {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const history = useHistory()
@@ -56,6 +57,9 @@ function Login({ login }) {
       await new Promise((r) => setTimeout(login(allValues, history)));
     },
   });
+  useEffect(() => {
+
+  }, [])
   return (
     <Grid item bgcolor="#fff" borderRadius="5px" boxShadow={3} xs={12} sm={6}>
       <PanelHeader title={"Login"} />
@@ -144,4 +148,7 @@ function Login({ login }) {
     </Grid>
   );
 }
-export default connect(null, { login })(Login);
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps, { login })(Login);
