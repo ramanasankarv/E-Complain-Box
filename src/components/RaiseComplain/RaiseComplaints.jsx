@@ -1,10 +1,8 @@
-import { Container, Grid, Typography } from '@mui/material';
-import React, { useState, useRef } from 'react';
+import { Grid, Typography } from '@mui/material';
+import React, { useState, useRef, useCallback } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import { DropzoneArea } from 'material-ui-dropzone';
 import PublicIcon from '@mui/icons-material/Public';
@@ -15,15 +13,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import Stack from '@mui/material/Stack';
+import SubjectIcon from '@mui/icons-material/Subject'; import Stack from '@mui/material/Stack';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import Dropzone from 'react-dropzone'
 import { FormHelperText } from '@mui/material';
 import { Link, useHistory } from "react-router-dom"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -56,16 +53,15 @@ const Input = styled('input')({
 });
 function RaiseComplaints({ auth }) {
     const [description, setDescription] = useState("");
-    const [files, setFiles] = useState("");
+    const [files, setFiles] = useState([]);
     const [descriptionError, setDescriptionError] = useState("");
 
     const editorRef = useRef(null);
 
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent({ format: 'text' }));
-        }
+    const onDrop = (files) => {
+        setFiles(files)
     };
+
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -76,11 +72,16 @@ function RaiseComplaints({ auth }) {
         }
         console.log(descriptionError);
     }
+    const changeFile = (e, files) => {
+        // e.stopPropagation();
+        console.log(e)
+        setFiles(files)
+    }
 
     const handleClick = () => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
-            setDescription({ description: content });
+            setDescription({ description: editorRef.current.getContent() });
             setDescriptionError("")
         } else {
             setDescriptionError("Description field is required")
@@ -112,6 +113,11 @@ function RaiseComplaints({ auth }) {
             console.log(allValues)
         },
     });
+    const newFiles = files.map(file => (
+        <li key={file.name}>
+            {file.name} - {file.size} bytes
+        </li>
+    ));
     return (
         <Grid item container px={30} py={8}>
             {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
@@ -228,8 +234,8 @@ function RaiseComplaints({ auth }) {
                     </Grid>
                 </Grid>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                    <Grid item md={1} sm={1} xs={2} mt={2}>
-                        <PublicIcon />
+                    <Grid item md={1} sm={1} xs={2} mt={3}>
+                        <SubjectIcon />
                     </Grid>
 
                     <Grid container item md={11} sm={11} xs={10}>
@@ -288,28 +294,28 @@ function RaiseComplaints({ auth }) {
                 </Grid>
 
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" justifyContent="center">
-                    <Grid item md={1} sm={1} xs={2} mt={2}>
+                    <Grid item md={1} sm={1} xs={2} mt={4}>
                         <CloudUploadIcon />
                     </Grid>
-                    <Grid item md={11} sm={11} xs={10}>
-
-                        {/* <Stack direction="row" justifyContent="center" spacing={2}>
-                        <label htmlFor="contained-button-file">
-                            <Input accept="image/*" id="contained-button-file" multiple type="file" />
-                            <Button variant="contained" component="span">
-                                Upload
-                            </Button>
-                        </label>
-                        <label htmlFor="icon-button-file">
-                            <Input accept="image/*" id="icon-button-file" type="file" />
-                            <IconButton color="primary" aria-label="upload picture" component="span">
-                                <PhotoCamera />
-                            </IconButton>
-                        </label>
-                    </Stack> */}
-                        <DropzoneArea
-                            onChange={(files) => setFiles(files)}
-                        />
+                    <Grid item md={11} sm={11} xs={10} style={{ overflow: "hidden" }}>
+                        <Dropzone onDrop={onDrop}>
+                            {({ getRootProps, getInputProps }) => (
+                                <section className="container">
+                                    <div {...getRootProps({ className: 'dropzone' })}>
+                                        <input {...getInputProps()} />
+                                        <p style={{
+                                            border: "1px dashed grey",
+                                            padding: "20px",
+                                            background: "#f8f8f8",
+                                        }}>Drag 'n' drop some files here, or click to select files</p>
+                                    </div>
+                                    <aside>
+                                        <h4>{files.length > 0 ? "Files" : ""}</h4>
+                                        < ul > {newFiles}</ul>
+                                    </aside>
+                                </section>
+                            )}
+                        </Dropzone>
                     </Grid>
                 </Grid>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
