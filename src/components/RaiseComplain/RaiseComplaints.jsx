@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, Fragment,AttachFileIcon } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -72,22 +72,17 @@ function RaiseComplaints({ auth }) {
         }
         console.log(descriptionError);
     }
-    const changeFile = (e, files) => {
-        // e.stopPropagation();
-        console.log(e)
-        setFiles(files)
-    }
-
-    const handleClick = () => {
-        let textContent = editorRef.current.getContent({ format: 'text' })
-        if (textContent !== "" && textContent !== "undefined") {
-            setDescription({ description: editorRef.current.getContent() });
-            setDescriptionError("")
-        } else {
-            setDescriptionError("Description field is required")
-        }
-        return true;
-    }
+    
+    // const handleClick = () => {
+    //     let textContent = editorRef.current.getContent({ format: 'text' })
+    //     if (textContent !== "" && textContent !== "undefined") {
+    //         setDescription({ description: editorRef.current.getContent() });
+    //         setDescriptionError("")
+    //     } else {
+    //         setDescriptionError("Description field is required")
+    //     }
+    //     return true;
+    // }
 
 
     const formik = useFormik({
@@ -115,9 +110,21 @@ function RaiseComplaints({ auth }) {
         },
     });
     const newFiles = files.map(file => (
-        <li key={file.name}>
-            {file.name} - {file.size} bytes
-        </li>
+        <Fragment>
+            <li key={file.name} style={{ listStyle: "none" }}>
+                <Grid container>
+                    <Grid item md={1} sm={1} xs={2}>
+                        <AttachFileIcon />
+                    </Grid>
+                    <Grid item md={11} sm={11} xs={10}>
+                        <Typography>
+                            {file.name} - {file.size} bytes
+                        </Typography>
+                    </Grid>
+                </Grid>
+            </li>
+        </Fragment>
+
     ));
     return (
         <Grid item container px={30} py={8}>

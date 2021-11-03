@@ -230,7 +230,7 @@ const imageupload = ({ files,city,department, complainType, severity, subject,de
   //image=files;
   files.map((image) => {
       const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      //promises.push(uploadTask);
+      promises.push(uploadTask);
       uploadTask.on(
         "state_changed",
         (error) => {
@@ -248,11 +248,11 @@ const imageupload = ({ files,city,department, complainType, severity, subject,de
       );
   });
 
-    // Promise.all(promises)
-    //   .then(() => {
-    //     console.log(urls);
-    //   })
-    //   .catch((err) => console.log(err));
+  await Promise.all(promises)
+      .then(() => {
+        console.log(urls);
+      })
+      .catch((err) => console.log(err));
       console.log(urls)
       let data = {
         city: city,
