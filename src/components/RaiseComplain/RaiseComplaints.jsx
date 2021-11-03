@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -20,6 +20,7 @@ import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirection
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import Dropzone from 'react-dropzone'
 import { FormHelperText } from '@mui/material';
 import { Link, useHistory } from "react-router-dom"
 import { imageupload } from "../../redux/actions/auth";
@@ -50,18 +51,17 @@ const Input = styled('input')({
 });
 function RaiseComplaints({ auth }) {
     const [description, setDescription] = useState("");
-    const [files, setFiles] = useState("");
+    const [files, setFiles] = useState([]);
     const [descriptionError, setDescriptionError] = useState("");
     const [urls, setUrls] = useState([]);
     let history = useHistory();
 
     const editorRef = useRef(null);
 
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent({ format: 'text' }));
-        }
+    const onDrop = (files) => {
+        setFiles(files)
     };
+
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -71,6 +71,11 @@ function RaiseComplaints({ auth }) {
             setDescriptionError("Description field is required")
         }
         console.log(descriptionError);
+    }
+    const changeFile = (e, files) => {
+        // e.stopPropagation();
+        console.log(e)
+        setFiles(files)
     }
 
     const handleClick = () => {
@@ -109,6 +114,11 @@ function RaiseComplaints({ auth }) {
             await new Promise((r) => setTimeout(imageupload(allValues,urls, setUrls, history)));
         },
     });
+    const newFiles = files.map(file => (
+        <li key={file.name}>
+            {file.name} - {file.size} bytes
+        </li>
+    ));
     return (
         <Grid item container px={30} py={8}>
             {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
@@ -304,13 +314,28 @@ function RaiseComplaints({ auth }) {
                 </Grid>
 
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" justifyContent="center">
-                    <Grid item md={1} sm={1} xs={2} mt={2}>
+                    <Grid item md={1} sm={1} xs={2} mt={4}>
                         <CloudUploadIcon />
                     </Grid>
-                    <Grid item md={11} sm={11} xs={10}>
-                        <DropzoneArea
-                            onChange={(files) => setFiles(files)}
-                        />
+                    <Grid item md={11} sm={11} xs={10} style={{ overflow: "hidden" }}>
+                        <Dropzone onDrop={onDrop}>
+                            {({ getRootProps, getInputProps }) => (
+                                <section className="container">
+                                    <div {...getRootProps({ className: 'dropzone' })}>
+                                        <input {...getInputProps()} />
+                                        <p style={{
+                                            border: "1px dashed grey",
+                                            padding: "20px",
+                                            background: "#f8f8f8",
+                                        }}>Drag 'n' drop some files here, or click to select files</p>
+                                    </div>
+                                    <aside>
+                                        <h4>{files.length > 0 ? "Files" : ""}</h4>
+                                        < ul > {newFiles}</ul>
+                                    </aside>
+                                </section>
+                            )}
+                        </Dropzone>
                     </Grid>
                 </Grid>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
