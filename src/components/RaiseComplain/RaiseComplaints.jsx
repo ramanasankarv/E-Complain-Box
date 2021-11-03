@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef,Fragment } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -23,6 +23,10 @@ import { FormHelperText } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { connect } from 'react-redux';
+import {useHistory} from 'react-router-dom';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { imageupload } from "../../redux/actions/auth";
+
 const validationSchema = yup.object({
     department: yup
         .string('Enter your Department')
