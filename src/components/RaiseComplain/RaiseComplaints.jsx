@@ -1,19 +1,17 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-import { DropzoneArea } from 'material-ui-dropzone';
 import PublicIcon from '@mui/icons-material/Public';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import SubjectIcon from '@mui/icons-material/Subject'; import Stack from '@mui/material/Stack';
+import SubjectIcon from '@mui/icons-material/Subject';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
@@ -22,7 +20,6 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Dropzone from 'react-dropzone'
 import { FormHelperText } from '@mui/material';
-import { Link, useHistory } from "react-router-dom"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { connect } from 'react-redux';
@@ -48,9 +45,7 @@ const validationSchema = yup.object({
 
 
 });
-const Input = styled('input')({
-    display: 'none',
-});
+
 function RaiseComplaints({ auth }) {
     const [description, setDescription] = useState("");
     const [files, setFiles] = useState([]);
@@ -72,11 +67,7 @@ function RaiseComplaints({ auth }) {
         }
         console.log(descriptionError);
     }
-    const changeFile = (e, files) => {
-        // e.stopPropagation();
-        console.log(e)
-        setFiles(files)
-    }
+
 
     const handleClick = () => {
         let textContent = editorRef.current.getContent({ format: 'text' })
