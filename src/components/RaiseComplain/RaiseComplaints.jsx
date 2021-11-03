@@ -28,7 +28,7 @@ import { FormHelperText } from '@mui/material';
 import { Link, useHistory } from "react-router-dom"
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PanelHeader from '../../Shared/common/PanelHeader';
-
+import { connect } from 'react-redux';
 const validationSchema = yup.object({
     state: yup
         .string('Enter your State')
@@ -54,7 +54,7 @@ const validationSchema = yup.object({
 const Input = styled('input')({
     display: 'none',
 });
-function RaiseComplaints(props) {
+function RaiseComplaints({ auth }) {
     const [description, setDescription] = useState("");
     const [files, setFiles] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
@@ -114,9 +114,11 @@ function RaiseComplaints(props) {
     });
     return (
         <Grid item container px={30} py={8}>
+            {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
+            ) : ""
+            }
             <Grid item container py={2} style={{ backgroundColor: "#2B7A78" }}>
                 <PanelHeader title={"Raise Complain"} />
-
             </Grid>
             <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
@@ -356,5 +358,7 @@ function RaiseComplaints(props) {
         </Grid>
     );
 }
-
-export default RaiseComplaints;
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
+export default connect(mapStateToProps)(RaiseComplaints);
