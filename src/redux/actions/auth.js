@@ -11,7 +11,7 @@ import {
 } from "./types";
 
 //import { setAlert } from "./alert";
-import { auth } from "../../firebase";
+import { auth,storage } from "../../firebase";
 import axios from "axios";
 // import setAuthToken from "../utills/setAuthToken" https://e-complainbox.herokuapp.com
 const client = axios.create({
@@ -225,6 +225,25 @@ const logout = () => async (dispatch) => {
   });
 };
 
+const imageupload = ({ image })=> async (dispatch) => {
+  console.log(image)
+  const uploadTask = storage.ref(`images/${image.name}`).put(image);
+  uploadTask.on(
+    error => {
+      console.log(error);
+    },
+    () => {
+      storage
+        .ref("images")
+        .child(image.name)
+        .getDownloadURL()
+        .then(url => {
+          console.log(url);
+        });
+    }
+  );
+};
+
 export {
   register,
   loadUser,
@@ -232,4 +251,5 @@ export {
   logout,
   emailverifications,
   mobileverifications,
+  imageupload,
 };

@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState,useRef } from 'react';
+import React, { useState,useRef, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,27 +20,61 @@ import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-
-import { useAuth } from "../../contexts/AuthContext"
+import { imageupload } from "../../redux/actions/auth";
+import { connect } from 'react-redux';
 import { Link, useHistory } from "react-router-dom"
 
 const Input = styled('input')({
     display: 'none',
   });
-function RaiseComplaints(props) {
+
+function RaiseComplaints({ auth }) {
+
     const [error, setError] = useState("")
-    const { currentUser, logout } = useAuth()
+    const [images, setImages] = useState([]);
+    const [urls, setUrls] = useState([]);
     const history = useHistory()
-    currentUser.getIdToken(true).then((idToken) => {console.log(idToken)});
+    //currentUser.getIdToken(true).then((idToken) => {console.log(idToken)});
+    const [deparment, setDeparment] = React.useState('');
     const [age, setAge] = React.useState('');
+    const [complainType, setComplainType] = React.useState('');
+    const [severity, setSeverity] = React.useState('');
+    const [city, setCity] = React.useState('');
     const editorRef = useRef(null);
     const log = () => {
       if (editorRef.current) {
         console.log(editorRef.current.getContent());
       }
     };
-    const handleChange = (event) => {
-        setAge(event.target.value);
+
+    const handleStateChange = (event) =>{
+        setCity(event.target.value);
+    };
+
+    const  handleChange = (event) => {
+        setDeparment(event.target.value);
+    };
+
+    const  handleComplainTypeChange = (event) => {
+        setComplainType(event.target.value);
+    };
+    const handleImageChange = async e => {
+        for (let i = 0; i < e.target.files.length; i++) {
+            const newImage = e.target.files[i];
+            newImage["id"] = Math.random();
+            setImages((prevState) => [...prevState, newImage]);
+        }
+    };
+    const handleSeverityTypeChange = (event) => {
+        setSeverity(event.target.value);
+    };
+    const handleSubmit = async (e) => {
+        console.log(images)
+        console.log(city)
+        console.log(deparment)
+        console.log(complainType)
+        var content=editorRef.current.getContent();
+        await new Promise((r) => setTimeout(imageupload({images,city,deparment,complainType,severity,content}, history)));
     };
     return (
         <Grid item container px={30} py={8}>
@@ -55,20 +89,24 @@ function RaiseComplaints(props) {
                 </Grid>
                 <Grid item md={11} sm={10.5} xs={9.5}>
                     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth >
-                        <InputLabel id="demo-simple-select-standard-label">Select Your State</InputLabel>
+                        <InputLabel id="demo-simple-select-standard-label">Select Your City</InputLabel>
                         <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={age}
-                        onChange={handleChange}
-                        label="Select Your State"
+                        value={city}
+                        onChange={handleStateChange}
+                        label="Select Your City"
                         >
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        <MenuItem value={"uTrinC9Mb1xUJp7hBhFs"}>Bulandshahar</MenuItem>
+                        <MenuItem value={"XNYE2aGK1QP6y7TFEo4t"}>Ghaziabad</MenuItem>
+                        <MenuItem value={"kudlyUz1YV3mb5x8UewP"}>Kanpur</MenuItem>
+                        <MenuItem value={"xk9a1yaOSn4eYLHCcRzY"}>Meerut</MenuItem>
+                        <MenuItem value={"LcbMsHmo3vlyZBtVRISp"}>Muzaffarnagar</MenuItem>
+                        <MenuItem value={"Lrgd20uPHAmjs0BgvTBO"}>Noida</MenuItem>
+                        <MenuItem value={"oqc4tQFg2vNzwuTfEUWR"}>Saharanpur</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -79,10 +117,10 @@ function RaiseComplaints(props) {
                 </Grid>
                 <Grid item md={11} sm={10.5} xs={9.5}>
                 <FormControl component="fieldset">
-                    <RadioGroup row aria-label="gender" name="row-radio-buttons-group">
+                    <RadioGroup row aria-label="complainType" onChange={handleComplainTypeChange} name="complainType">
                         <FormLabel component="legend" style={{marginRight:"15px",marginTop:"10px"}}>Complain Type:</FormLabel>
-                        <FormControlLabel value="public" control={<Radio />} label="Public" />
-                        <FormControlLabel value="private" control={<Radio />} label="Private" />
+                        <FormControlLabel value="public" control={<Radio />}  label="Public" />
+                        <FormControlLabel value="private" control={<Radio />}  label="Private" />
                     </RadioGroup>
                 </FormControl>
                 </Grid>
@@ -93,10 +131,10 @@ function RaiseComplaints(props) {
                 </Grid>
                 <Grid md={11} sm={10.5} xs={9.5}>
                 <FormControl component="fieldset">
-                    <RadioGroup row aria-label="gender" name="row-radio-buttons-group">
+                    <RadioGroup row aria-label="severity" onChange={handleSeverityTypeChange} name="severity">
                         <FormLabel component="legend" style={{marginRight:"15px",marginTop:"10px"}}>Severity:</FormLabel>
-                        <FormControlLabel value="high" control={<Radio />} label="Hign" />
-                        <FormControlLabel value="medium" control={<Radio />} label="Medium" />
+                        <FormControlLabel value="high" control={<Radio />}  label="Hign" />
+                        <FormControlLabel value="medium" control={<Radio />}  label="Medium" />
                         <FormControlLabel value="low" control={<Radio />} label="Low" />
                     </RadioGroup>
                 </FormControl>
@@ -112,16 +150,31 @@ function RaiseComplaints(props) {
                         <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={age}
+                        value={deparment}
                         onChange={handleChange}
                         label="Select Your State"
                         >
                         <MenuItem value="">
                             <em>None</em>
                         </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
+                        <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
+                        <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
+
+                        <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
+                        <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
+                        <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
+
+                        <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
+                        <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
+                        <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
+
+                        <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
+                        <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
+                        <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
+
+                        <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
+                        <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -155,7 +208,7 @@ function RaiseComplaints(props) {
             <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" justifyContent="center">
                 <Stack direction="row" justifyContent="center" spacing={2}>
                     <label htmlFor="contained-button-file">
-                        <Input accept="image/*" id="contained-button-file" multiple type="file" />
+                        <Input accept="image/*" id="contained-button-file" onChange={handleImageChange} multiple type="file" />
                         <Button variant="contained" component="span">
                         Upload
                         </Button>
@@ -169,37 +222,14 @@ function RaiseComplaints(props) {
                 </Stack>
             </Grid>  
             <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="center">
-                <Grid item md={.5} sm={1} xs={2} mt={2}>
-                    <EditLocationAltIcon/>
-                </Grid>
-                <Grid item md={11} sm={10.5} xs={9.5}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth >
-                        <InputLabel id="demo-simple-select-standard-label">Select Your Department</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
-                        value={age}
-                        onChange={handleChange}
-                        label="Select Your State"
-                        >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid> 
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="center">
                 <Button 
+                    onClick={handleSubmit}
                     style={{color:"#fff"}}
                     type="submit"
                     fullWidth
                     variant="contained"
                 >
-                    Sign In
+                    Submit
                 </Button>
             </Grid>
         </Grid>
