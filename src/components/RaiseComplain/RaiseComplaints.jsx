@@ -44,7 +44,10 @@ const validationSchema = yup.object({
         .required('Complain type is required'),
     severity: yup
         .string('Enter your Severity type')
-        .required('Severity type type is required'),
+        .required('Severity type is required'),
+    subject: yup
+        .string('Enter your Subject')
+        .required('Subject is required'),
 
 
 });
@@ -74,6 +77,15 @@ function RaiseComplaints(props) {
         console.log(descriptionError);
     }
 
+    const handleClick = () => {
+        let textContent = editorRef.current.getContent({ format: 'text' })
+        if (textContent !== "" && textContent !== "undefined") {
+            setDescription({ description: content });
+            setDescriptionError("")
+        } else {
+            setDescriptionError("Description field is required")
+        }
+    }
 
 
     const formik = useFormik({
@@ -82,7 +94,8 @@ function RaiseComplaints(props) {
             department: '',
             city: '',
             complainType: "",
-            severity: ''
+            severity: '',
+            subject: ''
         },
         validationSchema: validationSchema,
 
@@ -212,6 +225,30 @@ function RaiseComplaints(props) {
                         </TextField>
                     </Grid>
                 </Grid>
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Grid item md={1} sm={1} xs={2} mt={2}>
+                        <PublicIcon />
+                    </Grid>
+
+                    <Grid container item md={11} sm={11} xs={10}>
+                        <TextField
+                            color="primary"
+                            margin="normal"
+                            fullWidth
+                            id="subject"
+                            type="text"
+                            label="Please provide the subject line"
+                            name="subject"
+                            autoComplete="subject"
+                            autoFocus
+                            variant="standard"
+                            value={formik.values.subject}
+                            onChange={formik.handleChange}
+                            error={formik.touched.subject && Boolean(formik.errors.subject)}
+                            helperText={formik.touched.subject && formik.errors.subject}
+                        />
+                    </Grid>
+                </Grid>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="start">
                     <Grid item md={1} sm={1} xs={2} mt={2}>
                         <FormatTextdirectionLToRIcon />
@@ -247,6 +284,7 @@ function RaiseComplaints(props) {
                         }</FormHelperText>
                     </Grid>
                 </Grid>
+
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" justifyContent="center">
                     <Grid item md={1} sm={1} xs={2} mt={2}>
                         <CloudUploadIcon />
@@ -305,6 +343,7 @@ function RaiseComplaints(props) {
                 </Grid>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
                     <Button
+                        onClick={handleClick}
                         style={{ color: "#fff" }}
                         type="submit"
                         fullWidth
