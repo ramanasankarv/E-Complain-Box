@@ -1,10 +1,10 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState,useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import { DropzoneArea } from 'material-ui-dropzone';
 import PublicIcon from '@mui/icons-material/Public';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import Radio from '@mui/material/Radio';
@@ -13,227 +13,321 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import Stack from '@mui/material/Stack';
+import SubjectIcon from '@mui/icons-material/Subject'; import Stack from '@mui/material/Stack';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-import { imageupload } from "../../redux/actions/auth";
-import { connect } from 'react-redux';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import { FormHelperText } from '@mui/material';
 import { Link, useHistory } from "react-router-dom"
+import { imageupload } from "../../redux/actions/auth";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import PanelHeader from '../../Shared/common/PanelHeader';
+import { connect } from 'react-redux';
+const validationSchema = yup.object({
+    department: yup
+        .string('Enter your Department')
+        .required('Department is required'),
+    city: yup
+        .string('Enter your City')
+        .required('City is required'),
+    complainType: yup
+        .string('Enter your Complain type')
+        .required('Complain type is required'),
+    severity: yup
+        .string('Enter your Severity type')
+        .required('Severity type is required'),
+    subject: yup
+        .string('Enter your Subject')
+        .required('Subject is required'),
 
+
+});
 const Input = styled('input')({
     display: 'none',
-  });
-
+});
 function RaiseComplaints({ auth }) {
-
-    const [error, setError] = useState("")
-    const [images, setImages] = useState([]);
+    const [description, setDescription] = useState("");
+    const [files, setFiles] = useState("");
+    const [descriptionError, setDescriptionError] = useState("");
     const [urls, setUrls] = useState([]);
-    const history = useHistory()
-    //currentUser.getIdToken(true).then((idToken) => {console.log(idToken)});
-    const [deparment, setDeparment] = React.useState('');
-    const [age, setAge] = React.useState('');
-    const [complainType, setComplainType] = React.useState('');
-    const [severity, setSeverity] = React.useState('');
-    const [city, setCity] = React.useState('');
+    let history = useHistory();
+
     const editorRef = useRef(null);
+
     const log = () => {
-      if (editorRef.current) {
-        console.log(editorRef.current.getContent());
-      }
-    };
-
-    const handleStateChange = (event) =>{
-        setCity(event.target.value);
-    };
-
-    const  handleChange = (event) => {
-        setDeparment(event.target.value);
-    };
-
-    const  handleComplainTypeChange = (event) => {
-        setComplainType(event.target.value);
-    };
-    const handleImageChange = async e => {
-        for (let i = 0; i < e.target.files.length; i++) {
-            const newImage = e.target.files[i];
-            newImage["id"] = Math.random();
-            setImages((prevState) => [...prevState, newImage]);
+        if (editorRef.current) {
+            console.log(editorRef.current.getContent({ format: 'text' }));
         }
     };
-    const handleSeverityTypeChange = (event) => {
-        setSeverity(event.target.value);
-    };
-    const handleSubmit = async (e) => {
-        console.log(images)
-        console.log(city)
-        console.log(deparment)
-        console.log(complainType)
-        var content=editorRef.current.getContent();
-        await new Promise((r) => setTimeout(imageupload({images,city,deparment,complainType,severity,content}, history)));
-    };
+    const parseEditorData = (content) => {
+        let textContent = editorRef.current.getContent({ format: 'text' })
+        if (textContent !== "" && textContent !== "undefined") {
+            setDescription({ description: content });
+            setDescriptionError("")
+        } else {
+            setDescriptionError("Description field is required")
+        }
+        console.log(descriptionError);
+    }
+
+    const handleClick = () => {
+        let textContent = editorRef.current.getContent({ format: 'text' })
+        if (textContent !== "" && textContent !== "undefined") {
+            setDescription({ description: editorRef.current.getContent() });
+            setDescriptionError("")
+        } else {
+            setDescriptionError("Description field is required")
+        }
+        return true;
+    }
+
+
+    const formik = useFormik({
+        initialValues: {
+            department: '',
+            city: '',
+            complainType: "",
+            severity: '',
+            subject: ''
+        },
+        validationSchema: validationSchema,
+
+        onSubmit: async (allValues) => {
+            let textContent = editorRef.current.getContent({ format: 'text' })
+            if (textContent !== "" && textContent !== "undefined") {
+                allValues.description = description.description;
+                allValues.files = files;
+                setDescriptionError("")
+
+            } else {
+                setDescriptionError(descriptionErrorMessage)
+            }
+            console.log(allValues)
+            await new Promise((r) => setTimeout(imageupload(allValues,urls, setUrls, history)));
+        },
+    });
     return (
         <Grid item container px={30} py={8}>
-            <Grid item container py={2} style={{backgroundColor:"#2B7A78"}}>
-                <Typography px={2} style={{color:"#fff",fontWeight:"bolder"}}>
-                    Todays Records
-                </Typography>
+            {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
+            ) : ""
+            }
+            <Grid item container py={2} style={{ backgroundColor: "#2B7A78" }}>
+                <PanelHeader title={"Raise Complain"} />
             </Grid>
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="center">
-                <Grid item md={.5} sm={1} xs={2} mt={2}>
-                    <PublicIcon/>
-                </Grid>
-                <Grid item md={11} sm={10.5} xs={9.5}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth >
-                        <InputLabel id="demo-simple-select-standard-label">Select Your City</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
-                        value={city}
-                        onChange={handleStateChange}
-                        label="Select Your City"
+            <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Grid item md={1} sm={1} xs={2} mt={2}>
+                        <PublicIcon />
+                    </Grid>
+
+                    <Grid container item md={11} sm={11} xs={10}>
+                        <TextField
+                            variant="standard"
+                            name="city"
+                            id="city"
+                            select
+                            fullWidth
+                            label="Select Your city"
+                            value={formik.values.city}
+                            onChange={formik.handleChange}
+                            error={
+                                formik.touched.city &&
+                                Boolean(formik.errors.city)
+                            }
+                            helperText={
+                                formik.touched.city && formik.errors.city
+                            }
                         >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={"uTrinC9Mb1xUJp7hBhFs"}>Bulandshahar</MenuItem>
-                        <MenuItem value={"XNYE2aGK1QP6y7TFEo4t"}>Ghaziabad</MenuItem>
-                        <MenuItem value={"kudlyUz1YV3mb5x8UewP"}>Kanpur</MenuItem>
-                        <MenuItem value={"xk9a1yaOSn4eYLHCcRzY"}>Meerut</MenuItem>
-                        <MenuItem value={"LcbMsHmo3vlyZBtVRISp"}>Muzaffarnagar</MenuItem>
-                        <MenuItem value={"Lrgd20uPHAmjs0BgvTBO"}>Noida</MenuItem>
-                        <MenuItem value={"oqc4tQFg2vNzwuTfEUWR"}>Saharanpur</MenuItem>
-                        </Select>
-                    </FormControl>
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value={"uTrinC9Mb1xUJp7hBhFs"}>Bulandshahar</MenuItem>
+                            <MenuItem value={"XNYE2aGK1QP6y7TFEo4t"}>Ghaziabad</MenuItem>
+                            <MenuItem value={"kudlyUz1YV3mb5x8UewP"}>Kanpur</MenuItem>
+                            <MenuItem value={"xk9a1yaOSn4eYLHCcRzY"}>Meerut</MenuItem>
+                            <MenuItem value={"LcbMsHmo3vlyZBtVRISp"}>Muzaffarnagar</MenuItem>
+                            <MenuItem value={"Lrgd20uPHAmjs0BgvTBO"}>Noida</MenuItem>
+                            <MenuItem value={"oqc4tQFg2vNzwuTfEUWR"}>Saharanpur</MenuItem>
+                        </TextField>
+                    </Grid>
                 </Grid>
-            </Grid> 
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="center">
-                <Grid item md={.5} sm={1} xs={2}>
-                    <WarningAmberIcon/>
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Grid item md={1} sm={1} xs={2}>
+                        <WarningAmberIcon />
+                    </Grid>
+                    <Grid item md={11} sm={11} xs={10}>
+                        <FormControl component="fieldset" error={
+                            formik.touched.complainType &&
+                            Boolean(formik.errors.complainType)
+                        }>
+                            <RadioGroup row aria-label="gender" name="complainType" onChange={formik.handleChange}>
+                                <FormLabel component="legend" style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
+                                <FormControlLabel value="public" control={<Radio />} label="Public" />
+                                <FormControlLabel value="private" control={<Radio />} label="Private" />
+                            </RadioGroup>
+                        </FormControl>
+                        <FormHelperText style={{ color: "red" }}>{
+                            formik.touched.complainType &&
+                            formik.errors.complainType
+                        }</FormHelperText>
+                    </Grid>
                 </Grid>
-                <Grid item md={11} sm={10.5} xs={9.5}>
-                <FormControl component="fieldset">
-                    <RadioGroup row aria-label="complainType" onChange={handleComplainTypeChange} name="complainType">
-                        <FormLabel component="legend" style={{marginRight:"15px",marginTop:"10px"}}>Complain Type:</FormLabel>
-                        <FormControlLabel value="public" control={<Radio />}  label="Public" />
-                        <FormControlLabel value="private" control={<Radio />}  label="Private" />
-                    </RadioGroup>
-                </FormControl>
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Grid item md={1} sm={1} xs={2}>
+                        <FlashAutoIcon />
+                    </Grid>
+                    <Grid item md={11} sm={11} xs={10}>
+                        <FormControl component="fieldset" error={
+                            formik.touched.severity &&
+                            Boolean(formik.errors.severity)
+                        }>
+                            <RadioGroup row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={formik.handleChange}>
+                                <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}>Severity:</FormLabel>
+                                <FormControlLabel value="high" control={<Radio />} label="Hign" />
+                                <FormControlLabel value="medium" control={<Radio />} label="Medium" />
+                                <FormControlLabel value="low" control={<Radio />} label="Low" />
+                            </RadioGroup>
+                        </FormControl>
+                        <FormHelperText style={{ color: "red" }}>{
+                            formik.touched.severity &&
+                            formik.errors.severity
+                        }</FormHelperText>
+                    </Grid>
                 </Grid>
-            </Grid>  
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="center">
-                <Grid md={.5} sm={1} xs={2}>
-                    <FlashAutoIcon/>
-                </Grid>
-                <Grid md={11} sm={10.5} xs={9.5}>
-                <FormControl component="fieldset">
-                    <RadioGroup row aria-label="severity" onChange={handleSeverityTypeChange} name="severity">
-                        <FormLabel component="legend" style={{marginRight:"15px",marginTop:"10px"}}>Severity:</FormLabel>
-                        <FormControlLabel value="high" control={<Radio />}  label="Hign" />
-                        <FormControlLabel value="medium" control={<Radio />}  label="Medium" />
-                        <FormControlLabel value="low" control={<Radio />} label="Low" />
-                    </RadioGroup>
-                </FormControl>
-                </Grid>
-            </Grid> 
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="center">
-                <Grid item md={.5} sm={1} xs={2} mt={2}>
-                    <WorkOutlineIcon/>
-                </Grid>
-                <Grid item md={11} sm={10.5} xs={9.5}>
-                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth >
-                        <InputLabel id="demo-simple-select-standard-label">Select Your Department</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
-                        value={deparment}
-                        onChange={handleChange}
-                        label="Select Your State"
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Grid item md={1} sm={1} xs={2} mt={2}>
+                        <WorkOutlineIcon />
+                    </Grid>
+                    <Grid item md={11} sm={11} xs={10}>
+                        <TextField
+                            variant="standard"
+                            name="department"
+                            id="department"
+                            select
+                            fullWidth
+                            label="Select Your Department"
+                            value={formik.values.department}
+                            onChange={formik.handleChange}
+                            error={
+                                formik.touched.department &&
+                                Boolean(formik.errors.department)
+                            }
+                            helperText={
+                                formik.touched.department && formik.errors.department
+                            }
                         >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
-                        <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
-                        <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
+                            <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
+                            <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
 
-                        <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
-                        <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
-                        <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
+                            <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
+                            <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
+                            <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
 
-                        <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
-                        <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
-                        <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
+                            <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
+                            <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
+                            <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
 
-                        <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
-                        <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
-                        <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
+                            <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
+                            <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
+                            <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
 
-                        <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
-                        <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
-                        </Select>
-                    </FormControl>
+                            <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
+                            <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
+                        </TextField>
+                    </Grid>
                 </Grid>
-            </Grid> 
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="start">
-                <Grid item md={.5} sm={1} xs={2} mt={2}>
-                    <FormatTextdirectionLToRIcon/>
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Grid item md={1} sm={1} xs={2} mt={3}>
+                        <SubjectIcon />
+                    </Grid>
+
+                    <Grid container item md={11} sm={11} xs={10}>
+                        <TextField
+                            color="primary"
+                            margin="normal"
+                            fullWidth
+                            id="subject"
+                            type="text"
+                            label="Please provide the subject line"
+                            name="subject"
+                            autoComplete="subject"
+                            autoFocus
+                            variant="standard"
+                            value={formik.values.subject}
+                            onChange={formik.handleChange}
+                            error={formik.touched.subject && Boolean(formik.errors.subject)}
+                            helperText={formik.touched.subject && formik.errors.subject}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item md={11} sm={10.5} xs={9.5}>
-                <Editor
-                    apiKey="dd83bg0e7v7jnnfjjqwg7bktooeb1n4wcn2vn7vmeaof51y5"
-                    onInit={(evt, editor) => editorRef.current = editor}
-                    initialValue="<p>This is the initial content of the editor.</p>"
-                    init={{
-                    height: 300,
-                    menubar: false,
-                    plugins: [
-                        'advlist autolink lists link image charmap print preview anchor',
-                        'searchreplace visualblocks code fullscreen',
-                        'insertdatetime media table paste code help wordcount'
-                    ],
-                    toolbar: 'undo redo | formatselect | ' +
-                    'bold italic backcolor | alignleft aligncenter ' +
-                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                    'removeformat | help',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                    }}
-                />
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="start">
+                    <Grid item md={1} sm={1} xs={2} mt={2}>
+                        <FormatTextdirectionLToRIcon />
+                    </Grid>
+                    <Grid item md={11} sm={11} xs={10}>
+                        <Editor
+                            apiKey="dd83bg0e7v7jnnfjjqwg7bktooeb1n4wcn2vn7vmeaof51y5"
+                            onInit={(evt, editor) => editorRef.current = editor}
+                            initialValue=""
+                            id="description"
+                            name="description"
+                            onEditorChange={(content, editor) =>
+                                parseEditorData(content)
+                            }
+
+                            init={{
+                                height: 300,
+                                menubar: false,
+                                plugins: [
+                                    'advlist autolink lists link image charmap print preview anchor',
+                                    'searchreplace visualblocks code fullscreen',
+                                    'insertdatetime media table paste code help wordcount'
+                                ],
+                                toolbar: 'undo redo | formatselect | ' +
+                                    'bold italic backcolor | alignleft aligncenter ' +
+                                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                                    'removeformat | help',
+                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                            }}
+                        />
+                        <FormHelperText style={{ color: "red" }}>{
+                            descriptionError !== "" ? descriptionError : ""
+                        }</FormHelperText>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" justifyContent="center">
-                <Stack direction="row" justifyContent="center" spacing={2}>
-                    <label htmlFor="contained-button-file">
-                        <Input accept="image/*" id="contained-button-file" onChange={handleImageChange} multiple type="file" />
-                        <Button variant="contained" component="span">
-                        Upload
-                        </Button>
-                    </label>
-                    <label htmlFor="icon-button-file">
-                        <Input accept="image/*" id="icon-button-file" type="file" />
-                        <IconButton color="primary" aria-label="upload picture" component="span">
-                        <PhotoCamera />
-                        </IconButton>
-                    </label>
-                </Stack>
-            </Grid>  
-            <Grid item container style={{background:"#fff"}} py={4} px={4} direction="row" alignItems="center">
-                <Button 
-                    onClick={handleSubmit}
-                    style={{color:"#fff"}}
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                >
-                    Submit
-                </Button>
-            </Grid>
+
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" justifyContent="center">
+                    <Grid item md={1} sm={1} xs={2} mt={2}>
+                        <CloudUploadIcon />
+                    </Grid>
+                    <Grid item md={11} sm={11} xs={10}>
+                        <DropzoneArea
+                            onChange={(files) => setFiles(files)}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Button
+                        style={{ color: "#fff" }}
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                    >
+                        Raise Complain
+                    </Button>
+                </Grid>
+            </form>
         </Grid>
     );
 }
-
-export default RaiseComplaints;
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
+export default connect(mapStateToProps)(RaiseComplaints);

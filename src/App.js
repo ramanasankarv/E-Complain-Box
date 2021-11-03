@@ -52,6 +52,7 @@ const App = () => {
           <Fragment>
             <AppToolbar />
             <Grid
+              item
               minHeight="70vh"
               container
               direction="row"

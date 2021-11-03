@@ -15,7 +15,7 @@ import { auth,storage } from "../../firebase";
 import axios from "axios";
 // import setAuthToken from "../utills/setAuthToken" https://e-complainbox.herokuapp.com
 const client = axios.create({
-  baseURL: "https://e-complainbox.herokuapp.com",
+  baseURL: "http://localhost:3030",
   json: true,
 });
 
@@ -225,23 +225,55 @@ const logout = () => async (dispatch) => {
   });
 };
 
-const imageupload = ({ image })=> async (dispatch) => {
-  console.log(image)
-  const uploadTask = storage.ref(`images/${image.name}`).put(image);
-  uploadTask.on(
-    error => {
-      console.log(error);
-    },
-    () => {
-      storage
-        .ref("images")
-        .child(image.name)
-        .getDownloadURL()
-        .then(url => {
-          console.log(url);
-        });
-    }
-  );
+const imageupload = ({ files,city,department, complainType, severity, subject,description },urls, setUrls, history)=> async (dispatch) => {
+  const promises = [];
+  //image=files;
+  files.map((image) => {
+      const uploadTask = storage.ref(`images/${image.name}`).put(image);
+      //promises.push(uploadTask);
+      uploadTask.on(
+        "state_changed",
+        (error) => {
+          console.log(error);
+        },
+        async () => {
+          await storage
+            .ref("images")
+            .child(image.name)
+            .getDownloadURL()
+            .then((urls) => {
+              setUrls((prevState) => [...prevState, urls]);
+            });
+        }
+      );
+  });
+
+    // Promise.all(promises)
+    //   .then(() => {
+    //     console.log(urls);
+    //   })
+    //   .catch((err) => console.log(err));
+      console.log(urls)
+      let data = {
+        city: city,
+        department: department,
+        description:description,
+        subject: subject,
+        userid: localStorage.getItem("userID"),
+        urls: urls,
+        token: localStorage.getItem("token"),
+      };
+
+      client({
+        method: "post",
+        url: "/createcomplaint",
+        headers: {
+          AuthToken: localStorage.getItem("token"),
+        },
+        data: data,
+      }).then(()=>{
+        history.push('/dashboard')
+      });
 };
 
 export {
