@@ -118,7 +118,7 @@ const login =
       } else if (localStorage.getItem("userIsMobileVerified") == "No") {
         history.push("/mobile-verification");
       } else {
-        history.push("/dashboard");
+        history.push("/raise");
       }
     } catch (error) {
       console.log(error);
@@ -178,7 +178,7 @@ const mobileverifications =
         console.log(response.data.message);
         if (response.data.message == "success") {
           localStorage.setItem("userIsMobileVerified", "Yes");
-          window.location.href = "/dashboard";
+          window.location.href = "/raise";
         } else {
           //dispatch(setAlert("Invalid OTP", "danger"));
         }
@@ -230,50 +230,45 @@ const imageupload = ({ files,city,department, complainType, severity, subject,de
   //image=files;
   files.map((image) => {
       const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      promises.push(uploadTask);
-      uploadTask.on(
-        "state_changed",
-        (error) => {
-          console.log(error);
-        },
-        async () => {
-          await storage
-            .ref("images")
-            .child(image.name)
-            .getDownloadURL()
-            .then((urls) => {
-              setUrls((prevState) => [...prevState, urls]);
+      uploadTask.on('state_changed',
+    (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+    },
+    (error) => {
+        // Handle unsuccessful uploads
+        console.log("error:-", error)
+    },
+    () => {
+        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            console.log('File available at', downloadURL);
+
+            let data = {
+                city: city,
+                department: department,
+                description:description,
+                subject: subject,
+                complainType:complainType,
+                severity:severity,
+                userid: localStorage.getItem("userID"),
+                urls: downloadURL.toString(),
+                token: localStorage.getItem("token"),
+            };
+
+            client({
+                method: "post",
+                url: "/createcomplaint",
+                headers: {
+                  AuthToken: localStorage.getItem("token"),
+                },
+                data: data,
+            }).then(()=>{
+                history.push('/dashboard')
             });
-        }
-      );
+        });
+    }
+    );
   });
-
-  await Promise.all(promises)
-      .then(() => {
-        console.log(urls);
-      })
-      .catch((err) => console.log(err));
-      console.log(urls)
-      let data = {
-        city: city,
-        department: department,
-        description:description,
-        subject: subject,
-        userid: localStorage.getItem("userID"),
-        urls: urls,
-        token: localStorage.getItem("token"),
-      };
-
-      client({
-        method: "post",
-        url: "/createcomplaint",
-        headers: {
-          AuthToken: localStorage.getItem("token"),
-        },
-        data: data,
-      }).then(()=>{
-        history.push('/dashboard')
-      });
 };
 
 export {
