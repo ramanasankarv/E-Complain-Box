@@ -17,6 +17,7 @@ import EmailVerifications from "./components/Emailverification/EmailVerification
 import MobileVerifications from "./components/Mobileverification/MobileVerifications";
 import PrivateRoute from "./components/Routing/PrivateRoute";
 import ComplainDetails from "./components/ComplainDetails/ComplainDetails";
+import ComplainDepartmentChange from "./components/ComplainDepartmentChange/ComplainDepartmentChange";
 const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -66,6 +67,10 @@ const App = () => {
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/raise" component={RaiseComplaints} />
                 <Route exact path="/dashboard" component={Dashboard} />{" "}
+                <Route
+                  path="/complain-department-details"
+                  component={ComplainDepartmentChange}
+                />{" "}
                 <Route
                   path="/complain-details/:id"
                   component={ComplainDetails}
