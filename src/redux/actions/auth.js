@@ -226,10 +226,13 @@ const logout = () => async (dispatch) => {
 };
 
 const imageupload = ({ files,city,department, complainType, severity, subject,description },urls, setUrls, history)=> async (dispatch) => {
-  const promises = [];
-  //image=files;
-  files.map((image) => {
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
+  
+  var len1=files.length;
+  let images=[];
+  let completedCount=0;
+  for (var i=0; i < len1; i++) {
+    var image= files[i];
+    const uploadTask = storage.ref(`images/${image.name}`).put(image);
       uploadTask.on('state_changed',
     (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -242,8 +245,13 @@ const imageupload = ({ files,city,department, complainType, severity, subject,de
     () => {
         uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
             console.log('File available at', downloadURL);
-
-            let data = {
+            images.push(downloadURL.toString());
+            completedCount=completedCount+1;
+            console.log(completedCount)
+            console.log(len1)
+            if(completedCount==len1){
+              console.log(images) 
+              let data = {
                 city: city,
                 department: department,
                 description:description,
@@ -251,24 +259,30 @@ const imageupload = ({ files,city,department, complainType, severity, subject,de
                 complainType:complainType,
                 severity:severity,
                 userid: localStorage.getItem("userID"),
-                urls: downloadURL.toString(),
+                urls: images,
                 token: localStorage.getItem("token"),
-            };
+              };
 
-            client({
-                method: "post",
-                url: "/createcomplaint",
-                headers: {
-                  AuthToken: localStorage.getItem("token"),
-                },
-                data: data,
-            }).then(()=>{
-                history.push('/dashboard')
-            });
+              client({
+                  method: "post",
+                  url: "/createcomplaint",
+                  headers: {
+                    AuthToken: localStorage.getItem("token"),
+                  },
+                  data: data,
+              }).then(()=>{
+                  history.push('/dashboard')
+              });
+            }
+            
         });
     }
     );
-  });
+  }
+
+  // files.map((image) => {
+      
+  // });
 };
 
 export {
