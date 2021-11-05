@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState, useRef,Fragment } from 'react';
+import React, { useState, useRef, Fragment } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -15,7 +15,6 @@ import SubjectIcon from '@mui/icons-material/Subject';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
-import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Dropzone from 'react-dropzone'
@@ -23,7 +22,7 @@ import { FormHelperText } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { connect } from 'react-redux';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { imageupload } from "../../redux/actions/auth";
 
@@ -104,11 +103,11 @@ function RaiseComplaints({ auth }) {
                 setDescriptionError(descriptionErrorMessage)
             }
             console.log(allValues)
-            await new Promise((r) => setTimeout(imageupload(allValues,urls, setUrls, history)));
+            await new Promise((r) => setTimeout(imageupload(allValues, urls, setUrls, history)));
         },
     });
-    const newFiles = files.map(file => (
-        <Fragment>
+    const newFiles = files.map((file, i) => (
+        <Fragment key={i}>
             <li key={file.name} style={{ listStyle: "none" }}>
                 <Grid container>
                     <Grid item md={1} sm={1} xs={2}>
@@ -345,6 +344,7 @@ function RaiseComplaints({ auth }) {
                 </Grid>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
                     <Button
+                        onClick={handleClick}
                         style={{ color: "#fff" }}
                         type="submit"
                         fullWidth

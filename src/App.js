@@ -16,6 +16,7 @@ import store from "./redux/store";
 import EmailVerifications from "./components/Emailverification/EmailVerifications";
 import MobileVerifications from "./components/Mobileverification/MobileVerifications";
 import PrivateRoute from "./components/Routing/PrivateRoute";
+import ComplainDetails from "./components/ComplainDetails/ComplainDetails";
 const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
@@ -65,6 +66,10 @@ const App = () => {
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/raise" component={RaiseComplaints} />
                 <Route exact path="/dashboard" component={Dashboard} />{" "}
+                <Route
+                  path="/complain-details/:id"
+                  component={ComplainDetails}
+                />{" "}
                 <Route
                   exact
                   path="/email-verification"
