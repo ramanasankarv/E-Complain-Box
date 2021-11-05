@@ -153,24 +153,14 @@ const AppToolbar = (props) => {
                 Home
               </Typography>
             </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
-                About Us
-              </Typography>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
+            
+            <Link to="/aboutus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
+                  About Us
+                </Link>
+                <Link to="/contactus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
                 Contact Us
-              </Typography>
-            </IconButton>
+                </Link>
+            
             {!props.auth.isAuthenticated ? (
               < React.Fragment >
                 <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} component={Link} to={'/login'}>
