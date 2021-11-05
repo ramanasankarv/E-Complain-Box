@@ -188,7 +188,7 @@ const AppToolbar = (props) => {
                 <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
                   Dashboard
                 </Link>
-                <Button variant="contained" size="small" color="success" style={{ marginRight: "10px" }} onClick={logout}>
+                <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} onClick={logout}>
                   Logout
                 </Button>
               </React.Fragment>
