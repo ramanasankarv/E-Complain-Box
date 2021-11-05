@@ -1,22 +1,18 @@
-import React, { useRef, useState } from "react"
-import { Box, Grid, Typography, Button, Checkbox, Alert } from "@mui/material";
+import React, { useState } from "react"
+import { Box, Grid, Button, Alert } from "@mui/material";
 import TextField from '@mui/material/TextField';
-import { Link, useHistory } from 'react-router-dom';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { FormHelperText } from '@mui/material';
 import { useFormik } from 'formik';
-import { useAuth } from "../../contexts/AuthContext"
 import * as yup from 'yup';
 import PanelHeader from '../../Shared/common/PanelHeader'
 import { connect } from "react-redux";
 import { mobileverifications } from "../../redux/actions/auth";
-import EmailVerificationImage from "../../assets/EmailVerification.png";
+import OTPImages from "../../assets/otp.jpg"
 const validationSchema = yup.object({
     OTP: yup
         .string('Enter your OTP')
         .required('OTP is required')
 });
-function MobileVerifications({mobileverifications}) {
+function MobileVerifications({ mobileverifications }) {
     const [error, setError] = useState("")
     const formik = useFormik({
         initialValues: {
@@ -33,7 +29,7 @@ function MobileVerifications({mobileverifications}) {
             <Box>
                 <Grid item container alignItems="stretch">
                     <Grid item md={6} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }} alignItems="stretch">
-                        <img src={EmailVerificationImage} width="100%" height="100%" />
+                        <img src={OTPImages} width="100%" height="100%" />
                     </Grid>
                     <Grid item xs={12} sm={12} md={6} px={2} container
                         spacing={0}
@@ -76,11 +72,6 @@ function MobileVerifications({mobileverifications}) {
                                         Send OTP
                                     </Button>
                                 </form>
-                                <Grid item container>
-                                    <Grid item py={2}>
-                                        
-                                    </Grid>
-                                </Grid>
                             </Box>
                         </Box>
                     </Grid>

@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../../../redux/actions/auth";
 import { useHistory } from "react-router";
+import DateRangeIcon from '@mui/icons-material/DateRange';
 const AppToolbar = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -122,24 +123,25 @@ const AppToolbar = (props) => {
     <Box sx={{ flexGrow: 1 }} bgcolor="#fff">
       <AppBar position="static" color="secondary" style={{ color: "#fff" }}>
         <Toolbar bgcolor="#fff">
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            E-ComplaintBox
-          </Typography>
-
+          <Link to="/" style={{ display: "flex", color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold" }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              E-ComplaintBox
+            </Typography>
+          </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "block" } }}>
             <IconButton
@@ -151,38 +153,35 @@ const AppToolbar = (props) => {
                 Home
               </Typography>
             </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
-                About Us
-              </Typography>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
+            
+            <Link to="/aboutus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
+                  About Us
+                </Link>
+                <Link to="/contactus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
                 Contact Us
-              </Typography>
-            </IconButton>
+                </Link>
+            
             {!props.auth.isAuthenticated ? (
               < React.Fragment >
-                <Button variant="contained" size="small" color="success" style={{ marginRight: "10px" }} component={Link} to={'/login'}>
+                <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} component={Link} to={'/login'}>
                   Login
                 </Button>
-                <Button variant="contained" color="success" size="small" component={Link} to={'/register'}>
+                <Button variant="contained" color="success" size="small" component={Link} to={'/register'} style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }}>
                   Registration
                 </Button>
               </React.Fragment>
             ) :
-              <Button variant="contained" size="small" color="success" style={{ marginRight: "10px" }} onClick={logout}>
-                Logout
-              </Button>
-
+              <React.Fragment>
+                <Link to="/raise" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
+                  Raise Complain
+                </Link>
+                <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
+                  Dashboard
+                </Link>
+                <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} onClick={logout}>
+                  Logout
+                </Button>
+              </React.Fragment>
             }
 
             <IconButton
