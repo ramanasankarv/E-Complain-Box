@@ -13,6 +13,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
 import Homepage from "./components/Homepage/Homepage";
 import Aboutus from "./components/Aboutus/Aboutus";
+import Contactus from "./components/Contactus/Contactus";
 import store from "./redux/store";
 import EmailVerifications from "./components/Emailverification/EmailVerifications";
 import MobileVerifications from "./components/Mobileverification/MobileVerifications";
@@ -64,8 +65,10 @@ const App = () => {
               bgcolor="#DEF2FA"
             >
               <Switch>
+              <Route exact path="/" component={Homepage} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/aboutus" component={Aboutus} />
+                <Route exact path="/contactus" component={Contactus} />
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/raise" component={RaiseComplaints} />
                 <Route exact path="/dashboard" component={Dashboard} />{" "}

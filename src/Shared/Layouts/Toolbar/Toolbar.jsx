@@ -144,16 +144,10 @@ const AppToolbar = (props) => {
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "block" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
-                Home
-              </Typography>
-            </IconButton>
             
+            <Link to="/" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
+                  Home
+                </Link>
             <Link to="/aboutus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
                   About Us
                 </Link>
