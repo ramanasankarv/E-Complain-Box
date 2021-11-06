@@ -18,15 +18,39 @@ import { Fragment } from 'react';
 import VerticalChart from './VerticalChart';
 import PieChart from './PieChart';
 import { connect } from 'react-redux';
+import axios from "axios";
+
 function Dashboard({ auth }) {
   const [rows, setRows] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [allTableData, setAllTableData] = React.useState(null);
 
   useEffect(() => {
+    getDashboardData();
     setRows(rowsData);
   }, []);
+
+
+  const getDashboardData = async () => {
+    //debugger
+    const client = axios.create({
+      baseURL: "https://e-complainbox.herokuapp.com",
+      json: true,
+    });
+    client({
+      method: "get",
+      url: `/getcomplaints/${page}/${rowsPerPage}`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+    }).then((res) => {
+      console.log(res)
+      setAllTableData(res)
+    });
+  };
+
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -110,7 +134,7 @@ function Dashboard({ auth }) {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            rowsPerPageOptions={[3, 10, 25, 100]}
             component="div"
             count={rows.length}
             rowsPerPage={rowsPerPage}

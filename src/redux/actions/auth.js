@@ -8,12 +8,11 @@ import {
   LOGOUT,
   CLEAR_PROFILE,
   GET_PROFILE,
+  APP_ERROR,
 } from "./types";
-
-//import { setAlert } from "./alert";
-import { auth,storage } from "../../firebase";
+import { toast } from "react-toastify";
+import { auth, storage } from "../../firebase";
 import axios from "axios";
-// import setAuthToken from "../utills/setAuthToken" https://e-complainbox.herokuapp.com
 const client = axios.create({
   baseURL: "https://e-complainbox.herokuapp.com",
   json: true,
@@ -56,6 +55,7 @@ const register =
       history.push("/email-verification");
     } catch (error) {
       console.log(error);
+      toast.error(error.message);
     }
   };
 const login =
@@ -122,9 +122,7 @@ const login =
       }
     } catch (error) {
       console.log(error);
-      dispatch({
-        type: LOGIN_FAILED,
-      });
+      toast.error(error.message);
     }
   };
 
@@ -225,64 +223,82 @@ const logout = () => async (dispatch) => {
   });
 };
 
-const imageupload = ({ files,city,department, complainType, severity, subject,description },urls, setUrls, history)=> async (dispatch) => {
-  
-  var len1=files.length;
-  let images=[];
-  let completedCount=0;
-  for (var i=0; i < len1; i++) {
-    var image= files[i];
-    const uploadTask = storage.ref(`images/${image.name}`).put(image);
+const imageupload =
+  (
+    { files, city, department, complainType, severity, subject, description },
+    urls,
+    setUrls,
+    history
+  ) =>
+  async (dispatch) => {
+
+    var len1=files.length;
+    let images=[];
+    let completedCount=0;
+    for (var i=0; i < len1; i++) {
+      var image= files[i];
+      const uploadTask = storage.ref(`images/${image.name}`).put(image);
       uploadTask.on('state_changed',
-    (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
-    },
-    (error) => {
-        // Handle unsuccessful uploads
-        console.log("error:-", error)
-    },
-    () => {
-        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            console.log('File available at', downloadURL);
-            images.push(downloadURL.toString());
-            completedCount=completedCount+1;
-            console.log(completedCount)
-            console.log(len1)
-            if(completedCount==len1){
-              console.log(images) 
-              let data = {
-                city: city,
-                department: department,
-                description:description,
-                subject: subject,
-                complainType:complainType,
-                severity:severity,
-                userid: localStorage.getItem("userID"),
-                urls: images,
-                token: localStorage.getItem("token"),
-              };
+        (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+        },
+        (error) => {
+            // Handle unsuccessful uploads
+            console.log("error:-", error)
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              console.log('File available at', downloadURL);
+              images.push(downloadURL.toString());
+              completedCount=completedCount+1;
+              console.log(completedCount)
+              console.log(len1)
+              if(completedCount==len1){
+                console.log(images) 
+                let data = {
+                  city: city,
+                  department: department,
+                  description:description,
+                  subject: subject,
+                  complainType:complainType,
+                  severity:severity,
+                  userid: localStorage.getItem("userID"),
+                  urls: images,
+                  token: localStorage.getItem("token"),
+                };
 
-              client({
-                  method: "post",
-                  url: "/createcomplaint",
-                  headers: {
-                    AuthToken: localStorage.getItem("token"),
-                  },
-                  data: data,
-              }).then(()=>{
-                  history.push('/dashboard')
-              });
-            }
-            
-        });
+                client({
+                    method: "post",
+                    url: "/createcomplaint",
+                    headers: {
+                      AuthToken: localStorage.getItem("token"),
+                    },
+                    data: data,
+                }).then(()=>{
+                    history.push('/dashboard')
+                });
+              }
+              
+          });
+        }
+      );
     }
-    );
-  }
-
-  // files.map((image) => {
       
-  // });
+  };
+
+
+const getDashboardData = () => async (dispatch) => {
+  client({
+    method: "get",
+    url: "/getcomplaints",
+    headers: {
+      AuthToken: localStorage.getItem("token"),
+    },
+  }).then((res) => {
+    console.log(res);
+    //history.push("/dashboard");
+  });
 };
 
 export {

@@ -5,7 +5,6 @@ import { Link, useHistory } from 'react-router-dom';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { FormHelperText } from '@mui/material';
 import { useFormik } from 'formik';
-import { useAuth } from "../../contexts/AuthContext"
 import * as yup from 'yup';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import firebase from "firebase";
@@ -15,6 +14,7 @@ const validationSchema = yup.object({
     fullname: yup
         .string('Enter your name')
         .min(3, 'Fullname should be of minimum 3 characters length')
+        .max(30, 'Fullname should not be of more than 30 characters length')
         .required('Fullname is required'),
     email: yup
         .string('Enter your email')
@@ -22,6 +22,7 @@ const validationSchema = yup.object({
         .required('Email is required'),
     password: yup
         .string('Enter your password')
+        .min(6, 'Password should be of minimum 6 characters length')
         .required('Password is required'),
     confirmPassword: yup
         .string('Re-enter your password')
@@ -30,6 +31,7 @@ const validationSchema = yup.object({
     mobile: yup
         .string('Enter your mobile number')
         .min(10, 'Password should be of minimum 10 characters length')
+        .max(11, 'Password should not be of more than 11 characters length')
         .required('Password is required'),
     agree: yup
         .boolean()
@@ -73,7 +75,7 @@ function Register({ register }) {
         validationSchema: validationSchema,
 
         onSubmit: async (allValues) => {
-            await new Promise((r) => setTimeout(register(allValues), history));
+            await new Promise((r) => setTimeout(register(allValues, history)));
         },
     });
 
@@ -131,7 +133,7 @@ function Register({ register }) {
                                         margin="normal"
                                         fullWidth
                                         id="email"
-                                        type="email"
+                                        type="text"
                                         label="Email Address"
                                         name="email"
                                         autoComplete="email"
@@ -211,7 +213,7 @@ function Register({ register }) {
                                         fullWidth
                                         variant="contained"
                                     >
-                                        Sign In
+                                        Register
                                     </Button>
                                     <Grid item container>
 
