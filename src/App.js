@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import AppToolbar from "./Shared/Layouts/Toolbar/Toolbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { loadUser } from "./redux/actions/auth";
 import Login from "./components/Login/Login";
 import AppFooter from "./Shared/Layouts/Footer/Footer";
@@ -12,15 +12,25 @@ import Register from "./components/Registration/Register";
 import Dashboard from "./components/Dashboard/Dashboard";
 import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
 import Homepage from "./components/Homepage/Homepage";
-import store from "./redux/store";
 import EmailVerifications from "./components/Emailverification/EmailVerifications";
 import MobileVerifications from "./components/Mobileverification/MobileVerifications";
 import PrivateRoute from "./components/Routing/PrivateRoute";
 import ComplainDetails from "./components/ComplainDetails/ComplainDetails";
 import ComplainDepartmentChange from "./components/ComplainDepartmentChange/ComplainDepartmentChange";
+import { Redirect, useHistory } from "react-router-dom";
+import store from "./redux/store";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const App = () => {
+  const history = useHistory();
+
   useEffect(() => {
     store.dispatch(loadUser());
+    let token = localStorage.getItem("token");
+    if (!token) {
+      history.push("/login");
+    }
   }, []);
   const theme = createTheme({
     palette: {
@@ -48,51 +58,46 @@ const App = () => {
     },
   });
   return (
-    <Provider store={store}>
-      <Router>
-        <ThemeProvider theme={theme}>
-          <Fragment>
-            <AppToolbar />
-            <Grid
-              item
-              minHeight="70vh"
-              container
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              bgcolor="#DEF2FA"
-            >
-              <Switch>
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/register" component={Register} />
-                <Route exact path="/raise" component={RaiseComplaints} />
-                <Route exact path="/dashboard" component={Dashboard} />{" "}
-                <Route
-                  path="/complain-department-details"
-                  component={ComplainDepartmentChange}
-                />{" "}
-                <Route
-                  path="/complain-details/:id"
-                  component={ComplainDetails}
-                />{" "}
-                <Route
-                  exact
-                  path="/email-verification"
-                  component={EmailVerifications}
-                ></Route>
-                <Route
-                  exact
-                  path="/mobile-verification"
-                  component={MobileVerifications}
-                ></Route>
-                <Route exact path="/" component={Homepage}></Route>
-              </Switch>
-            </Grid>
-            <AppFooter />
-          </Fragment>
-        </ThemeProvider>
-      </Router>
-    </Provider>
+    <ThemeProvider theme={theme}>
+      <Fragment>
+        <AppToolbar />
+        <Grid
+          item
+          minHeight="70vh"
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          bgcolor="#DEF2FA"
+        >
+          <ToastContainer autoClose={5000} />
+
+          <Switch>
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/raise" component={RaiseComplaints} />
+            <Route exact path="/dashboard" component={Dashboard} />{" "}
+            <Route
+              path="/complain-department-details"
+              component={ComplainDepartmentChange}
+            />{" "}
+            <Route path="/complain-details/:id" component={ComplainDetails} />{" "}
+            <Route
+              exact
+              path="/email-verification"
+              component={EmailVerifications}
+            ></Route>
+            <Route
+              exact
+              path="/mobile-verification"
+              component={MobileVerifications}
+            ></Route>
+            <Route exact path="/" component={Homepage}></Route>
+          </Switch>
+        </Grid>
+        <AppFooter />
+      </Fragment>
+    </ThemeProvider>
   );
 };
 

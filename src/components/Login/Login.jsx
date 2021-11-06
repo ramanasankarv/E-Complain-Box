@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from "react"
-import { Box, Grid, Button, Alert } from "@mui/material";
+import { Box, Grid, Button } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { Link, useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
-import { useAuth } from "../../contexts/AuthContext"
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { login } from "../../redux/actions/auth";
 import { connect } from "react-redux";
 import * as yup from 'yup';
-
-
-const onChangeEmailOrPhone = (event) => {
-  let email = event.target.value.includes('@');
-  if (email) {
-    setIsEmail(true);
-  } else {
-    setIsEmail(false);
-  }
-}
-
+import { FormControl, FormControlLabel, Radio } from "@mui/material";
+import { RadioGroup } from "@mui/material";
+import { FormLabel } from "@mui/material";
 const validationSchema = yup.object({
   email: yup.string("Enter your Email/Mobile Number")
     // .email("Enter a valid email")
@@ -43,23 +34,43 @@ function Login({ login, auth }) {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const history = useHistory()
-  const [values, setValues] = useState({
-    email: '',
-    password: '',
-  });
+  const [demoLoginValue, setDemoLoginValue] = useState(false);
+
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      history.push('/dashboard')
+    }
+  }, [auth.isAuthenticated, setDemoLoginValue])
+
+
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (allValues) => {
       await new Promise((r) => setTimeout(login(allValues, history)));
     },
   });
-  useEffect(() => {
+  const handleChangeStatus = (e) => {
+    if (e.target.value === "individual") {
+      setDemoLoginValue(!demoLoginValue)
+      formik.values.email = "sazzad.mahmud1417027@gmail.com";
+      formik.values.password = "123456";
+    } else if (e.target.value === "department") {
+      setDemoLoginValue(!demoLoginValue)
+      formik.values.email = "ramana@gmail.com";
+      formik.values.password = "123456";
+    } else if (e.target.value === "superAdmin") {
+      setDemoLoginValue(!demoLoginValue)
+      formik.values.email = "kapil@gmail.com";
+      formik.values.password = "123456";
+    }
+  }
 
-  }, [])
+
   return (
     <Grid item bgcolor="#fff" borderRadius="5px" boxShadow={3} xs={12} sm={6}>
       <PanelHeader title={"Login"} />
@@ -78,6 +89,19 @@ function Login({ login, auth }) {
             </svg>
           </Grid>
           <Grid item xs={12} sm={12} md={6} px={2}>
+            <Grid item container direction="row" alignItems="center">
+              <Grid item >
+                <FormControl component="fieldset">
+                  <RadioGroup size="large"
+                    row aria-label="gender" name="row-radio-buttons-group" name="demo" onChange={handleChangeStatus}>
+                    <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}></FormLabel>
+                    <FormControlLabel value="individual" control={<Radio />} label="Individual" />
+                    <FormControlLabel value="department" control={<Radio />} label="Department" />
+                    <FormControlLabel value="superAdmin" control={<Radio />} label="Super Admin" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+            </Grid>
             <Box
               item
               sx={{
@@ -86,10 +110,10 @@ function Login({ login, auth }) {
                 alignItems: 'center',
               }}
             >
-              {error && <Alert variant="danger">{error}</Alert>}
               <Box item noValidate sx={{ mt: 1 }}>
                 <form onSubmit={formik.handleSubmit}>
                   <TextField
+                    type="text"
                     color="primary"
                     margin="normal"
                     fullWidth
@@ -100,7 +124,7 @@ function Login({ login, auth }) {
                     onChange={formik.handleChange}
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
-                    autoComplete="email"
+                    autoComplete={formik.values.email}
                     autoFocus
                     variant="standard"
                   />
@@ -111,7 +135,6 @@ function Login({ login, auth }) {
                     id="password"
                     label="Password"
                     name="password"
-                    autoComplete="password"
                     value={formik.values.password}
                     onChange={formik.handleChange}
                     error={formik.touched.password && Boolean(formik.errors.password)}
