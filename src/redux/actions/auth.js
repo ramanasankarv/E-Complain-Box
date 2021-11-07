@@ -287,20 +287,65 @@ const imageupload =
       
   };
 
+// const getDashboardData = () => async (dispatch) => {
+//   client({
+//     method: "get",
+//     url: "/getcomplaints",
+//     headers: {
+//       AuthToken: localStorage.getItem("token"),
+//     },
+//   }).then((res) => {
+//     console.log(res);
+//     //history.push("/dashboard");
+//   });
+// };
+const getDashboardData = async (page, rowsPerPage) => {
+  try {
+    const client = axios.create({
+      baseURL: "https://e-complainbox.herokuapp.com",
+      json: true,
+    });
+    const { data } = await client({
+      method: "get",
+      url: `/getcomplaints/${page}/${rowsPerPage}`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+    });
+    return data.Complains;
+  } catch (error) {
+    console.log(error);
+  }
 
-const getDashboardData = () => async (dispatch) => {
-  client({
-    method: "get",
-    url: "/getcomplaints",
-    headers: {
-      AuthToken: localStorage.getItem("token"),
-    },
-  }).then((res) => {
-    console.log(res);
-    //history.push("/dashboard");
-  });
+  // .then((res) => {
+  //   setRows(res.data.Complains);
+  //   setDataLoaded(!dataLoaded)
+  // });
 };
+const getSingleComplainData = async (id) => {
+  debugger;
+  try {
+    const client = axios.create({
+      baseURL: "https://e-complainbox.herokuapp.com",
+      json: true,
+    });
+    const { data } = await client({
+      method: "get",
+      url: `/complaint/${id}`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 
+  // .then((res) => {
+  //   setRows(res.data.Complains);
+  //   setDataLoaded(!dataLoaded)
+  // });
+};
 export {
   register,
   loadUser,
@@ -309,4 +354,6 @@ export {
   emailverifications,
   mobileverifications,
   imageupload,
+  getDashboardData,
+  getSingleComplainData,
 };

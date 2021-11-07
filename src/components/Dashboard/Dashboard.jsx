@@ -19,37 +19,21 @@ import VerticalChart from './VerticalChart';
 import PieChart from './PieChart';
 import { connect } from 'react-redux';
 import axios from "axios";
-
+import { useState } from 'react';
+import { getDashboardData } from "../../redux/actions/auth"
 function Dashboard({ auth }) {
   const [rows, setRows] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [allTableData, setAllTableData] = React.useState(null);
-
+  const [dataLoaded, setDataLoaded] = useState(false)
   useEffect(() => {
-    getDashboardData();
-    setRows(rowsData);
-  }, []);
-
-
-  const getDashboardData = async () => {
-    //debugger
-    const client = axios.create({
-      baseURL: "https://e-complainbox.herokuapp.com",
-      json: true,
-    });
-    client({
-      method: "get",
-      url: `/getcomplaints/${page}/${rowsPerPage}`,
-      headers: {
-        AuthToken: localStorage.getItem("token"),
-      },
-    }).then((res) => {
-      console.log(res)
-      setAllTableData(res)
-    });
-  };
+    getDashboardData(page, rowsPerPage).then((res) => {
+      setRows(res);
+    })
+  }, [setRowsPerPage, setRows]);
+  console.log(rows)
 
 
   const open = Boolean(anchorEl);
@@ -66,6 +50,12 @@ function Dashboard({ auth }) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  function toDateTime(secs) {
+    var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
+    t.setUTCSeconds(secs);
+
+    return t.toString();
+  }
   return (
     <Fragment>
       {auth.user ? (<Grid container mt={12} px={12}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
@@ -112,13 +102,17 @@ function Dashboard({ auth }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows
+                {rows && rows.length && rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, i) => {
+                    console.log(row)
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                         {columns.map((column) => {
-                          const value = row[column.id];
+                          let columnValue = row.hasOwnProperty(column.id)
+                          debugger
+                          const value = column.id === "CreatedAt" ? toDateTime(row[column.id]._seconds) : row[column.id]
+                          console.log(value)
                           return (
                             <TableCell key={column.id} align={column.align}>
                               {column.format && typeof value === 'number'
@@ -136,7 +130,7 @@ function Dashboard({ auth }) {
           <TablePagination
             rowsPerPageOptions={[3, 10, 25, 100]}
             component="div"
-            count={rows.length}
+            count={rows && rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

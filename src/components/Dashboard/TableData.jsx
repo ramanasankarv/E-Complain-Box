@@ -1,74 +1,76 @@
-const columns=[
-    { 
-        id: 'complaint_ID', 
-        label: 'Complain ID', 
-        minWidth: 100,
-        align:"center" },
-    { 
-        id: 'subject', 
-        label: 'Subject', 
-        minWidth: 170,
-        align:"center"},
+const columns = [
     {
-        id: 'status',
+        id: 'id',
+        label: 'Complain ID',
+        minWidth: 100,
+        align: "center"
+    },
+    {
+        id: 'ComplainSubject',
+        label: 'Subject',
+        minWidth: 170,
+        align: "center"
+    },
+    {
+        id: 'ComplainStatus',
         label: 'Status',
         minWidth: 170,
         align: 'center',
         format: (value) => value.toLocaleString('en-US'),
     },
     {
-        id: 'created_date',
+        id: 'CreatedAt',
         label: 'Created Date',
         minWidth: 170,
         align: 'center',
         format: (value) => value.toLocaleString('en-US'),
     },
     {
-        id: 'resolved_date',
-        label: 'Resolved Date',
+        id: 'ComplainType',
+        label: 'Complain Type',
         minWidth: 170,
         align: 'center',
         format: (value) => value.toFixed(2),
     },
 ];
 
-const rowsData=[
+const rowsData = [
     {
-        complaint_ID:"234532",
-        subject:"OPD",
-        status:"Raised",
-        created_date:"05-Oct-2021",
-        resolved_date:"05-Oct-2021"
+        id: "234532",
+        ComplainSubject: "OPD",
+        ComplainStatus: "Raised",
+        CreatedAt: "05-Oct-2021",
+        ComplainType: "05-Oct-2021"
     },
     {
-        complaint_ID:"234532",
-        subject:"OPD",
-        status:"Raised",
-        created_date:"05-Oct-2021",
-        resolved_date:"05-Oct-2021"
+        id: "234532",
+        ComplainSubject: "OPD",
+        ComplainStatus: "Raised",
+        CreatedAt: "05-Oct-2021",
+        ComplainType: "05-Oct-2021"
     },
     {
-        complaint_ID:"234532",
-        subject:"OPD",
-        status:"Drain",
-        created_date:"05-Oct-2021",
-        resolved_date:"05-Oct-2021"
+        id: "234532",
+        ComplainSubject: "OPD",
+        ComplainStatus: "Drain",
+        CreatedAt: "05-Oct-2021",
+        ComplainType: "05-Oct-2021"
     },
     {
-        complaint_ID:"234532",
-        subject:"Electricity",
-        status:"In progress",
-        created_date:"05-Oct-2021",
-        resolved_date:"05-Oct-2021"
+        id: "234532",
+        ComplainSubject: "Electricity",
+        ComplainStatus: "In progress",
+        CreatedAt: "05-Oct-2021",
+        ComplainType: "05-Oct-2021"
     },
     {
-        complaint_ID:"234532",
-        subject:"Covid",
-        status:"Resolved",
-        created_date:"27-Sep-2021",
-        resolved_date:"05-Oct-2021"
+        id: "2345",
+        ComplainSubject: "Covid",
+        ComplainStatus: "Resolved",
+        CreatedAt: "27-Sep-2021",
+        ComplainType: "05-Oct-2021"
     },
 
 ]
 
-export {columns,rowsData};
+export { columns, rowsData };
