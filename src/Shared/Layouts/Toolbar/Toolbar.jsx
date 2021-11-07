@@ -144,33 +144,17 @@ const AppToolbar = (props) => {
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "block" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
-                Home
-              </Typography>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
-                About Us
-              </Typography>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Typography>
+            
+            <Link to="/" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
+                  Home
+                </Link>
+            <Link to="/aboutus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
+                  About Us
+                </Link>
+                <Link to="/contactus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
                 Contact Us
-              </Typography>
-            </IconButton>
+                </Link>
+            
             {!props.auth.isAuthenticated ? (
               < React.Fragment >
                 <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} component={Link} to={'/login'}>
@@ -183,7 +167,7 @@ const AppToolbar = (props) => {
             ) :
               <React.Fragment>
                 <Link to="/raise" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
-                  Raise
+                  Raise Complain
                 </Link>
                 <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
                   Dashboard
