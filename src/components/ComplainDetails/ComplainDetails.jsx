@@ -1,15 +1,17 @@
 import { Box, Grid, Typography, Button } from '@mui/material';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import EmailVerificationImage from "../../assets/EmailVerification.png";
 import { FormHelperText } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react';
-
+import { getSingleComplainData } from '../../redux/actions/auth';
+import { useParams } from "react-router-dom"
 function ComplainDetails(props) {
+    const [complainData, setComplainData] = useState(null)
     const [description, setDescription] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
     const editorRef = useRef(null);
-
+    let { id } = useParams()
 
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
@@ -32,15 +34,28 @@ function ComplainDetails(props) {
             setDescriptionError("Description field is required")
         }
     }
+
+    // useEffect(async () => {
+    //     //setRows(rowsData)
+    //     debugger
+    //     const data = await getSingleComplainData(id)
+    //         .then(res => {
+    //             setComplainData(res)
+    //         })
+
+    // }, []);
+
+
+    console.log(complainData)
     return (
         <Grid container py={12} px={20}>
             <Grid container>
                 <Grid item md={6} sm={6} xs={6}>
                     <Typography>
-                        Complain ID: 112345
+                        Complain ID: {complainData.id}
                     </Typography>
                     <Typography>
-                        Complain Status: In Progress
+                        Complain Status: {complainData.ComplainStatus}
                     </Typography>
                 </Grid>
                 <Grid item md={6} sm={6} xs={6}
@@ -61,7 +76,7 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Status: </b> <b style={{ color: "green" }}>In Progress</b>
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Status: </b> <b style={{ color: "green" }}>{complainData.ComplainStatus}</b>
                         </Typography>
                     </Grid>
                     <Grid item md={6} sm={12} xs={12} pt={4} sm={{ textAlign: "left" }} sm={{ textAlign: "left" }}>
@@ -69,7 +84,7 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Status: </b> 12-06-2001
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Date: </b> {complainData.ComplainStatus}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -79,7 +94,7 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Complain Type: </b> Private
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Complain Type: </b> {complainData.ComplainType}
                         </Typography>
                     </Grid>
                     <Grid item md={6} sm={12} xs={12} pt={4}>
@@ -87,25 +102,7 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Complain Type: </b> Private
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid item container direction="row" alignItems="center">
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>City: </b> Private
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Complain Severity: </b> {complainData.ComplainSeverity}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -115,13 +112,31 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Subject Line: </b> This is a test subject
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> {complainData.ComplainDepartmentID}
+                        </Typography>
+                    </Grid>
+                    <Grid item md={6} sm={12} xs={12} pt={4}>
+                        <Typography variant="subtitle1" style={{
+                            verticalAlign: 'middle',
+                            display: 'inline-flex'
+                        }}>
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>City: </b> {complainData.ComplainCity}
+                        </Typography>
+                    </Grid>
+                </Grid>
+                <Grid item container direction="row" alignItems="center">
+                    <Grid item md={6} sm={12} xs={12} pt={4}>
+                        <Typography variant="subtitle1" style={{
+                            verticalAlign: 'middle',
+                            display: 'inline-flex'
+                        }}>
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Subject Line: </b> {complainData.ComplainSubject}
                         </Typography>
                     </Grid>
                 </Grid>
                 <Grid container pt={5}>
                     <Typography variant="subtitle1" pl={2}>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                        {complainData.ComplainDescription}
                     </Typography>
                 </Grid>
                 <Grid item container direction="row" alignItems="center">
@@ -130,7 +145,7 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Files: </b> Private
                         </Typography>
                     </Grid>
                     <Grid item md={6} sm={12} xs={12} pt={4}>
@@ -143,7 +158,7 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
+                            <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
                         </Typography>
                     </Grid>
                     <Grid item md={6} sm={12} xs={12} pt={4}>
