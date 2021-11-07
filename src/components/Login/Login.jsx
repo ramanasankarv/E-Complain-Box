@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Box, Grid, Button } from "@mui/material";
+import { Box, Grid, Button, Typography } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { Link, useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -61,7 +61,7 @@ function Login({ login, auth }) {
       formik.values.password = "123456";
     } else if (e.target.value === "department") {
       setDemoLoginValue(!demoLoginValue)
-      formik.values.email = "ramana@gmail.com";
+      formik.values.email = "womenchildcare@gmail.com";
       formik.values.password = "123456";
     } else if (e.target.value === "superAdmin") {
       setDemoLoginValue(!demoLoginValue)
@@ -90,11 +90,16 @@ function Login({ login, auth }) {
           </Grid>
           <Grid item xs={12} sm={12} md={6} px={2}>
             <Grid item container direction="row" alignItems="center">
+              <Typography variant="subtitle1" style={{ fontWeight: "bold" }}>
+                Demo accounts for different users
+              </Typography>
+            </Grid>
+            <Grid item container direction="row" alignItems="center">
               <Grid item >
                 <FormControl component="fieldset">
                   <RadioGroup size="large"
                     row aria-label="gender" name="row-radio-buttons-group" name="demo" onChange={handleChangeStatus}>
-                    <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}></FormLabel>
+                    <FormLabel component="legend" name="severity"></FormLabel>
                     <FormControlLabel value="individual" control={<Radio />} label="Individual" />
                     <FormControlLabel value="department" control={<Radio />} label="Department" />
                     <FormControlLabel value="superAdmin" control={<Radio />} label="Super Admin" />

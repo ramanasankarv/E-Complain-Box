@@ -24,6 +24,7 @@
     "react-chartjs-2": "^3.2.0",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
+    "react-html-parser": "^2.0.2",
     "react-invisible-element": "0.1.0",
     "react-modal": "^3.14.3",
     "react-redux": "^7.2.6",
