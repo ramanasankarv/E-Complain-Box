@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { Bar } from 'react-chartjs-2';
 import { getComplainGroupData } from '../../redux/actions/auth';
+import { connect } from "react-redux"
 
 
 
-
-const VerticalChart = (props) => {
+const VerticalChart = ({ auth }) => {
   const [totalData, setTotalData] = useState([])
   const [totalRasiedData, setTotalRasiedData] = useState([])
   const [totalInComplainData, setTotalInComplainData] = useState([])
@@ -16,30 +16,31 @@ const VerticalChart = (props) => {
   const [totalDepartments, setTotalDepartments] = useState([])
 
   useEffect(() => {
-    getComplainGroupData().then((res) => {
-      setTotalData(res)
-      res.length && res.map(datas => {
-        setTotalRasiedData((totalRasiedData) => [
-          ...totalRasiedData,
-          datas.totalRaiseComplains,
-        ]);
-        setTotalInComplainData((totalInComplainData) => [
-          ...totalInComplainData,
-          datas.totalWipComplains,
-        ]);
-        setTotalDoneData((totalDoneData) => [
-          ...totalDoneData,
-          datas.totalCompletedComplains,
-        ]);
-        setTotalDepartments((totalDepartments) => [
-          ...totalDepartments,
-          datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
-        ]);
+    if (auth.user) {
+      getComplainGroupData(auth.user.id).then((res) => {
+        setTotalData(res)
+        res.length && res.map(datas => {
+          setTotalRasiedData((totalRasiedData) => [
+            ...totalRasiedData,
+            datas.totalRaiseComplains,
+          ]);
+          setTotalInComplainData((totalInComplainData) => [
+            ...totalInComplainData,
+            datas.totalWipComplains,
+          ]);
+          setTotalDoneData((totalDoneData) => [
+            ...totalDoneData,
+            datas.totalCompletedComplains,
+          ]);
+          setTotalDepartments((totalDepartments) => [
+            ...totalDepartments,
+            datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
+          ]);
+        })
+
       })
-
-    })
-
-  }, [setTotalData]);
+    }
+  }, [setTotalData, auth.user]);
 
 
 
@@ -75,14 +76,16 @@ const VerticalChart = (props) => {
 
         }
       ],
-      yAxes: [
-        {
-          ticks: {
-            min: 0
-          },
-          stacked: true
+      yAxes: [{
+        stacked: true,
+        display: true,
+        ticks: {
+          suggestedMin: 0,    // minimum will be 0, unless there is a lower value.
+          // OR //
+          beginAtZero: true   // minimum value will be 0.
         }
-      ]
+      }]
+
     }
   }
 
@@ -95,5 +98,7 @@ const VerticalChart = (props) => {
     </Grid>
   )
 };
-
-export default VerticalChart;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps)(VerticalChart);

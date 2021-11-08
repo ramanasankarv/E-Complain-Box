@@ -7,9 +7,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { recordUseStyles } from './styles/HomepageStyles';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { getComplainGroupData } from '../../redux/actions/auth';
+import { connect } from "react-redux"
 
-
-function TodayRecord(props) {
+function TodayRecord({ auth }) {
     const [totalData, setTotalData] = useState([])
     const [totalRasiedData, setTotalRasiedData] = useState([])
     const [totalInComplainData, setTotalInComplainData] = useState([])
@@ -17,30 +17,32 @@ function TodayRecord(props) {
     const [dataChanged, setdataChanged] = useState(false)
     const [totalDepartments, setTotalDepartments] = useState([])
     useEffect(() => {
-        getComplainGroupData().then((res) => {
-            setTotalData(res)
-            res.length && res.map(datas => {
-                setTotalRasiedData((totalRasiedData) => [
-                    ...totalRasiedData,
-                    datas.totalRaiseComplains,
-                ]);
-                setTotalInComplainData((totalInComplainData) => [
-                    ...totalInComplainData,
-                    datas.totalWipComplains,
-                ]);
-                setTotalDoneData((totalDoneData) => [
-                    ...totalDoneData,
-                    datas.totalCompletedComplains,
-                ]);
-                setTotalDepartments((totalDepartments) => [
-                    ...totalDepartments,
-                    datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
-                ]);
+        if (auth.user) {
+            getComplainGroupData(auth.user.id).then((res) => {
+                setTotalData(res)
+                res.length && res.map(datas => {
+                    setTotalRasiedData((totalRasiedData) => [
+                        ...totalRasiedData,
+                        datas.totalRaiseComplains,
+                    ]);
+                    setTotalInComplainData((totalInComplainData) => [
+                        ...totalInComplainData,
+                        datas.totalWipComplains,
+                    ]);
+                    setTotalDoneData((totalDoneData) => [
+                        ...totalDoneData,
+                        datas.totalCompletedComplains,
+                    ]);
+                    setTotalDepartments((totalDepartments) => [
+                        ...totalDepartments,
+                        datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
+                    ]);
+                })
+
             })
+        }
 
-        })
-
-    }, [setTotalData]);
+    }, [setTotalData, auth.user]);
     const showTotalRaised = totalRasiedData.reduce((sum, data) => {
         return sum += data
     }, 0)
@@ -92,5 +94,7 @@ function TodayRecord(props) {
         </Grid>
     );
 }
-
-export default TodayRecord;
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
+export default connect(mapStateToProps)(TodayRecord);
