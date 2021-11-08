@@ -38,8 +38,9 @@ function Login({ login, auth }) {
 
 
   useEffect(() => {
-    if (auth.isAuthenticated) {
-      history.push('/dashboard')
+    let token = localStorage.getItem("token");
+    if (token) {
+      history.push("/dashboard");
     }
   }, [auth.isAuthenticated, setDemoLoginValue])
 
