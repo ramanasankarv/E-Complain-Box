@@ -362,11 +362,11 @@ const getSingleComplainData = async (id) => {
   // });
 };
 
-const getComplainGroupData = async () => {
+const getComplainGroupData = async (userId) => {
   try {
     const { data } = await client({
       method: "get",
-      url: `/complaintgroupbydata`,
+      url: `/complaintgroupbydata/${userId}`,
       headers: {
         AuthToken: localStorage.getItem("token"),
       },
