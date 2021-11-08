@@ -29,7 +29,7 @@ const AppToolbar = (props) => {
     setAnchorEl(event.currentTarget);
   };
   const logout = () => {
-    props.logout();
+    props.logout(history);
     history.push('/login')
   }
   const handleMobileMenuClose = () => {
@@ -144,17 +144,17 @@ const AppToolbar = (props) => {
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "block" } }}>
-            
+
             <Link to="/" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
-                  Home
-                </Link>
+              Home
+            </Link>
             <Link to="/aboutus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
-                  About Us
-                </Link>
-                <Link to="/contactus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
-                Contact Us
-                </Link>
-            
+              About Us
+            </Link>
+            <Link to="/contactus" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "regular", marginRight: "10px" }}>
+              Contact Us
+            </Link>
+
             {!props.auth.isAuthenticated ? (
               < React.Fragment >
                 <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} component={Link} to={'/login'}>

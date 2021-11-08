@@ -48,8 +48,13 @@ function TodayRecord(props) {
         return sum += data
     }, 0)
     const showTotalDone = totalDoneData.reduce((sum, data) => {
+
         return sum += data
     }, 0)
+
+
+
+
     const classes = recordUseStyles();
 
     return (

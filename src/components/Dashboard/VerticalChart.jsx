@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { Bar } from 'react-chartjs-2';
@@ -7,7 +7,7 @@ import { getComplainGroupData } from '../../redux/actions/auth';
 
 
 
-const VerticalChart = ({ setLoaded }) => {
+const VerticalChart = (props) => {
   const [totalData, setTotalData] = useState([])
   const [totalRasiedData, setTotalRasiedData] = useState([])
   const [totalInComplainData, setTotalInComplainData] = useState([])
@@ -16,7 +16,6 @@ const VerticalChart = ({ setLoaded }) => {
   const [totalDepartments, setTotalDepartments] = useState([])
 
   useEffect(() => {
-    console.log(setLoaded)
     getComplainGroupData().then((res) => {
       setTotalData(res)
       res.length && res.map(datas => {
@@ -37,7 +36,6 @@ const VerticalChart = ({ setLoaded }) => {
           datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
         ]);
       })
-      setLoaded(false);
 
     })
 
@@ -67,12 +65,24 @@ const VerticalChart = ({ setLoaded }) => {
   };
   const options = {
     scales: {
-      xAxes: [{
-        stacked: true
-      }],
-      yAxes: [{
-        stacked: true
-      }]
+      xAxes: [
+
+        {
+          ticks: {
+            min: 0
+          },
+          stacked: true,
+
+        }
+      ],
+      yAxes: [
+        {
+          ticks: {
+            min: 0
+          },
+          stacked: true
+        }
+      ]
     }
   }
 
