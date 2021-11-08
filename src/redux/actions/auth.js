@@ -9,6 +9,7 @@ import {
   CLEAR_PROFILE,
   GET_PROFILE,
   APP_ERROR,
+  LOADING,
 } from "./types";
 import { toast } from "react-toastify";
 import { auth, storage } from "../../firebase";
@@ -22,6 +23,10 @@ const register =
   ({ fullname, email, password, mobile }, history) =>
   async (dispatch) => {
     try {
+      dispatch({
+        type: LOADING,
+        payload: true,
+      });
       const registrationInfo = await auth.createUserWithEmailAndPassword(
         email,
         password
@@ -51,11 +56,19 @@ const register =
         type: REGISTER_SUCCESS,
         payload: response.data.message,
       });
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
       //push('/email-verification');
       history.push("/email-verification");
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
     }
   };
 const login =
@@ -66,6 +79,10 @@ const login =
         "Content-type": "Application/json",
       },
     };
+    dispatch({
+      type: LOADING,
+      payload: true,
+    });
     const newUser = {
       email,
       password,
@@ -112,7 +129,10 @@ const login =
         type: LOGIN_SUCCESS,
         payload: response.data.user[0],
       });
-      console.log(response);
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
       if (localStorage.getItem("userIsEmailVerified") == "No") {
         history.push("/email-verification");
       } else if (localStorage.getItem("userIsMobileVerified") == "No") {
@@ -123,6 +143,10 @@ const login =
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
     }
   };
 
@@ -292,10 +316,6 @@ const imageupload =
 // };
 const getDashboardData = async (page, rowsPerPage) => {
   try {
-    const client = axios.create({
-      baseURL: "https://e-complainbox.herokuapp.com",
-      json: true,
-    });
     const { data } = await client({
       method: "get",
       url: `/getcomplaints/${page}/${rowsPerPage}`,
@@ -314,12 +334,7 @@ const getDashboardData = async (page, rowsPerPage) => {
   // });
 };
 const getSingleComplainData = async (id) => {
-  debugger;
   try {
-    const client = axios.create({
-      baseURL: "https://e-complainbox.herokuapp.com",
-      json: true,
-    });
     const { data } = await client({
       method: "get",
       url: `/complaint/${id}`,
@@ -337,6 +352,21 @@ const getSingleComplainData = async (id) => {
   //   setDataLoaded(!dataLoaded)
   // });
 };
+
+const getComplainGroupData = async () => {
+  try {
+    const { data } = await client({
+      method: "get",
+      url: `/complaintgroupbydata`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+    });
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 export {
   register,
   loadUser,
@@ -347,4 +377,5 @@ export {
   imageupload,
   getDashboardData,
   getSingleComplainData,
+  getComplainGroupData,
 };

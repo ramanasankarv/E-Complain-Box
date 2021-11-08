@@ -1,7 +1,6 @@
-import { Box, Grid, Typography, Button } from '@mui/material';
+import { Grid, Typography, Button } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import EmailVerificationImage from "../../assets/EmailVerification.png";
 import { FormHelperText } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react';
 import { getSingleComplainData } from '../../redux/actions/auth';

@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import { FormControl, FormControlLabel, Radio } from "@mui/material";
 import { RadioGroup } from "@mui/material";
 import { FormLabel } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 const validationSchema = yup.object({
   email: yup.string("Enter your Email/Mobile Number")
     // .email("Enter a valid email")
@@ -32,7 +33,6 @@ const validationSchema = yup.object({
 });
 function Login({ login, auth }) {
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
   const history = useHistory()
   const [demoLoginValue, setDemoLoginValue] = useState(false);
 
@@ -54,6 +54,7 @@ function Login({ login, auth }) {
       await new Promise((r) => setTimeout(login(allValues, history)));
     },
   });
+  const { loading } = auth
   const handleChangeStatus = (e) => {
     if (e.target.value === "individual") {
       setDemoLoginValue(!demoLoginValue)
@@ -152,14 +153,25 @@ function Login({ login, auth }) {
                     </Link>
                   </Grid>
 
-                  <Button style={{ color: "#fff" }}
+                  {/* <Button style={{ color: "#fff" }}
                     type="submit"
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                   >
                     Sign In
-                  </Button>
+                  </Button> */}
+                  <LoadingButton
+                    style={{ color: "#fff" }}
+                    sx={{ mt: 3, mb: 2 }}
+                    loading={loading}
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    loadingPosition="end"
+                  >
+                    Sign In
+                  </LoadingButton>
                 </form>
                 <Grid item container>
                   <Grid item py={2}>
@@ -173,7 +185,7 @@ function Login({ login, auth }) {
           </Grid>
         </Grid>
       </Box>
-    </Grid>
+    </Grid >
   );
 }
 const mapStateToProps = (state) => ({
