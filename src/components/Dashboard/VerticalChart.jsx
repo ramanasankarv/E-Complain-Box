@@ -18,8 +18,8 @@ const VerticalChart = ({ auth }) => {
   useEffect(() => {
     if (auth.user) {
       getComplainGroupData(auth.user.id).then((res) => {
-        setTotalData(res)
         res.length && res.map(datas => {
+          setTotalData(res)
           setTotalRasiedData((totalRasiedData) => [
             ...totalRasiedData,
             datas.totalRaiseComplains,
@@ -37,7 +37,6 @@ const VerticalChart = ({ auth }) => {
             datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
           ]);
         })
-
       })
     }
   }, [setTotalData, auth.user]);

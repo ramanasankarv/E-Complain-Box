@@ -15,7 +15,6 @@ const PieChart = ({ auth }) => {
   const [totalBackgroundColor, setTotalBackgroundColor] = useState([])
   const [totalDepartments, setTotalDepartments] = useState([])
   useEffect(() => {
-    debugger
     if (auth.user) {
       getComplainGroupData(auth.user.id).then((res) => {
         setTotalData(res)

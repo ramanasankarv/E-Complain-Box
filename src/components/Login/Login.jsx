@@ -67,7 +67,7 @@ function Login({ login, auth }) {
       formik.values.password = "123456";
     } else if (e.target.value === "superAdmin") {
       setDemoLoginValue(!demoLoginValue)
-      formik.values.email = "kapil@gmail.com";
+      formik.values.email = "superadmin@gmail.com";
       formik.values.password = "123456";
     }
   }

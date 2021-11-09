@@ -323,16 +323,36 @@ const imageupload =
 //     //history.push("/dashboard");
 //   });
 // };
-const getDashboardData = async (page, rowsPerPage) => {
+const getDashboardData = async (page, rowsPerPage, userType, userId) => {
   try {
-    const { data } = await client({
-      method: "get",
-      url: `/getcomplaints/${page}/${rowsPerPage}`,
-      headers: {
-        AuthToken: localStorage.getItem("token"),
-      },
-    });
-    return data.Complains;
+    let data = null;
+    if (userType === "department") {
+      data = await client({
+        method: "get",
+        url: `/complaintbydep/${userId}/${page}/${rowsPerPage}`,
+        headers: {
+          AuthToken: localStorage.getItem("token"),
+        },
+      });
+    } else if (userType === "complainant") {
+      data = await client({
+        method: "get",
+        url: `/complaintbyuser/${userId}/${page}/${rowsPerPage}`,
+        headers: {
+          AuthToken: localStorage.getItem("token"),
+        },
+      });
+    } else {
+      data = await client({
+        method: "get",
+        url: `/getcomplaints/${page}/${rowsPerPage}`,
+        headers: {
+          AuthToken: localStorage.getItem("token"),
+        },
+      });
+    }
+    console.log(data);
+    return data.data.Complains;
   } catch (error) {
     console.log(error);
   }
