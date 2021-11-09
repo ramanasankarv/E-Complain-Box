@@ -32,11 +32,24 @@ function Dashboard({ auth }) {
   const [dataLoaded, setDataLoaded] = useState(false);
   let history = useHistory()
   useEffect(() => {
-    getDashboardData(page, rowsPerPage).then((res) => {
-      setRows(res);
-      setLoaded(false)
-    })
-  }, [setRowsPerPage, setRows]);
+    if (auth.user && auth.user.UserRole === "Department") {
+      getDashboardData(page, rowsPerPage, "department", auth.user.id).then((res) => {
+        setRows(res);
+        setLoaded(false)
+      })
+    } else if (auth.user && auth.user.UserRole === "Complainant") {
+      getDashboardData(page, rowsPerPage, "complainant", auth.user.id).then((res) => {
+        setRows(res);
+        setLoaded(false)
+      })
+    } else {
+      getDashboardData(page, rowsPerPage, null, null).then((res) => {
+        setRows(res);
+        setLoaded(false)
+      })
+    }
+
+  }, [setRowsPerPage, setRows, auth.user]);
 
   const redirectToSingleComplain = (id) => {
     debugger

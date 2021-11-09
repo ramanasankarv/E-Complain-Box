@@ -46,7 +46,6 @@ function ComplainDetails(props) {
     useEffect(async () => {
         const data = await getSingleComplainData(id)
             .then(res => {
-                debugger
                 setComplainData(res)
             })
     }, [setComplainData]);
