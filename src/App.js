@@ -25,15 +25,12 @@ const App = ({ auth }) => {
 
   useEffect(() => {
     store.dispatch(loadUser());
-    debugger;
     let token = localStorage.getItem("token");
     if (!token) {
       history.push("/login");
     } else if (token && !auth.token) {
       localStorage.removeItem("token");
       history.push("/login");
-    } else {
-      history.push("/dashboard");
     }
   }, []);
   const theme = createTheme({

@@ -119,7 +119,7 @@ function ComplainDetails(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WorkOutline /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> {complainData.department?.DepartmentNam}
+                            <WorkOutline /> <b style={{ marginRight: "10px " }}>Department: </b> {complainData.department?.DepartmentName}
                         </Typography>
                     </Grid>
                     <Grid item md={6} sm={12} xs={12} pt={4}>
