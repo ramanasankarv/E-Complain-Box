@@ -20,16 +20,17 @@ import store from "./redux/store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
+import UpdateComplain from "./components/RaiseComplain/UpdateComplain";
 const App = ({ auth }) => {
   const history = useHistory();
 
   useEffect(() => {
     store.dispatch(loadUser());
     let token = localStorage.getItem("token");
-    if (!token) {
-      history.push("/login");
-    } else if (token && !auth.token) {
+    if (token && !auth.token) {
       localStorage.removeItem("token");
+      history.push("/login");
+    } else if (!token) {
       history.push("/login");
     }
   }, []);
@@ -79,10 +80,11 @@ const App = ({ auth }) => {
             <Route exact path="/raise" component={RaiseComplaints} />
             <Route exact path="/dashboard" component={Dashboard} />{" "}
             <Route
-              path="/complain-department-details"
+              path="/complain-department-details/:id"
               component={ComplainDepartmentChange}
             />{" "}
             <Route path="/complain-details/:id" component={ComplainDetails} />{" "}
+            <Route path="/update/:id" component={UpdateComplain} />{" "}
             <Route
               exact
               path="/email-verification"

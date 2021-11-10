@@ -13,14 +13,14 @@ import Subject from '@mui/icons-material/Subject';
 import CloudUpload from '@mui/icons-material/CloudUpload';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import { Fragment } from 'react';
-
+import { useHistory } from "react-router-dom";
 function ComplainDetails(props) {
     const [complainData, setComplainData] = useState({})
     const [description, setDescription] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
     const editorRef = useRef(null);
     let { id } = useParams()
-
+    let history = useHistory()
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -41,6 +41,10 @@ function ComplainDetails(props) {
         } else {
             setDescriptionError("Description field is required")
         }
+    }
+
+    const redirectToComplainUpdatePage = () => {
+        history.push(`/update/${id}`)
     }
 
     useEffect(async () => {
@@ -74,6 +78,9 @@ function ComplainDetails(props) {
                         Welcome Sazzad Mahmud
                     </Typography>
                 </Grid>
+            </Grid>
+            <Grid container>
+                <Button variant="outlined" onClick={redirectToComplainUpdatePage}>Edit Complain</Button>
             </Grid>
             <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={4} px={4} mt={12}>
                 <Grid item container direction="row" alignItems="center">
