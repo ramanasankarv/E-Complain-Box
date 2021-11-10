@@ -396,6 +396,79 @@ const getComplainGroupData = async (userId) => {
     console.log(error);
   }
 };
+
+const updateComplain =
+  (
+    { files, city, department, complainType, severity, subject, description },
+    urls,
+    setUrls,
+    history,
+    complianID
+  ) =>
+  async (dispatch) => {
+    try {
+      debugger;
+      let len1 = files.length;
+      let images = [];
+      let completedCount = 0;
+      for (var i = 0; i < len1; i++) {
+        var image = files[i];
+        const uploadTask = storage.ref(`images/${image.name}`).put(image);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            console.log("error:-", error);
+          },
+          () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+              console.log("File available at", downloadURL);
+              images.push(downloadURL.toString());
+              completedCount = completedCount + 1;
+              console.log(completedCount);
+              console.log(len1);
+              if (completedCount == len1) {
+                console.log(images);
+                let data = {
+                  city: city,
+                  department: department,
+                  description: description,
+                  subject: subject,
+                  complainType: complainType,
+                  severity: severity,
+                  userid: localStorage.getItem("userID"),
+                  urls: images,
+                  token: localStorage.getItem("token"),
+                };
+
+                client({
+                  method: "put",
+                  url: `/complaint/${complianID}`,
+                  headers: {
+                    AuthToken: localStorage.getItem("token"),
+                  },
+                  data: data,
+                })
+                  .then(() => {
+                    toast.success("The complain is updated");
+                    history.push("/dashboard");
+                  })
+                  .catch((error) => toast.error(error.message));
+              }
+            });
+          }
+        );
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
 export {
   register,
   loadUser,
@@ -407,4 +480,5 @@ export {
   getDashboardData,
   getSingleComplainData,
   getComplainGroupData,
+  updateComplain,
 };

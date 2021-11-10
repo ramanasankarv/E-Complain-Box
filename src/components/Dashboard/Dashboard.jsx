@@ -49,13 +49,13 @@ function Dashboard({ auth }) {
       })
     }
 
-  }, [setRowsPerPage, setRows, auth.user]);
+  }, [setRowsPerPage, setRows, auth.user, rowsPerPage, page]);
 
   const redirectToSingleComplain = (id) => {
+    console.log(id)
     debugger
-    console.log(auth.user.UserRole !== "Department")
-    console.log(auth.user.UserRole !== "SuperAdmin")
-    if (auth.user.UserRole !== "Department" && auth.user.UserRole !== "SuperAdmin") {
+
+    if (auth.user.UserRole !== "Department Employee" && auth.user.UserRole !== "SuperAdmin") {
       history.push(`complain-details/${id}`)
     } else {
       history.push(`complain-department-details/${id}`)
@@ -75,6 +75,7 @@ function Dashboard({ auth }) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+    setDataLoaded(!dataLoaded)
   };
   function toDateTime(secs) {
     var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
@@ -136,13 +137,13 @@ function Dashboard({ auth }) {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                       return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id} onClick={() => redirectToSingleComplain(row.id)} style={{ cursor: "pointer" }}>
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id} style={{ cursor: "pointer" }}>
                           {columns.map((column) => {
                             let columnValue = row.hasOwnProperty(column.id)
                             const value = column.id === "CreatedAt" ? toDateTime(row[column.id]._seconds) : row[column.id]
                             const id = row.id
                             return (
-                              <TableCell key={column.id} align={column.align}>
+                              <TableCell key={column.id} align={column.align} onClick={() => redirectToSingleComplain(row.id)}>
                                 {column.format && typeof value === 'number'
                                   ? column.format(value)
                                   : value}
@@ -155,8 +156,10 @@ function Dashboard({ auth }) {
                 </TableBody>
               </Table>
             </TableContainer>
+            {/* <input type="number" name="rowss"></input> */}
+
             <TablePagination
-              rowsPerPageOptions={[3, 10, 25, 100]}
+              rowsPerPageOptions={[3, 10, 25, 100, rows.length]}
               component="div"
               count={rows && rows.length}
               rowsPerPage={rowsPerPage}
