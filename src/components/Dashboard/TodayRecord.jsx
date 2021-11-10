@@ -60,7 +60,7 @@ function TodayRecord({ auth }) {
     const classes = recordUseStyles();
 
     return (
-        <Grid container px={12} pt={8}>
+        <Grid container mx={12} mt={8} >
             <PanelHeader title={"Statictics"} />
             <Grid
                 py={4}

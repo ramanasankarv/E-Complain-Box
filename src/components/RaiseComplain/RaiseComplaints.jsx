@@ -25,6 +25,7 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { imageupload } from "../../redux/actions/auth";
+import { useEffect } from 'react';
 
 const validationSchema = yup.object({
     department: yup
@@ -58,7 +59,11 @@ function RaiseComplaints({ auth }) {
     const onDrop = (files) => {
         setFiles(files)
     };
-
+    useEffect(() => {
+        if (auth.user && (auth.user.UserRole === "Department Employee" || auth.user.UserRole === "SuperAdmin")) {
+            history.push('/dashboard')
+        }
+    }, [])
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -124,7 +129,7 @@ function RaiseComplaints({ auth }) {
 
     ));
     return (
-        <Grid item container px={30} py={8}>
+        <Grid item container px={{ xs: 0, sm: 10, md: 30 }} py={8}>
             {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
             ) : ""
             }
@@ -178,7 +183,8 @@ function RaiseComplaints({ auth }) {
                             Boolean(formik.errors.complainType)
                         }>
                             <RadioGroup row aria-label="gender" name="complainType" onChange={formik.handleChange}>
-                                <FormLabel component="legend" style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
+                                <FormLabel component="legend" xs={{ display: 'none' }} md={{ display: 'block' }}
+                                    style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
                                 <FormControlLabel value="public" control={<Radio />} label="Public" />
                                 <FormControlLabel value="private" control={<Radio />} label="Private" />
                             </RadioGroup>

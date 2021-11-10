@@ -200,15 +200,11 @@ function Register({ register, loading }) {
                                             {formik.errors.agree ? formik.errors.agree : " "}
                                         </FormHelperText>
                                     </Grid>
-                                    <Typography color="red" fontSize="12px">
+                                    <Typography color="green" fontSize="12px">
                                         (OTP will be sent to your mobile or email address)
                                     </Typography>
 
-                                    <Grid item xs py={2}>
-                                        <Link to="/" variant="body2" style={{ textDecoration: "none", color: "#000" }}>
-                                            Forgot password?
-                                        </Link>
-                                    </Grid>
+
 
                                     <LoadingButton
                                         style={{ color: "#fff" }}
