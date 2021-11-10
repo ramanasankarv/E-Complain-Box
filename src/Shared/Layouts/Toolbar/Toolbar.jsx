@@ -163,10 +163,13 @@ const AppToolbar = (props) => {
                   Registration
                 </Button>
               </React.Fragment>
-            ) : props.auth.isAuthenticated && (props.auth.user.UserRole !== ("SuperAdmin" || "Department")) ? (
+            ) : props.auth.isAuthenticated && (props.auth.user.UserRole !== "SuperAdmin" && props.auth.user.UserRole !== "Department Employee") ? (
               <React.Fragment>
                 <Link to="/raise" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
                   Raise Complain
+                </Link>
+                <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
+                  Complains
                 </Link>
                 <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
                   Dashboard
@@ -177,6 +180,9 @@ const AppToolbar = (props) => {
               </React.Fragment>
             ) : (
               <React.Fragment>
+                <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
+                  Complains
+                </Link>
                 <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
                   Dashboard
                 </Link>

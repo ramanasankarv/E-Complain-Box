@@ -148,11 +148,6 @@ function Login({ login, auth }) {
                     helperText={formik.touched.password && formik.errors.password} autoFocus
                     variant="standard"
                   />
-                  <Grid item xs>
-                    <Link to="#" variant="body2" style={{ textDecoration: "none", color: "#000" }}>
-                      Forgot password?
-                    </Link>
-                  </Grid>
 
                   {/* <Button style={{ color: "#fff" }}
                     type="submit"

@@ -1,7 +1,6 @@
 import { Box, Grid, Typography, Button } from '@mui/material';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Fragment } from 'react';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import EmailVerificationImage from "../../assets/EmailVerification.png";
 import { FormHelperText } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
@@ -15,8 +14,7 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import WorkOutline from '@mui/icons-material/WorkOutline';
 import Public from '@mui/icons-material/Public';
 import Subject from '@mui/icons-material/Subject';
-import CloudUpload from '@mui/icons-material/CloudUpload';
-import { getSingleComplainData, updateComplainStatus, helloCheck } from '../../redux/actions/auth';
+import { getSingleComplainData, updateComplainStatus } from '../../redux/actions/auth';
 import { useParams } from "react-router-dom"
 import { connect } from 'react-redux';
 import ReactHtmlParser from "react-html-parser";

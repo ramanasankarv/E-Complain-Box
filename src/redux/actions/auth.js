@@ -138,7 +138,7 @@ const login =
       } else if (localStorage.getItem("userIsMobileVerified") == "No") {
         history.push("/mobile-verification");
       } else {
-        history.push("/raise");
+        history.push("/dashboard");
       }
     } catch (error) {
       console.log(error);
@@ -493,10 +493,6 @@ const updateComplainStatus = async (complainStatus, userid, complianID) => {
   }
 };
 
-const helloCheck = () => {
-  debugger;
-};
-
 export {
   register,
   loadUser,
@@ -509,6 +505,5 @@ export {
   getSingleComplainData,
   getComplainGroupData,
   updateComplain,
-  helloCheck,
   updateComplainStatus,
 };
