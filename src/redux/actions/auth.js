@@ -469,6 +469,34 @@ const updateComplain =
     }
   };
 
+const updateComplainStatus = async (complainStatus, userid, complianID) => {
+  try {
+    debugger;
+    let data = {
+      userid: userid,
+      complainstatus: complainStatus,
+    };
+    client({
+      method: "put",
+      url: `/complaint/${complianID}`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+      data: data,
+    })
+      .then(() => {
+        toast.success("The status complain is updated");
+      })
+      .catch((error) => toast.error(error.message));
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
+
+const helloCheck = () => {
+  debugger;
+};
+
 export {
   register,
   loadUser,
@@ -481,4 +509,6 @@ export {
   getSingleComplainData,
   getComplainGroupData,
   updateComplain,
+  helloCheck,
+  updateComplainStatus,
 };

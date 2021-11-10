@@ -1,5 +1,5 @@
 import { Box, Grid, Typography, Button } from '@mui/material';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import EmailVerificationImage from "../../assets/EmailVerification.png";
 import { FormHelperText } from '@mui/material';
@@ -16,14 +16,32 @@ import WorkOutline from '@mui/icons-material/WorkOutline';
 import Public from '@mui/icons-material/Public';
 import Subject from '@mui/icons-material/Subject';
 import CloudUpload from '@mui/icons-material/CloudUpload';
+import { getSingleComplainData, updateComplainStatus, helloCheck } from '../../redux/actions/auth';
+import { useParams } from "react-router-dom"
+import { connect } from 'react-redux';
+import ReactHtmlParser from "react-html-parser";
 
-function ComplainDepartmentChange(props) {
+
+import Loader from '../../Shared/common/Loader';
+function ComplainDepartmentChange({ auth }) {
     const [description, setDescription] = useState("");
     const [complainStatus, setComplainStatus] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
     const editorRef = useRef(null);
+    const [dataLoaded, setDataLoaded] = useState(false)
 
+    const [complainData, setComplainData] = useState(null)
+    let { id } = useParams()
+    const [loader, setLoader] = useState(true)
 
+    useEffect(async () => {
+        const data = getSingleComplainData(id)
+            .then(res => {
+                console.log("tusher")
+                setComplainData(res)
+                setLoader(false)
+            })
+    }, [setComplainData, dataLoaded]);
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -39,8 +57,8 @@ function ComplainDepartmentChange(props) {
         setComplainStatus({ complainStatus: e.target.value })
     }
     const handleSubmitStatus = (e) => {
-        e.preventDefault();
-        console.log(complainStatus)
+
+        updateComplainStatus(complainStatus.complainStatus, auth.user.id, id)
         //pass it in api
     }
     const handleClick = () => {
@@ -52,15 +70,23 @@ function ComplainDepartmentChange(props) {
             setDescriptionError("Description field is required")
         }
     }
-    return (
+    const toDateTime = (secs) => {
+        var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
+        t.setUTCSeconds(secs);
+
+        return t.toString();
+    }
+    return loader || !complainData.ComplainStatus || !auth.user ? (<Grid container px={12} mt={12} style={{ height: "100%" }}>
+        <Loader />
+    </Grid>) : (
         <Grid container py={12} px={20}>
             <Grid container>
                 <Grid item md={6} sm={6} xs={6}>
                     <Typography>
-                        Complain ID: 112345
+                        Complain ID: {id}
                     </Typography>
                     <Typography>
-                        Complain Status: In Progress
+                        Complain Status: {complainData.ComplainStatus}
                     </Typography>
                 </Grid>
                 <Grid item md={6} sm={6} xs={6}
@@ -70,7 +96,7 @@ function ComplainDepartmentChange(props) {
                     alignItems="center"
                 >
                     <Typography>
-                        Welcome Sazzad Mahmud
+                        Welcome {auth.user.FullName}
                     </Typography>
                 </Grid>
             </Grid>
@@ -79,11 +105,11 @@ function ComplainDepartmentChange(props) {
                 <Grid item >
                     <FormControl component="fieldset">
                         <RadioGroup size="large"
-                            row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={handleChangeStatus}>
+                            row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={handleChangeStatus} value={complainStatus.complainStatus || complainData.ComplainStatus}>
                             <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}></FormLabel>
-                            <FormControlLabel value="raised" control={<Radio />} label="Raised" />
-                            <FormControlLabel value="inprogress" control={<Radio />} label="In Progress" />
-                            <FormControlLabel value="completed" control={<Radio />} label="Completed" />
+                            <FormControlLabel value="Raise" control={<Radio />} label="Raised" />
+                            <FormControlLabel value="In Progress" control={<Radio />} label="In Progress" />
+                            <FormControlLabel value="Completed" control={<Radio />} label="Completed" />
                         </RadioGroup>
                     </FormControl>
                     <Button variant="contained" size="large" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff" }} onClick={handleSubmitStatus}>
@@ -98,7 +124,7 @@ function ComplainDepartmentChange(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <DateRangeIcon /> <b style={{ marginRight: "10px " }}>Date: </b> 12-06-2001
+                            <DateRangeIcon /> <b style={{ marginRight: "10px " }}>Date: </b> {toDateTime(complainData.CreatedAt._seconds)}
                         </Typography>
                     </Grid>
 
@@ -109,7 +135,7 @@ function ComplainDepartmentChange(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Complain Type: </b> Private
+                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Complain Type: </b> {complainData.ComplainType}
                         </Typography>
                     </Grid>
                     <Grid item md={6} sm={12} xs={12} pt={4}>
@@ -117,25 +143,7 @@ function ComplainDepartmentChange(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <FlashAutoIcon /> <b style={{ marginRight: "10px " }}>Severity: </b> Major
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid item container direction="row" alignItems="center">
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <WorkOutline /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <Public /> <b style={{ marginRight: "10px " }}>City: </b> Private
+                            <FlashAutoIcon /> <b style={{ marginRight: "10px " }}>Severity: </b> {complainData.ComplainSeverity}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -145,43 +153,69 @@ function ComplainDepartmentChange(props) {
                             verticalAlign: 'middle',
                             display: 'inline-flex'
                         }}>
-                            <Subject /> <b style={{ marginRight: "10px " }}>Subject Line: </b> This is a test subject
+                            <WorkOutline /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> {complainData.department.DepartmentName}
+                        </Typography>
+                    </Grid>
+                    <Grid item md={6} sm={12} xs={12} pt={4}>
+                        <Typography variant="subtitle1" style={{
+                            verticalAlign: 'middle',
+                            display: 'inline-flex'
+                        }}>
+                            <Public /> <b style={{ marginRight: "10px " }}>City: </b> {complainData.city.CityName}
+                        </Typography>
+                    </Grid>
+                </Grid>
+                <Grid item container direction="row" alignItems="center">
+                    <Grid item md={6} sm={12} xs={12} pt={4}>
+                        <Typography variant="subtitle1" style={{
+                            verticalAlign: 'middle',
+                            display: 'inline-flex'
+                        }}>
+                            <Subject /> <b style={{ marginRight: "10px " }}>Subject Line: </b> {complainData.ComplainSubject}
                         </Typography>
                     </Grid>
                 </Grid>
                 <Grid container pt={5}>
                     <Typography variant="subtitle1" pl={2}>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                        {ReactHtmlParser(complainData.ComplainDescription)}
                     </Typography>
                 </Grid>
-                <Grid item container direction="row" alignItems="center">
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <CloudUpload /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" >
-                            <img style={{ width: "100%", maxHeight: "200px" }} src={EmailVerificationImage} alt="" />
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" >
-                            <img style={{ width: "100%", maxHeight: "200px" }} src={EmailVerificationImage} alt="" />
-                        </Typography>
-                    </Grid>
-                </Grid>
+                {complainData && complainData.ComplainDocument && Array.isArray(complainData.ComplainDocument.ComplainDocumentPath) && complainData.ComplainDocument.ComplainDocumentPath.map((document, i) => {
+                    return (
+                        <Grid item container direction="row" alignItems="center" md={12} key={i}>
+                            <Grid item md={8} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <b style={{ marginRight: "10px " }}>File </b> {i + 1}
+                                </Typography>
+                            </Grid>
+                            <Grid item md={4} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" >
+                                    <img style={{ width: "100%", maxHeight: "200px" }} src={document} alt="" />
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    )
+                })}
+                {complainData && complainData.ComplainDocument && !Array.isArray(complainData.ComplainDocument.ComplainDocumentPath) ? (
+                    <Fragment>
+                        <Grid item md={6} sm={12} xs={12} pt={4}>
+                            <Typography variant="subtitle1" style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex'
+                            }}>
+                                <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
+                            </Typography>
+                        </Grid>
+                        <Grid item md={6} sm={12} xs={12} pt={4}>
+                            <Typography variant="subtitle1" >
+                                <img style={{ width: "100%", maxHeight: "200px" }} src={complainData.ComplainDocument.ComplainDocumentPath} alt="" />
+                            </Typography>
+                        </Grid>
+                    </Fragment>
+                ) : ""}
             </Grid>
             <Grid container mt={12}>
                 <Typography variant="h6">
@@ -272,5 +306,8 @@ function ComplainDepartmentChange(props) {
         </Grid>
     );
 }
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
 
-export default ComplainDepartmentChange;
+export default connect(mapStateToProps)(ComplainDepartmentChange);
