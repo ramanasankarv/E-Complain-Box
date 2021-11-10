@@ -19,6 +19,8 @@ function ComplainDetails(props) {
     const [description, setDescription] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
     const editorRef = useRef(null);
+    const [loader, setLoader] = useState(true)
+
     let { id } = useParams()
     let history = useHistory()
     const parseEditorData = (content) => {
