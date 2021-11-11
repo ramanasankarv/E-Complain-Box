@@ -14,7 +14,7 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import WorkOutline from '@mui/icons-material/WorkOutline';
 import Public from '@mui/icons-material/Public';
 import Subject from '@mui/icons-material/Subject';
-import { getSingleComplainData, updateComplainStatus } from '../../redux/actions/auth';
+import { getSingleComplainData, updateComplainStatus, createComment } from '../../redux/actions/auth';
 import { useParams } from "react-router-dom"
 import { connect } from 'react-redux';
 import ReactHtmlParser from "react-html-parser";
@@ -39,18 +39,18 @@ function ComplainDepartmentChange({ auth }) {
                 setComplainData(res)
                 setLoader(false)
             })
-    }, [setComplainData, dataLoaded]);
+    }, [setComplainData, setLoader]);
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
             setDescription({ description: content });
             setDescriptionError("")
         } else {
-            setDescriptionError("Description field is required")
+            setDescriptionError("Comment field can not be empty")
         }
         console.log(descriptionError);
     }
-
+    console.log(complainData)
     const handleChangeStatus = (e) => {
         setComplainStatus({ complainStatus: e.target.value })
     }
@@ -63,16 +63,37 @@ function ComplainDepartmentChange({ auth }) {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
             setDescription({ description: editorRef.current.getContent() });
-            setDescriptionError("")
+            setDescriptionError("");
+            console.log(description)
+            createComment(description.description, auth.user.id, id).then(res => {
+                const data = getSingleComplainData(id)
+                    .then(res => {
+                        setLoader(true);
+                        setComplainData(res)
+                        setLoader(false)
+                    })
+            });
         } else {
-            setDescriptionError("Description field is required")
+            setDescriptionError("Comment field can not be empty")
         }
     }
     const toDateTime = (secs) => {
         var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
         t.setUTCSeconds(secs);
+        const d = new Date("2015-03-25");
 
         return t.toString();
+    }
+    const formatDate = (dd) => {
+        var today = new Date();
+        console.log(dd)
+        var t2 = (dd);
+        var diffMs = (t2 - today); // milliseconds 
+        var diffDays = Math.floor(diffMs / 86400000); // days
+        var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+        var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+
+        return (diffDays + " : " + diffHrs + " : " + diffMins + " ");
     }
     return loader || !complainData.ComplainStatus || !auth.user ? (<Grid container px={12} mt={12} style={{ height: "100%" }}>
         <Loader />
@@ -115,7 +136,7 @@ function ComplainDepartmentChange({ auth }) {
                     </Button>
                 </Grid>
             </Grid>
-            <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={4} px={4} mt={12}>
+            <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={4} px={4} mt={12} boxShadow={8} borderRadius="20px">
                 <Grid item container direction="row" alignItems="center">
                     <Grid item md={12} sm={12} xs={12} pt={4}>
                         <Typography variant="subtitle1" style={{
@@ -221,43 +242,51 @@ function ComplainDepartmentChange({ auth }) {
                 </Typography>
             </Grid>
             <Grid container style={{ background: "#fff", color: "#1F5B88" }} px={5} py={5}>
-                <Grid container>
-                    <Grid item md={6} sm={12} xs={12} >
-                        <Typography style={{ textAlign: "start" }}>
-                            <b>Health Department</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pr={3}>
-                        <Typography style={{ textAlign: "start" }}>
-                            29-12-2091
-                        </Typography>
-                    </Grid>
-                    <Grid item md={12} sm={12} xs={12}>
-                        <Typography>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid container pt={5}
-                    container
-                    direction="row"
-                    justifyContent="flex-end"
-                    alignItems="center"
-                >
-                    <Grid item md={3} sm={12} xs={12} >
-                        <Typography style={{ textAlign: "end" }}>
-                            29-12-2091
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pr={3}>
-                        <Typography style={{ textAlign: "end" }}>
-                            <b>Sazzad Mahmud</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item md={12} sm={12} xs={12}>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
-                    </Grid>
-                </Grid>
+                {complainData && complainData.comments && complainData.comments.map(comment => {
+                    return auth.user.id === comment.userid ? (
+                        <Grid container my={3}>
+                            <Grid item md={12} sm={12} xs={12} container>
+                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+                                    <Typography style={{ textAlign: "start" }}>
+                                        <b>{comment.by}</b>
+                                    </Typography>
+                                    <Typography style={{ textAlign: "start" }}>
+                                        {toDateTime(comment.createdAt._seconds)}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item md={6} sm={12} xs={12} py={4} px={2} style={{ background: "#3AAFA8", borderRadius: "20px", color: "#fff" }}>
+                                <Typography>
+                                    {ReactHtmlParser(comment.comments)}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    ) : (
+                        <Grid container pt={5}
+                            container
+                            direction="row"
+                            justifyContent="flex-end"
+                            alignItems="center"
+                        >
+                            <Grid item md={12} sm={12} xs={12} container>
+                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+                                    <Typography style={{ textAlign: "start" }}>
+                                        {formatDate(comment.createdAt._seconds)}
+                                    </Typography>
+                                    <Typography style={{ textAlign: "start" }}>
+                                        <b>{comment.by}</b>
+                                    </Typography>
+
+                                </Box>
+                            </Grid>
+                            <Grid item md={7} sm={12} xs={12} py={4} pl={3} style={{ background: "#eee", borderRadius: "20px", color: "#000" }}>
+                                {ReactHtmlParser(comment.comments)}
+                            </Grid>
+                        </Grid>
+                    )
+                })}
+
+
             </Grid>
             <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="start">
                 <Grid item md={12} sm={12} xs={12}>
@@ -301,7 +330,7 @@ function ComplainDepartmentChange({ auth }) {
                     </Button>
                 </Grid>
             </Grid>
-        </Grid>
+        </Grid >
     );
 }
 const mapStateToProps = (state) => ({

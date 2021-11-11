@@ -156,9 +156,7 @@ function UpdateComplaints({ auth }) {
                 {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
                 ) : ""
                 }
-                <Grid item container py={2} style={{ backgroundColor: "#2B7A78" }}>
-                    <PanelHeader title={"Update Complain"} />
-                </Grid>
+                <PanelHeader title={"Update Complain"} />
                 <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
                     <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
                         <Grid item md={1} sm={1} xs={2} mt={2}>
@@ -370,7 +368,7 @@ function UpdateComplaints({ auth }) {
                             </Dropzone>
                         </Grid>
                     </Grid>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                    <Grid item container style={{ background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} py={4} px={4} direction="row" alignItems="center">
                         <Button
                             onClick={handleClick}
                             style={{ color: "#fff" }}

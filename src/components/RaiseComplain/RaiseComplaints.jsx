@@ -129,13 +129,11 @@ function RaiseComplaints({ auth }) {
 
     ));
     return (
-        <Grid item container px={{ xs: 0, sm: 10, md: 30 }} py={8}>
+        <Grid item container px={{ xs: 2, sm: 10, md: 30 }} py={8} style={{ borderRadius: "20px" }} boxShadow={10}>
             {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
             ) : ""
             }
-            <Grid item container py={2} style={{ backgroundColor: "#2B7A78" }}>
-                <PanelHeader title={"Raise Complain"} />
-            </Grid>
+            <PanelHeader title={"Raise Complain"} />
             <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
                 <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
                     <Grid item md={1} sm={1} xs={2} mt={2}>
@@ -182,8 +180,10 @@ function RaiseComplaints({ auth }) {
                             formik.touched.complainType &&
                             Boolean(formik.errors.complainType)
                         }>
+                            <FormLabel component="legend" sx={{ display: { xs: 'block', sm: 'block', md: 'none' } }}
+                                style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
                             <RadioGroup row aria-label="gender" name="complainType" onChange={formik.handleChange}>
-                                <FormLabel component="legend" xs={{ display: 'none' }} md={{ display: 'block' }}
+                                <FormLabel component="legend" sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
                                     style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
                                 <FormControlLabel value="public" control={<Radio />} label="Public" />
                                 <FormControlLabel value="private" control={<Radio />} label="Private" />
@@ -204,8 +204,11 @@ function RaiseComplaints({ auth }) {
                             formik.touched.severity &&
                             Boolean(formik.errors.severity)
                         }>
+                            <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }} sx={{ display: { xs: 'block', sm: 'block', md: 'none' } }}>Severity:</FormLabel>
+
                             <RadioGroup row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={formik.handleChange}>
-                                <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}>Severity:</FormLabel>
+                                <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>Severity:</FormLabel>
+                                <FormControlLabel value="critical" control={<Radio />} label="Critical" />
                                 <FormControlLabel value="high" control={<Radio />} label="Hign" />
                                 <FormControlLabel value="medium" control={<Radio />} label="Medium" />
                                 <FormControlLabel value="low" control={<Radio />} label="Low" />
@@ -348,7 +351,7 @@ function RaiseComplaints({ auth }) {
                         </Dropzone>
                     </Grid>
                 </Grid>
-                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                <Grid item container style={{ background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} py={4} px={4} direction="row" alignItems="center">
                     <Button
                         onClick={handleClick}
                         style={{ color: "#fff" }}
@@ -360,7 +363,7 @@ function RaiseComplaints({ auth }) {
                     </Button>
                 </Grid>
             </form>
-        </Grid>
+        </Grid >
     );
 }
 const mapStateToProps = (state) => ({

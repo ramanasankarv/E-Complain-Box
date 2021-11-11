@@ -66,10 +66,10 @@ const PieChart = ({ auth }) => {
     ],
   };
   return (
-    <Grid container px={12} py={8}>
+    <Grid container mx={{ xs: 2, sm: 10, md: 12 }} boxShadow={10} borderRadius="20px" my={5}>
       <PanelHeader title={"Rasised Complains"} />
-      <Grid container py={4} style={{ display: "flex", justifyContent: "center", background: "#fff" }}>
-        {showTotalRaised === 0 ? <Typography variant="subtitle1" style={{ textAlign: "center" }} align="center">No Data To Show</Typography> : <Pie data={data} style={{ width: "100%", maxHeight: "300px", fontWeight: "bolder" }} />
+      <Grid container py={4} style={{ display: "flex", justifyContent: "center", background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }}>
+        {showTotalRaised === 0 ? <Typography variant="subtitle1" style={{ textAlign: "center" }} align="center">No Data To Show</Typography> : <Pie data={data} style={{ width: "100%", maxHeight: "400px", fontWeight: "bolder" }} />
         }
       </Grid>
     </Grid>

@@ -226,6 +226,7 @@ const loadUser = () => async (dispatch) => {
       },
       data: data,
     });
+    console.log(response);
     console.log(response.data.user[0]);
     dispatch({
       type: USER_LOADED,
@@ -493,6 +494,31 @@ const updateComplainStatus = async (complainStatus, userid, complianID) => {
   }
 };
 
+const createComment = async (comment, userid, complianID) => {
+  try {
+    debugger;
+    let data = {
+      userid: userid,
+      comments: comment,
+    };
+    client({
+      method: "post",
+      url: `/createcomments/${complianID}`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+      data: data,
+    })
+      .then((data) => {
+        toast.success("You have successfully created the comment");
+        return data.data;
+      })
+      .catch((error) => toast.error(error.message));
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
+
 export {
   register,
   loadUser,
@@ -506,4 +532,5 @@ export {
   getComplainGroupData,
   updateComplain,
   updateComplainStatus,
+  createComment,
 };
