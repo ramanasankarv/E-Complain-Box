@@ -56,7 +56,7 @@ const recordUseStyles = makeStyles({
   },
   numbers: {
     boxShadow: "3px 5px 8px 2px #888888;",
-    height: "200px",
+    height: "250px",
     background: "#fff",
     borderRadius: "10px",
     padding: "10px",
