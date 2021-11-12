@@ -70,7 +70,7 @@ const App = ({ auth }) => {
           direction="row"
           justifyContent="center"
           alignItems="center"
-          bgcolor="#DEF2FA"
+          bgcolor="#eee"
         >
           <ToastContainer autoClose={5000} />
 

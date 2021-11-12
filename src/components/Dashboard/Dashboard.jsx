@@ -22,7 +22,7 @@ import { useState } from 'react';
 import { getDashboardData } from "../../redux/actions/auth"
 import Loader from '../../Shared/common/Loader';
 import { useHistory } from "react-router-dom"
-
+import PanelHeader from '../../Shared/common/PanelHeader';
 function Dashboard({ auth }) {
   const [rows, setRows] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -92,34 +92,13 @@ function Dashboard({ auth }) {
         ) : ""
         }
 
-        <Grid container px={12} mt={12}>
+        <Grid container px={{ xs: 2, sm: 10, md: 12 }} mt={12}>
+          <PanelHeader title={"Statictics"} />
+
           <Paper sx={{ width: '100%' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
-              <Table stickyHeader aria-label="sticky table">
+              <Table aria-label="sticky table">
                 <TableHead>
-                  <TableRow>
-                    <TableCell colSpan={3} style={{ backgroundColor: "#2B7A78", color: "#fff", fontWeight: "bolder" }} md={{ flexGrow: 1 }}>
-                      Today
-                    </TableCell>
-                    <TableCell colSpan={2} style={{ backgroundColor: "#2B7A78", color: "#fff" }} align="right">
-                      <Box>
-                        <Button
-                          style={{ backgroundColor: "transparent", color: "#fff", fontWeight: "bold" }}
-                          id="demo-customized-button"
-                          aria-controls="demo-customized-menu"
-                          aria-haspopup="true"
-                          aria-expanded={open ? 'true' : undefined}
-                          variant="contained"
-                          disableElevation
-                          onClick={handleClick}
-                          endIcon={<KeyboardArrowDownIcon />}
-                        >
-                          Options
-                        </Button>
-                        <StyledMenuHome anchorEl={anchorEl} setAnchorEl={setAnchorEl} open={open} handleClose={handleClose} />
-                      </Box>
-                    </TableCell>
-                  </TableRow>
                   <TableRow>
                     {columns.map((column) => (
                       <TableCell

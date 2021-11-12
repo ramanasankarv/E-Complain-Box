@@ -49,17 +49,17 @@ const VerticalChart = ({ auth }) => {
       {
         label: 'Total Raise Complains',
         data: totalRasiedData,
-        backgroundColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgb(66,63,249,.6)',
       },
       {
         label: 'Total W ip Complains',
         data: totalInComplainData,
-        backgroundColor: 'rgb(54, 162, 235)',
+        backgroundColor: 'rgb(35,169,75,.6)',
       },
       {
         label: 'Total Completed Complains',
         data: totalDoneData,
-        backgroundColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgb(252,21,49,.6)',
       },
     ],
   };
@@ -89,10 +89,10 @@ const VerticalChart = ({ auth }) => {
   }
 
   return (
-    <Grid container px={12} pt={8}>
+    <Grid container mx={{ xs: 2, sm: 10, md: 12 }} mt={5} boxShadow={10} borderRadius="20px">
       <PanelHeader title={"Statictics"} />
-      <Grid container style={{ background: "#fff" }}>
-        <Bar data={data} options={options} style={{ width: "100%", maxHeight: "250px", fontWeight: "bolder" }} />
+      <Grid container style={{ background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} px={3} py={2}>
+        <Bar data={data} options={options} style={{ width: "100%", maxHeight: "300px", fontWeight: "bolder" }} />
       </Grid>
     </Grid>
   )
