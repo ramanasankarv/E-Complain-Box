@@ -40,7 +40,7 @@ function Login({ login, auth }) {
   useEffect(() => {
     let token = localStorage.getItem("token");
     if (token && !auth.token) {
-      history.push("/dashboard");
+      history.push("/login");
     }
   }, [auth.isAuthenticated, setDemoLoginValue])
 

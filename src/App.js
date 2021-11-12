@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
 import UpdateComplain from "./components/RaiseComplain/UpdateComplain";
+import Aboutus from "./components/Aboutus/Aboutus";
 const App = ({ auth }) => {
   const history = useHistory();
 
@@ -41,7 +42,7 @@ const App = ({ auth }) => {
       },
       secondary: {
         light: "#0066ff",
-        main: "#0c0921",
+        main: "rgb(36,98,95)",
         // dark: will be calculated from palette.secondary.main,
         contrastText: "#ffcc00",
       },
@@ -79,6 +80,7 @@ const App = ({ auth }) => {
             <Route exact path="/register" component={Register} />
             <Route exact path="/raise" component={RaiseComplaints} />
             <Route exact path="/dashboard" component={Dashboard} />{" "}
+            <Route exact path="/about-us" component={Aboutus} />{" "}
             <Route
               path="/complain-department-details/:id"
               component={ComplainDepartmentChange}

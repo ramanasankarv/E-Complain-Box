@@ -18,6 +18,7 @@ import { getSingleComplainData, updateComplainStatus, createComment } from '../.
 import { useParams } from "react-router-dom"
 import { connect } from 'react-redux';
 import ReactHtmlParser from "react-html-parser";
+import moment from 'moment'
 
 
 import Loader from '../../Shared/common/Loader';
@@ -27,6 +28,8 @@ function ComplainDepartmentChange({ auth }) {
     const [descriptionError, setDescriptionError] = useState("");
     const editorRef = useRef(null);
     const [dataLoaded, setDataLoaded] = useState(false)
+
+
 
     const [complainData, setComplainData] = useState(null)
     let { id } = useParams()
@@ -39,7 +42,7 @@ function ComplainDepartmentChange({ auth }) {
                 setComplainData(res)
                 setLoader(false)
             })
-    }, [setComplainData, setLoader]);
+    }, [setComplainData, loader]);
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -55,23 +58,18 @@ function ComplainDepartmentChange({ auth }) {
         setComplainStatus({ complainStatus: e.target.value })
     }
     const handleSubmitStatus = (e) => {
-
         updateComplainStatus(complainStatus.complainStatus, auth.user.id, id)
         //pass it in api
     }
     const handleClick = () => {
+        setLoader(true);
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
             setDescription({ description: editorRef.current.getContent() });
             setDescriptionError("");
             console.log(description)
             createComment(description.description, auth.user.id, id).then(res => {
-                const data = getSingleComplainData(id)
-                    .then(res => {
-                        setLoader(true);
-                        setComplainData(res)
-                        setLoader(false)
-                    })
+                setLoader(false)
             });
         } else {
             setDescriptionError("Comment field can not be empty")
@@ -81,24 +79,15 @@ function ComplainDepartmentChange({ auth }) {
         var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
         t.setUTCSeconds(secs);
         const d = new Date("2015-03-25");
+        let newDate = moment(t).fromNow()
 
-        return t.toString();
+        return newDate;
     }
-    const formatDate = (dd) => {
-        var today = new Date();
-        console.log(dd)
-        var t2 = (dd);
-        var diffMs = (t2 - today); // milliseconds 
-        var diffDays = Math.floor(diffMs / 86400000); // days
-        var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-        var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
 
-        return (diffDays + " : " + diffHrs + " : " + diffMins + " ");
-    }
     return loader || !complainData.ComplainStatus || !auth.user ? (<Grid container px={12} mt={12} style={{ height: "100%" }}>
         <Loader />
     </Grid>) : (
-        <Grid container py={12} px={20}>
+        <Grid container py={12} px={{ xs: 2, sm: 10, md: 20 }}>
             <Grid container>
                 <Grid item md={6} sm={6} xs={6}>
                     <Typography>
@@ -242,49 +231,50 @@ function ComplainDepartmentChange({ auth }) {
                 </Typography>
             </Grid>
             <Grid container style={{ background: "#fff", color: "#1F5B88" }} px={5} py={5}>
-                {complainData && complainData.comments && complainData.comments.map(comment => {
-                    return auth.user.id === comment.userid ? (
-                        <Grid container my={3}>
-                            <Grid item md={12} sm={12} xs={12} container>
-                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
-                                    <Typography style={{ textAlign: "start" }}>
-                                        <b>{comment.by}</b>
+                {complainData && complainData.comments && complainData.comments.sort((a, b) => b.createdAt._seconds - a.createdAt._seconds)
+                    .map(comment => {
+                        return auth.user.id === comment.userid ? (
+                            <Grid container my={5}>
+                                <Grid item md={12} sm={12} xs={12} container>
+                                    <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
+                                        <Typography style={{ textAlign: "start" }}>
+                                            <b>{comment.by}</b>
+                                        </Typography>
+                                        <Typography style={{ textAlign: "start" }}>
+                                            {toDateTime(comment.createdAt._seconds)}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid item md={8} sm={12} xs={12} py={1} px={2} style={{ background: "#3AAFA8", borderRadius: "20px", color: "#fff" }}>
+                                    <Typography>
+                                        {ReactHtmlParser(comment.comments)}
                                     </Typography>
-                                    <Typography style={{ textAlign: "start" }}>
-                                        {toDateTime(comment.createdAt._seconds)}
-                                    </Typography>
-                                </Box>
+                                </Grid>
                             </Grid>
-                            <Grid item md={6} sm={12} xs={12} py={4} px={2} style={{ background: "#3AAFA8", borderRadius: "20px", color: "#fff" }}>
-                                <Typography>
-                                    {ReactHtmlParser(comment.comments)}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    ) : (
-                        <Grid container pt={5}
-                            container
-                            direction="row"
-                            justifyContent="flex-end"
-                            alignItems="center"
-                        >
-                            <Grid item md={12} sm={12} xs={12} container>
-                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
-                                    <Typography style={{ textAlign: "start" }}>
-                                        {formatDate(comment.createdAt._seconds)}
-                                    </Typography>
-                                    <Typography style={{ textAlign: "start" }}>
-                                        <b>{comment.by}</b>
-                                    </Typography>
+                        ) : (
+                            <Grid container my={5}
+                                container
+                                direction="row"
+                                justifyContent="flex-end"
+                                alignItems="center"
+                            >
+                                <Grid item md={12} sm={12} xs={12} container>
+                                    <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
+                                        <Typography style={{ textAlign: "start" }}>
+                                            {toDateTime(comment.createdAt._seconds)}
+                                        </Typography>
+                                        <Typography style={{ textAlign: "start" }}>
+                                            <b>{comment.by}</b>
+                                        </Typography>
 
-                                </Box>
+                                    </Box>
+                                </Grid>
+                                <Grid item md={8} sm={12} xs={12} py={1} pl={3} style={{ background: "#eee", borderRadius: "20px", color: "#000" }}>
+                                    {ReactHtmlParser(comment.comments)}
+                                </Grid>
                             </Grid>
-                            <Grid item md={7} sm={12} xs={12} py={4} pl={3} style={{ background: "#eee", borderRadius: "20px", color: "#000" }}>
-                                {ReactHtmlParser(comment.comments)}
-                            </Grid>
-                        </Grid>
-                    )
-                })}
+                        )
+                    })}
 
 
             </Grid>

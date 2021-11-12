@@ -32,6 +32,13 @@ const columns = [
         align: 'center',
         format: (value) => value.toFixed(2),
     },
+    {
+        id: 'ComplainSeverity',
+        label: 'Complain Severity',
+        minWidth: 170,
+        align: 'center',
+        format: (value) => value.toFixed(2),
+    },
 ];
 
 const rowsData = [
