@@ -1,62 +1,13 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import FlagIcon from '@mui/icons-material/Flag';
 import HourglassFullIcon from '@mui/icons-material/HourglassFull';
 import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { recordUseStyles } from './styles/DashboardStyle';
-import PanelHeader from '../../Shared/common/PanelHeader';
-import { getComplainGroupData } from '../../redux/actions/auth';
 import { connect } from "react-redux"
 
-function TodayRecord({ auth }) {
-    const [totalData, setTotalData] = useState([])
-    const [totalRasiedData, setTotalRasiedData] = useState([])
-    const [totalInComplainData, setTotalInComplainData] = useState([])
-    const [totalDoneData, setTotalDoneData] = useState([])
-    const [dataChanged, setdataChanged] = useState(false)
-    const [totalDepartments, setTotalDepartments] = useState([])
-    useEffect(() => {
-        if (auth.user) {
-            getComplainGroupData(auth.user.id).then((res) => {
-                setTotalData(res)
-                res.length && res.map(datas => {
-                    setTotalRasiedData((totalRasiedData) => [
-                        ...totalRasiedData,
-                        datas.totalRaiseComplains,
-                    ]);
-                    setTotalInComplainData((totalInComplainData) => [
-                        ...totalInComplainData,
-                        datas.totalWipComplains,
-                    ]);
-                    setTotalDoneData((totalDoneData) => [
-                        ...totalDoneData,
-                        datas.totalCompletedComplains,
-                    ]);
-                    setTotalDepartments((totalDepartments) => [
-                        ...totalDepartments,
-                        datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
-                    ]);
-                })
-
-            })
-        }
-
-    }, [setTotalData, auth.user]);
-    const showTotalRaised = totalRasiedData.reduce((sum, data) => {
-        return sum += data
-    }, 0)
-    const showTotalInProgress = totalInComplainData.reduce((sum, data) => {
-        return sum += data
-    }, 0)
-    const showTotalDone = totalDoneData.reduce((sum, data) => {
-
-        return sum += data
-    }, 0)
-
-
-
-
+function TodayRecord({ showTotalDone, showTotalInProgress, showTotalRaised }) {
     const classes = recordUseStyles();
 
     return (

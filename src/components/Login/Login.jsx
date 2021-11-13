@@ -11,6 +11,8 @@ import { FormControl, FormControlLabel, Radio } from "@mui/material";
 import { RadioGroup } from "@mui/material";
 import { FormLabel } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
+
+
 const validationSchema = yup.object({
   email: yup.string("Enter your Email/Mobile Number")
     // .email("Enter a valid email")
@@ -31,6 +33,9 @@ const validationSchema = yup.object({
     .string('Enter your password')
     .required('Password is required')
 });
+
+
+
 function Login({ login, auth }) {
   const [error, setError] = useState("")
   const history = useHistory()
@@ -39,7 +44,9 @@ function Login({ login, auth }) {
 
   useEffect(() => {
     let token = localStorage.getItem("token");
-    if (token && !auth.token) {
+    if (token && auth.user) {
+      history.push("/dashboard");
+    } else {
       history.push("/login");
     }
   }, [auth.isAuthenticated, setDemoLoginValue])
@@ -55,7 +62,11 @@ function Login({ login, auth }) {
       await new Promise((r) => setTimeout(login(allValues, history)));
     },
   });
-  const { loading } = auth
+
+
+  const { loading } = auth;
+
+
   const handleChangeStatus = (e) => {
     if (e.target.value === "individual") {
       setDemoLoginValue(!demoLoginValue)
