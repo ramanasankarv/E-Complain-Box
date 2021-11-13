@@ -4,7 +4,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import HourglassFullIcon from '@mui/icons-material/HourglassFull';
 import AccessibleForwardIcon from '@mui/icons-material/AccessibleForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { recordUseStyles } from './styles/HomepageStyles';
+import { recordUseStyles } from './styles/DashboardStyle';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { getComplainGroupData } from '../../redux/actions/auth';
 import { connect } from "react-redux"
@@ -60,7 +60,7 @@ function TodayRecord({ auth }) {
     const classes = recordUseStyles();
 
     return (
-        <Grid container mx={{ xs: 2, sm: 10, md: 12 }} mt={5}>
+        <Grid container mt={5}>
             <Grid
                 container
                 spacing={2}

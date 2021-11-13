@@ -44,13 +44,12 @@ const VerticalChart = ({ auth }) => {
   }, [setTotalData, auth.user, setLoaded]);
 
 
-
   const data = {
     labels: totalDepartments,
     datasets: [
       {
         label: 'Total Raise Complains',
-        data: [totalRasiedData],
+        data: totalRasiedData,
         backgroundColor: 'rgb(66,63,249,.6)',
         stack: 'Stack 0',
 
@@ -72,15 +71,25 @@ const VerticalChart = ({ auth }) => {
     ],
   };
   const options = {
-
+    scales: {
+      y: {
+        stacked: true,
+        ticks: {
+          beginAtZero: true
+        }
+      },
+      x: {
+        stacked: true
+      }
+    }
   };
 
   return (
-    <Grid container mx={{ xs: 2, sm: 10, md: 12 }} mt={5} boxShadow={10} borderRadius="20px">
+    <Grid container mt={5} boxShadow={10} borderRadius="20px" >
       <PanelHeader title={"Statictics"} />
       {loaded ?
         (
-          <Grid container px={12} my={12} style={{ height: "100%" }}>
+          <Grid container px={12} my={12} >
             <Loader />
           </Grid>
         ) :
