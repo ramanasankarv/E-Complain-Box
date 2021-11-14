@@ -1,48 +1,12 @@
 import { Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { Bar } from 'react-chartjs-2';
-import { getComplainGroupData } from '../../redux/actions/auth';
 import { connect } from "react-redux"
-import Loader from '../../Shared/common/Loader';
 
 
-const VerticalChart = ({ auth }) => {
-  const [totalData, setTotalData] = useState([])
-  const [totalRasiedData, setTotalRasiedData] = useState([])
-  const [totalInComplainData, setTotalInComplainData] = useState([])
-  const [totalDoneData, setTotalDoneData] = useState([])
-  const [loaded, setLoaded] = useState(true)
-  const [totalDepartments, setTotalDepartments] = useState([])
-
-  useEffect(() => {
-    if (auth.user) {
-      getComplainGroupData(auth.user.id).then((res) => {
-        res.length && res.map(datas => {
-          setLoaded(true)
-          setTotalData(res)
-          setTotalRasiedData((totalRasiedData) => [
-            ...totalRasiedData,
-            datas.totalRaiseComplains,
-          ]);
-          setTotalInComplainData((totalInComplainData) => [
-            ...totalInComplainData,
-            datas.totalWipComplains,
-          ]);
-          setTotalDoneData((totalDoneData) => [
-            ...totalDoneData,
-            datas.totalCompletedComplains,
-          ]);
-          setTotalDepartments((totalDepartments) => [
-            ...totalDepartments,
-            datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
-          ]);
-          setLoaded(false)
-        })
-      })
-    }
-  }, [setTotalData, auth.user, setLoaded]);
-
+const VerticalChart = ({ totalRasiedData, totalDepartments, totalInComplainData,
+  totalDoneData }) => {
 
   const data = {
     labels: totalDepartments,
@@ -87,17 +51,9 @@ const VerticalChart = ({ auth }) => {
   return (
     <Grid container mt={5} boxShadow={10} borderRadius="20px" >
       <PanelHeader title={"Statictics"} />
-      {loaded ?
-        (
-          <Grid container px={12} my={12} >
-            <Loader />
-          </Grid>
-        ) :
-        (
-          <Grid container style={{ background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} px={3} py={2}>
-            <Bar data={data} options={options} style={{ fontWeight: "bolder" }} />
-          </Grid>
-        )}
+      <Grid container style={{ background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} px={3} py={2}>
+        <Bar data={data} options={options} style={{ fontWeight: "bolder" }} />
+      </Grid>
     </Grid>
   )
 };

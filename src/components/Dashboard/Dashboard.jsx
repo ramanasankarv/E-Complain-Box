@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-
 import { Grid } from '@mui/material';
 import TodayRecord from './TodayRecord';
 import { Fragment } from 'react';
@@ -8,14 +7,13 @@ import PieChart from './PieChart';
 import { connect } from 'react-redux';
 import { useState } from 'react';
 import Loader from '../../Shared/common/Loader';
-import { useHistory } from "react-router-dom"
 import "./styles/Dashboard.css"
 import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 import DashboardTable from './DashboardTable';
 import { getComplainGroupData } from '../../redux/actions/auth';
 
 function Dashboard({ auth }) {
-  const [totalData, setTotalData] = useState([])
+  const [totalData, setTotalData] = useState(null)
   const [totalRasiedData, setTotalRasiedData] = useState([])
   const [totalInComplainData, setTotalInComplainData] = useState([])
   const [totalDoneData, setTotalDoneData] = useState([])
@@ -24,13 +22,11 @@ function Dashboard({ auth }) {
   const [dataChanged, setdataChanged] = useState(false)
   const [totalDepartments, setTotalDepartments] = useState([])
   const [loaded, setLoaded] = React.useState(true);
-  let history = useHistory()
   useEffect(() => {
-    if (auth.user) {
-      getComplainGroupData(auth.user.id).then((res) => {
-        setTotalData(res)
-        res.length && res.map(datas => {
-
+    const userId = localStorage.getItem("userID")
+    if (userId) {
+      getComplainGroupData(userId).then((res) => {
+        res.length && res.forEach(datas => {
           let firstnumber = Math.floor(Math.random() * 256);
           let secondnumber = Math.floor(Math.random() * 256);
           let thirdnumber = Math.floor(Math.random() * 256);
@@ -61,25 +57,25 @@ function Dashboard({ auth }) {
             ...totalDepartments,
             datas.DepartmentName ? datas.DepartmentName : datas.DepartmentNam,
           ]);
-          setLoaded(false)
-        })
 
+        })
+        setTotalData(res)
+        setLoaded(false)
       })
     }
 
-  }, [setTotalData, auth.user]);
-  const showTotalRaised = totalRasiedData.reduce((sum, data) => {
+  }, [setLoaded, setTotalData]);
+  const showTotalRaised = totalRasiedData.filter(numbers => numbers !== 0).reduce((sum, data) => {
     return sum += data
   }, 0)
-  const showTotalInProgress = totalInComplainData.reduce((sum, data) => {
+  const showTotalInProgress = totalInComplainData.filter(numbers => numbers !== 0).reduce((sum, data) => {
     return sum += data
   }, 0)
-  const showTotalDone = totalDoneData.reduce((sum, data) => {
-
+  const showTotalDone = totalDoneData.filter(numbers => numbers !== 0).reduce((sum, data) => {
     return sum += data
   }, 0)
-
-  return loaded ?
+  console.log(totalData)
+  return loaded || !totalData ?
     (<Grid container px={12} style={{ height: "100%" }}>
       <Loader />
     </Grid>) : (
@@ -98,7 +94,12 @@ function Dashboard({ auth }) {
           <Grid container pl={{ xs: 2, sm: 4, md: 8 }} pr={{ xs: 2, sm: 4, md: 0 }} item md={8}>
             <DashboardTable />
             <TodayRecord showTotalRaised={showTotalRaised} showTotalInProgress={showTotalInProgress} showTotalDone={showTotalDone} />
-            <VerticalChart />
+            <VerticalChart
+              totalRasiedData={totalRasiedData}
+              totalDepartments={totalDepartments}
+              totalInComplainData={totalInComplainData}
+              totalDoneData={totalDoneData}
+            />
           </Grid>
           <PieChart totalRasiedData={totalRasiedData}
             showTotalRaised={showTotalRaised}

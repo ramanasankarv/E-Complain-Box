@@ -54,6 +54,7 @@ function RaiseComplaints({ auth }) {
     const [files, setFiles] = useState([]);
     const [descriptionError, setDescriptionError] = useState("");
     const [urls, setUrls] = useState([]);
+    const [severityMessage, setSeverityMessage] = useState("")
     let history = useHistory();
 
     const editorRef = useRef(null);
@@ -87,7 +88,24 @@ function RaiseComplaints({ auth }) {
             setDescriptionError("Description field is required")
         }
     }
-
+    const handleSeverityClick = (e) => {
+        switch (e.target.value) {
+            case "critical":
+                setSeverityMessage("This issue should me responded immediately")
+                break;
+            case "high":
+                setSeverityMessage("This issue should me responded within couple of hours")
+                break;
+            case "medium":
+                setSeverityMessage("This issue should me responded within couple of days")
+                break;
+            case "low":
+                setSeverityMessage("This issue should me responded within couple of weeks")
+                break;
+            default:
+                setSeverityMessage("")
+        }
+    }
 
     const formik = useFormik({
         initialValues: {
@@ -140,7 +158,7 @@ function RaiseComplaints({ auth }) {
                 <Grid item container mx={{ xs: 2, sm: 4, md: 8 }} mb={8} borderRadius="20px" boxShadow={20} style={{ background: "#fff" }}>
                     <PanelHeader title={"Raise Complain"} />
                     <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
-                        <Grid container px={2} pt={4} spacing={3}>
+                        <Grid container px={3} pt={4} spacing={3}>
                             <Grid item container pt={4} md={6}>
                                 <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <PublicIcon style={{ marginRight: "10px" }} />
@@ -220,7 +238,7 @@ function RaiseComplaints({ auth }) {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid container px={2} spacing={3} pt={4}>
+                        <Grid container px={3} spacing={3} pt={4}>
                             <Grid item container pt={4} md={6}>
                                 <Grid item md={11} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <WarningAmberIcon style={{ marginRight: "10px" }} />
@@ -258,15 +276,20 @@ function RaiseComplaints({ auth }) {
 
                                         <RadioGroup row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={formik.handleChange}>
                                             <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>Severity:</FormLabel>
-                                            <FormControlLabel value="critical" control={<Radio />} label="Critical" />
-                                            <FormControlLabel value="high" control={<Radio />} label="Hign" />
-                                            <FormControlLabel value="medium" control={<Radio />} label="Medium" />
-                                            <FormControlLabel value="low" control={<Radio />} label="Low" />
+                                            <FormControlLabel value="critical" control={<Radio />} label="Critical" onClick={handleSeverityClick} />
+                                            <FormControlLabel value="high" control={<Radio />} label="Hign" onClick={handleSeverityClick} />
+                                            <FormControlLabel value="medium" control={<Radio />} label="Medium" onClick={handleSeverityClick} />
+                                            <FormControlLabel value="low" control={<Radio />} label="Low" onClick={handleSeverityClick} />
                                         </RadioGroup>
                                     </FormControl>
 
                                 </Grid>
                                 <Grid container ml={4}>
+                                    <FormHelperText>{
+                                        severityMessage !== "" &&
+                                        `NOTE: ${severityMessage}`
+
+                                    }</FormHelperText>
                                     <FormHelperText style={{ color: "red" }}>{
                                         formik.touched.severity &&
                                         formik.errors.severity
@@ -274,7 +297,7 @@ function RaiseComplaints({ auth }) {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item container pt={4} px={2}>
+                        <Grid item container pt={4} px={3}>
                             <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                 <SubjectIcon style={{ marginRight: "10px" }} />
                                 <TextField
@@ -295,8 +318,7 @@ function RaiseComplaints({ auth }) {
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item container pt={4} px={2}>
-
+                        <Grid item container pt={4} px={3}>
                             <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                 <FormatTextdirectionLToRIcon style={{ marginRight: "10px" }} />
                                 <Editor
@@ -334,7 +356,7 @@ function RaiseComplaints({ auth }) {
                             </Grid>
                         </Grid>
 
-                        <Grid item container pt={4} px={2}>
+                        <Grid item container pt={4} px={3}>
                             <Grid item md={12} sm={11} xs={10} style={{ overflow: "hidden" }} display="flex" direction="row" alignItems="center">
                                 <CloudUploadIcon style={{ marginRight: "10px" }} />
                                 <Dropzone onDrop={onDrop} >
