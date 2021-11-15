@@ -10,7 +10,7 @@ import Loader from '../../Shared/common/Loader';
 import "./styles/Dashboard.css"
 import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 import DashboardTable from './DashboardTable';
-import { getComplainGroupData } from '../../redux/actions/auth';
+import { getComplainGroupData } from '../../Shared/Api/api';
 
 function Dashboard({ auth }) {
   const [totalData, setTotalData] = useState(null)

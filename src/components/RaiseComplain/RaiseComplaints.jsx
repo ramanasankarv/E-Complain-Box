@@ -24,7 +24,7 @@ import PanelHeader from '../../Shared/common/PanelHeader';
 import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { imageupload } from "../../redux/actions/auth";
+import { imageupload } from "../../Shared/Api/api";
 import { useEffect } from 'react';
 import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 import Loader from '../../Shared/common/Loader';
@@ -192,7 +192,7 @@ function RaiseComplaints({ auth }) {
                                     </TextField>
                                 </Grid>
                             </Grid>
-                            <Grid item container pt={4} direction="row" alignItems="center" md={6}>
+                            <Grid item container pt={4} md={6}>
                                 <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <WorkOutlineIcon style={{ marginRight: "10px" }} />
                                     <TextField
@@ -265,7 +265,7 @@ function RaiseComplaints({ auth }) {
                                     }</FormHelperText>
                                 </Grid>
                             </Grid>
-                            <Grid item container pt={4} direction="row" alignItems="center" md={6}>
+                            <Grid item container pt={4} md={6}>
                                 <Grid item md={11} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <FlashAutoIcon style={{ marginRight: "10px" }} />
                                     <FormControl component="fieldset" error={

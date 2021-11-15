@@ -24,8 +24,8 @@ import PanelHeader from '../../Shared/common/PanelHeader';
 import { connect } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { imageupload } from "../../redux/actions/auth";
-import { getSingleComplainData, updateComplain } from '../../redux/actions/auth';
+import { imageupload } from "../../Shared/Api/api";
+import { getSingleComplainData, updateComplain } from '../../Shared/Api/api';
 import Loader from '../../Shared/common/Loader';
 import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 
