@@ -14,20 +14,23 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import WorkOutline from '@mui/icons-material/WorkOutline';
 import Public from '@mui/icons-material/Public';
 import Subject from '@mui/icons-material/Subject';
-import { getSingleComplainData, updateComplainStatus, createComment } from '../../redux/actions/auth';
+import { getSingleComplainData, updateComplainStatus, createComment, departmentChange } from '../../redux/actions/auth';
 import { useParams } from "react-router-dom"
 import { connect } from 'react-redux';
 import ReactHtmlParser from "react-html-parser";
 import moment from 'moment'
-
-
+import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
+import PausePresentationIcon from '@mui/icons-material/PausePresentation';
 import Loader from '../../Shared/common/Loader';
+import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
+import MenuItem from '@mui/material/MenuItem';
+
 function ComplainDepartmentChange({ auth }) {
     const [description, setDescription] = useState("");
     const [complainStatus, setComplainStatus] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
     const editorRef = useRef(null);
-    const [dataLoaded, setDataLoaded] = useState(false)
+    const [department, setDepartment] = useState("");
 
 
 
@@ -38,7 +41,6 @@ function ComplainDepartmentChange({ auth }) {
     useEffect(async () => {
         const data = getSingleComplainData(id)
             .then(res => {
-                console.log("tusher")
                 setComplainData(res)
                 setLoader(false)
             })
@@ -75,46 +77,38 @@ function ComplainDepartmentChange({ auth }) {
             setDescriptionError("Comment field can not be empty")
         }
     }
+
+    const handleSubmitForward = (e) => {
+        departmentChange(department, history, id)
+    }
+    const handleChangeDepartment = (e) => {
+        setDepartment({ department: e.target.value })
+    }
+
+    const toDateTimeBig = (secs) => {
+        var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
+        t.setUTCSeconds(secs);
+        return moment(t).format('MMMM Do YYYY, h:mm:ss a')
+    }
     const toDateTime = (secs) => {
         var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
         t.setUTCSeconds(secs);
         const d = new Date("2015-03-25");
         let newDate = moment(t).fromNow()
-
         return newDate;
     }
 
     return loader || !complainData.ComplainStatus || !auth.user ? (<Grid container px={12} mt={12} style={{ height: "100%" }}>
         <Loader />
     </Grid>) : (
-        <Grid container py={12} px={{ xs: 2, sm: 10, md: 20 }}>
-            <Grid container>
-                <Grid item md={6} sm={6} xs={6}>
-                    <Typography>
-                        Complain ID: {id}
-                    </Typography>
-                    <Typography>
-                        Complain Status: {complainData.ComplainStatus}
-                    </Typography>
-                </Grid>
-                <Grid item md={6} sm={6} xs={6}
-                    container
-                    direction="row"
-                    justifyContent="flex-end"
-                    alignItems="center"
-                >
-                    <Typography>
-                        Welcome {auth.user.FullName}
-                    </Typography>
-                </Grid>
-            </Grid>
-            <Grid item container py={4} direction="row" alignItems="center">
-
+        <Grid container >
+            <LoggedUserInfo auth={auth} />
+            <Grid item container py={4} px={{ xs: 2, sm: 4, md: 8 }}>
                 <Grid item >
                     <FormControl component="fieldset">
                         <RadioGroup size="large"
                             row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={handleChangeStatus} value={complainStatus.complainStatus || complainData.ComplainStatus}>
-                            <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}></FormLabel>
+                            <FormLabel component="legend" name="severity"></FormLabel>
                             <FormControlLabel value="Raise" control={<Radio />} label="Raised" />
                             <FormControlLabel value="In Progress" control={<Radio />} label="In Progress" />
                             <FormControlLabel value="Completed" control={<Radio />} label="Completed" />
@@ -125,203 +119,272 @@ function ComplainDepartmentChange({ auth }) {
                     </Button>
                 </Grid>
             </Grid>
-            <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={4} px={4} mt={12} boxShadow={8} borderRadius="20px">
-                <Grid item container direction="row" alignItems="center">
-                    <Grid item md={12} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <DateRangeIcon /> <b style={{ marginRight: "10px " }}>Date: </b> {toDateTime(complainData.CreatedAt._seconds)}
-                        </Typography>
-                    </Grid>
 
+            <Grid item container pb={4} px={{ xs: 2, sm: 4, md: 8 }}>
+                <Grid container item md={6} sm={11} xs={10} display="flex" direction="row" alignItems="center" pr={2} pt={1}>
+                    <TextField
+                        ml={1}
+                        variant="outlined"
+                        name="department"
+                        id="department"
+                        select
+                        fullWidth
+                        value={department.department || complainData.ComplainDepartmentID}
+                        label="Forward to the department"
+                        onChange={handleChangeDepartment}
+                    >
+
+                        <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
+                        <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
+                        <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
+
+                        <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
+                        <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
+                        <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
+
+                        <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
+                        <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
+                        <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
+
+                        <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
+                        <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
+                        <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
+
+                        <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
+                        <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
+                    </TextField>
                 </Grid>
-                <Grid item container direction="row" alignItems="center">
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <WarningAmberIcon /> <b style={{ marginRight: "10px " }}>Complain Type: </b> {complainData.ComplainType}
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <FlashAutoIcon /> <b style={{ marginRight: "10px " }}>Severity: </b> {complainData.ComplainSeverity}
-                        </Typography>
-                    </Grid>
+                <Grid container item md={6} sm={12} sx={12} pt={1}>
+                    <Button variant="contained" size="large" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff" }} onClick={handleSubmitForward}>
+                        Forward to this Department
+                    </Button>
                 </Grid>
-                <Grid item container direction="row" alignItems="center">
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <WorkOutline /> <b style={{ marginRight: "10px " }}>Departmebnt: </b> {complainData.department.DepartmentName}
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <Public /> <b style={{ marginRight: "10px " }}>City: </b> {complainData.city.CityName}
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid item container direction="row" alignItems="center">
-                    <Grid item md={6} sm={12} xs={12} pt={4}>
-                        <Typography variant="subtitle1" style={{
-                            verticalAlign: 'middle',
-                            display: 'inline-flex'
-                        }}>
-                            <Subject /> <b style={{ marginRight: "10px " }}>Subject Line: </b> {complainData.ComplainSubject}
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid container pt={5}>
-                    <Typography variant="subtitle1" pl={2}>
-                        {ReactHtmlParser(complainData.ComplainDescription)}
-                    </Typography>
-                </Grid>
-                {complainData && complainData.ComplainDocument && Array.isArray(complainData.ComplainDocument.ComplainDocumentPath) && complainData.ComplainDocument.ComplainDocumentPath.map((document, i) => {
-                    return (
-                        <Grid item container direction="row" alignItems="center" md={12} key={i}>
-                            <Grid item md={8} sm={12} xs={12} pt={4}>
+            </Grid>
+            <Grid container display="flex" justifyContent="center" alignItems="flex-start">
+                <Grid container item mx={{ xs: 2, sm: 4, md: 8 }} pr={{ xs: 2, sm: 4, md: 0 }} mb={8} md={12} sm={12} xs={12}>
+                    <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={3} px={3} mt={12} boxShadow={8} borderRadius="20px">
+                        <Grid container>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
                                 <Typography variant="subtitle1" style={{
                                     verticalAlign: 'middle',
                                     display: 'inline-flex'
                                 }}>
-                                    <b style={{ marginRight: "10px " }}>File </b> {i + 1}
+                                    <DateRangeIcon style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Date: </b> {toDateTimeBig(complainData.CreatedAt._seconds)}
                                 </Typography>
                             </Grid>
-                            <Grid item md={4} sm={12} xs={12} pt={4}>
-                                <Typography variant="subtitle1" >
-                                    <img style={{ width: "100%", maxHeight: "200px" }} src={document} alt="" />
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <WarningAmberIcon style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Complain Type: </b> {complainData.ComplainType}
                                 </Typography>
                             </Grid>
                         </Grid>
-                    )
-                })}
-                {complainData && complainData.ComplainDocument && !Array.isArray(complainData.ComplainDocument.ComplainDocumentPath) ? (
-                    <Fragment>
-                        <Grid item md={6} sm={12} xs={12} pt={4}>
-                            <Typography variant="subtitle1" style={{
-                                verticalAlign: 'middle',
-                                display: 'inline-flex'
-                            }}>
-                                <b style={{ marginRight: "10px " }}>Departmebnt: </b> Private
-                            </Typography>
+                        <Grid container>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <PausePresentationIcon style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Complain Status: </b> {complainData.ComplainStatus}
+                                </Typography>
+                            </Grid>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <FlashAutoIcon style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Severity: </b> {complainData.ComplainSeverity}
+                                </Typography>
+                            </Grid>
                         </Grid>
-                        <Grid item md={6} sm={12} xs={12} pt={4}>
-                            <Typography variant="subtitle1" >
-                                <img style={{ width: "100%", maxHeight: "200px" }} src={complainData.ComplainDocument.ComplainDocumentPath} alt="" />
-                            </Typography>
+                        <Grid container>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <WorkOutline style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Department: </b> {complainData.department.DepartmentName ? complainData.department.DepartmentName : complainData.department.DepartmentNam}
+                                </Typography>
+                            </Grid>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <Public style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>City: </b> {complainData.city.CityName}
+                                </Typography>
+                            </Grid>
                         </Grid>
-                    </Fragment>
-                ) : ""}
-            </Grid>
-            <Grid container mt={12}>
-                <Typography variant="h6">
-                    Communication
-                </Typography>
-            </Grid>
-            <Grid container style={{ background: "#fff", color: "#1F5B88" }} px={5} py={5}>
-                {complainData && complainData.comments && complainData.comments.sort((a, b) => b.createdAt._seconds - a.createdAt._seconds)
-                    .map(comment => {
-                        return auth.user.id === comment.userid ? (
-                            <Grid container my={5}>
-                                <Grid item md={12} sm={12} xs={12} container>
-                                    <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
-                                        <Typography style={{ textAlign: "start" }}>
-                                            <b>{comment.by}</b>
+                        <Grid container>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <Subject style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Subject Line: </b> {complainData.ComplainSubject}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Grid container>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <FormatTextdirectionLToRIcon style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Description: </b>
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Grid container pl={4}>
+                            {ReactHtmlParser(complainData.ComplainDescription)}
+                        </Grid>
+
+                        {complainData && complainData.ComplainDocument && Array.isArray(complainData.ComplainDocument.ComplainDocumentPath) && complainData.ComplainDocument.ComplainDocumentPath.map((document, i) => {
+                            return (
+                                <Grid item container direction="row" alignItems="center" md={12} key={i}>
+                                    <Grid item md={8} sm={12} xs={12} pt={4}>
+                                        <Typography variant="subtitle1" style={{
+                                            verticalAlign: 'middle',
+                                            display: 'inline-flex'
+                                        }}>
+                                            <b style={{ marginRight: "10px " }}>File </b> {i + 1}
                                         </Typography>
-                                        <Typography style={{ textAlign: "start" }}>
-                                            {toDateTime(comment.createdAt._seconds)}
+                                    </Grid>
+                                    <Grid item md={4} sm={7} xs={12} pt={4}>
+                                        <Typography variant="subtitle1" >
+                                            <img style={{ width: "100%", maxHeight: "200px" }} src={document} alt="" />
                                         </Typography>
-                                    </Box>
+                                    </Grid>
                                 </Grid>
-                                <Grid item md={8} sm={12} xs={12} py={1} px={2} style={{ background: "#3AAFA8", borderRadius: "20px", color: "#fff" }}>
-                                    <Typography>
-                                        {ReactHtmlParser(comment.comments)}
+                            )
+                        })}
+                        {complainData && complainData.ComplainDocument && !Array.isArray(complainData.ComplainDocument.ComplainDocumentPath) ? (
+                            <Fragment>
+                                <Grid item md={12} sm={12} xs={12} pt={4}>
+                                    <Typography variant="subtitle1" style={{
+                                        verticalAlign: 'middle',
+                                        display: 'inline-flex'
+                                    }}>
+                                        <b style={{ marginRight: "10px " }}>File: </b> Private
                                     </Typography>
                                 </Grid>
-                            </Grid>
-                        ) : (
-                            <Grid container my={5}
-                                container
-                                direction="row"
-                                justifyContent="flex-end"
-                                alignItems="center"
-                            >
-                                <Grid item md={12} sm={12} xs={12} container>
-                                    <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
-                                        <Typography style={{ textAlign: "start" }}>
-                                            {toDateTime(comment.createdAt._seconds)}
-                                        </Typography>
-                                        <Typography style={{ textAlign: "start" }}>
-                                            <b>{comment.by}</b>
-                                        </Typography>
-
-                                    </Box>
+                                <Grid item md={4} sm={7} xs={12} pt={4}>
+                                    <Typography variant="subtitle1" >
+                                        <img style={{ width: "100%", maxHeight: "300px", borderRadius: "20px" }} src={complainData.ComplainDocument.ComplainDocumentPath} alt="" />
+                                    </Typography>
                                 </Grid>
-                                <Grid item md={8} sm={12} xs={12} py={1} pl={3} style={{ background: "#eee", borderRadius: "20px", color: "#000" }}>
-                                    {ReactHtmlParser(comment.comments)}
-                                </Grid>
+                            </Fragment>
+                        ) : ""}
+                    </Grid>
+
+                </Grid >
+                <Grid container item px={{ xs: 2, sm: 4, md: 8 }} mb={8} md={12} sm={12} xs={12}>
+                    <Grid container mt={12}>
+                        <Typography variant="h6" mb={3}>
+                            Comments
+                        </Typography>
+                    </Grid>
+                    <Grid container style={{ background: "#fff", color: "#1F5B88" }} px={5} py={5} boxShadow={8} borderRadius="20px">
+                        <Grid container>
+                            {complainData && complainData.comments && complainData.comments.sort((a, b) => b.createdAt._seconds - a.createdAt._seconds)
+                                .map((comment, i) => {
+                                    return auth.user.id === comment.userid ? (
+                                        <Grid container my={5} key={i}>
+                                            <Grid item md={12} sm={12} xs={12} container>
+                                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
+                                                    <Typography style={{ textAlign: "start" }}>
+                                                        <b>{comment.by}</b>
+                                                    </Typography>
+                                                    <Typography style={{ textAlign: "start" }}>
+                                                        {toDateTime(comment.createdAt._seconds)}
+                                                    </Typography>
+                                                </Box>
+                                            </Grid>
+                                            <Grid item md={10} sm={12} xs={12} py={1} px={2} style={{ background: "#3AAFA8", borderRadius: "20px", color: "#fff" }}>
+                                                <Typography>
+                                                    {ReactHtmlParser(comment.comments)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    ) : (
+                                        <Grid container my={5}
+                                            container
+                                            direction="row"
+                                            justifyContent="flex-end"
+                                            alignItems="center"
+                                            key={i}
+                                        >
+                                            <Grid item md={12} sm={12} xs={12} container>
+                                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
+                                                    <Typography style={{ textAlign: "start" }}>
+                                                        {toDateTime(comment.createdAt._seconds)}
+                                                    </Typography>
+                                                    <Typography style={{ textAlign: "start" }}>
+                                                        <b>{comment.by}</b>
+                                                    </Typography>
+
+                                                </Box>
+                                            </Grid>
+                                            <Grid item md={10} sm={12} xs={12} py={1} pl={3} style={{ background: "#eee", borderRadius: "20px", color: "#000" }}>
+                                                {ReactHtmlParser(comment.comments)}
+                                            </Grid>
+                                        </Grid>
+                                    )
+                                })}
+                        </Grid>
+                        <Grid item container style={{ background: "#fff" }} py={4} px={0} direction="row" alignItems="start">
+                            <Grid item md={12} sm={12} xs={12}>
+                                <Editor
+                                    apiKey="dd83bg0e7v7jnnfjjqwg7bktooeb1n4wcn2vn7vmeaof51y5"
+                                    onInit={(evt, editor) => editorRef.current = editor}
+                                    initialValue=""
+                                    id="description"
+                                    name="description"
+                                    onEditorChange={(content, editor) =>
+                                        parseEditorData(content)
+                                    }
+
+                                    init={{
+                                        height: 100,
+                                        menubar: false,
+                                        plugins: [
+                                            'advlist autolink lists link image charmap print preview anchor',
+                                            'searchreplace visualblocks code fullscreen',
+                                            'insertdatetime media table paste code help wordcount'
+                                        ],
+                                        toolbar: 'undo redo | formatselect | ' +
+                                            'bold italic backcolor | alignleft aligncenter ' +
+                                            'alignright alignjustify | bullist numlist outdent indent | ' +
+                                            'removeformat | help',
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                    }}
+                                />
+                                <FormHelperText style={{ color: "red" }}>{
+                                    descriptionError !== "" ? descriptionError : ""
+                                }</FormHelperText>
                             </Grid>
-                        )
-                    })}
+                            <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                                <Button
+                                    onClick={handleClick}
+                                    style={{ color: "#fff" }}
+                                    type="submit"
+                                    variant="contained"
+                                >
+                                    Reply
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
 
-
-            </Grid>
-            <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="start">
-                <Grid item md={12} sm={12} xs={12}>
-                    <Editor
-                        apiKey="dd83bg0e7v7jnnfjjqwg7bktooeb1n4wcn2vn7vmeaof51y5"
-                        onInit={(evt, editor) => editorRef.current = editor}
-                        initialValue=""
-                        id="description"
-                        name="description"
-                        onEditorChange={(content, editor) =>
-                            parseEditorData(content)
-                        }
-
-                        init={{
-                            height: 100,
-                            menubar: false,
-                            plugins: [
-                                'advlist autolink lists link image charmap print preview anchor',
-                                'searchreplace visualblocks code fullscreen',
-                                'insertdatetime media table paste code help wordcount'
-                            ],
-                            toolbar: 'undo redo | formatselect | ' +
-                                'bold italic backcolor | alignleft aligncenter ' +
-                                'alignright alignjustify | bullist numlist outdent indent | ' +
-                                'removeformat | help',
-                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                        }}
-                    />
-                    <FormHelperText style={{ color: "red" }}>{
-                        descriptionError !== "" ? descriptionError : ""
-                    }</FormHelperText>
-                </Grid>
-                <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                    <Button
-                        onClick={handleClick}
-                        style={{ color: "#fff" }}
-                        type="submit"
-                        variant="contained"
-                    >
-                        Reply
-                    </Button>
                 </Grid>
             </Grid>
-        </Grid >
+
+        </Grid>
     );
+
+
 }
 const mapStateToProps = (state) => ({
     auth: state.auth,

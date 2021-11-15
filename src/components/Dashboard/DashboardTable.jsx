@@ -13,6 +13,7 @@ import { columns } from './TableData';
 import moment from 'moment'
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { getDashboardData } from "../../redux/actions/auth"
+import { useHistory } from "react-router-dom"
 
 
 function DashboardTable({ auth }) {
@@ -20,11 +21,11 @@ function DashboardTable({ auth }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    let history = useHistory()
 
     useEffect(() => {
-
-        if (auth.user && auth.user.UserRole === "Department") {
-            getDashboardData(page, rowsPerPage, "department", auth.user.id).then((res) => {
+        if (auth.user && auth.user.UserRole === "Department Employee") {
+            getDashboardData(page, rowsPerPage, "department", auth.user.UserDepartmentId).then((res) => {
                 setRows(res);
             })
         } else if (auth.user && auth.user.UserRole === "Complainant") {
