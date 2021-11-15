@@ -1,11 +1,1 @@
-.avatar-container {
-  position: relative;
-  background-color: #fff;
-}
-.avatar {
-  position: absolute;
-  bottom: 28px;
-  display: table;
-  left: 50%;
-  transform: (-50%, 0);
-}
+

@@ -17,20 +17,32 @@ import { connect } from "react-redux";
 import { logout } from "../../../redux/actions/auth";
 import { useHistory } from "react-router";
 import DateRangeIcon from '@mui/icons-material/DateRange';
+import { useEffect } from "react";
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import PersonIcon from '@mui/icons-material/Person';
+
 const AppToolbar = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  console.log(props)
   let history = useHistory();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  useEffect(() => {
+
+  })
+
   const logout = () => {
     props.logout(history);
     history.push('/login')
   }
+
+
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -45,8 +57,13 @@ const AppToolbar = (props) => {
   };
 
   const menuId = "primary-search-account-menu";
+
+
   const renderMenu = (
     <Menu
+      style={{
+        top: "6px"
+      }}
       anchorEl={anchorEl}
       anchorOrigin={{
         vertical: "top",
@@ -61,12 +78,16 @@ const AppToolbar = (props) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
+      <MenuItem onClick={handleMenuClose}><LockOpenIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Login</MenuItem>
+      <MenuItem onClick={handleMenuClose}><VpnKeyIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Registration</MenuItem>
+      <MenuItem onClick={handleMenuClose}><ExitToAppIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Logout</MenuItem>
+      <MenuItem onClick={handleMenuClose}><PersonIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Profile</MenuItem>
+    </Menu >
   );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
+
+
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -154,7 +175,7 @@ const AppToolbar = (props) => {
               Contact Us
             </Link>
 
-            {!props.auth.isAuthenticated ? (
+            {!localStorage.getItem("token") || !props.auth.isAuthenticated ? (
               < React.Fragment >
                 <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} component={Link} to={'/login'}>
                   Login
