@@ -5,7 +5,7 @@ import ArchiveIcon from '@mui/icons-material/Archive';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import MenuItem from '@mui/material/MenuItem';
-import { StyledMenu } from "./styles/HomepageStyles";
+import { StyledMenu } from "./styles/DashboardStyle";
 function StyledMenuHome({ anchorEl, setAnchorEl, open, handleClose }) {
 
     return (

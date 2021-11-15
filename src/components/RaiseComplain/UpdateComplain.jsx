@@ -24,10 +24,10 @@ import PanelHeader from '../../Shared/common/PanelHeader';
 import { connect } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { imageupload } from "../../redux/actions/auth";
-import { getSingleComplainData, updateComplain } from '../../redux/actions/auth';
+import { imageupload } from "../../Shared/Api/api";
+import { getSingleComplainData, updateComplain } from '../../Shared/Api/api';
 import Loader from '../../Shared/common/Loader';
-
+import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 
 const validationSchema = yup.object({
     department: yup
@@ -53,9 +53,10 @@ function UpdateComplaints({ auth }) {
     const [description, setDescription] = useState("");
     const [files, setFiles] = useState([]);
     const [descriptionError, setDescriptionError] = useState("");
-    const [urls, setUrls] = useState([]);
     const [complainData, setComplainData] = useState({})
     const [dataLoaded, setDataLoaded] = useState(false)
+    const [severityMessage, setSeverityMessage] = useState("")
+
     const [initialValuesForm, setInitialValuesForm] = useState({
         department: "",
         city: '',
@@ -67,6 +68,8 @@ function UpdateComplaints({ auth }) {
     let history = useHistory();
     let { id } = useParams()
     const editorRef = useRef(null);
+
+
 
     const onDrop = (files) => {
         setFiles(files)
@@ -101,7 +104,24 @@ function UpdateComplaints({ auth }) {
         console.log(descriptionError);
     }
 
-
+    const handleSeverityClick = (e) => {
+        switch (e.target.value) {
+            case "critical":
+                setSeverityMessage("This issue should me responded immediately")
+                break;
+            case "high":
+                setSeverityMessage("This issue should me responded within couple of hours")
+                break;
+            case "medium":
+                setSeverityMessage("This issue should me responded within couple of days")
+                break;
+            case "low":
+                setSeverityMessage("This issue should me responded within couple of weeks")
+                break;
+            default:
+                setSeverityMessage("")
+        }
+    }
     const handleClick = () => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -128,7 +148,7 @@ function UpdateComplaints({ auth }) {
                 setDescriptionError(descriptionErrorMessage)
             }
             console.log(allValues)
-            await new Promise((r) => setTimeout(updateComplain(allValues, urls, setUrls, history, id)));
+            await new Promise((r) => setTimeout(updateComplain(allValues, history, id)));
         },
     });
     const newFiles = files.map((file, i) => (
@@ -152,240 +172,232 @@ function UpdateComplaints({ auth }) {
         (<Grid container px={12} mt={12} style={{ height: "100%" }}>
             <Loader />
         </Grid>) : (
-            <Grid item container px={30} py={8}>
-                {auth.user ? (<Grid container my={5}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
-                ) : ""
+            <Grid container >
+                {auth.user ? (<LoggedUserInfo auth={auth} />) : ""
                 }
-                <Grid item container py={2} style={{ backgroundColor: "#2B7A78" }}>
+                <Grid item container mx={{ xs: 2, sm: 4, md: 8 }} mb={8} borderRadius="20px" boxShadow={20} style={{ background: "#fff" }}>
                     <PanelHeader title={"Update Complain"} />
+                    <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
+                        <Grid container px={3} pt={4} spacing={3}>
+
+                            <Grid item container pt={4} md={6}>
+                                <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
+                                    <PublicIcon style={{ marginRight: "10px" }} />
+                                    <TextField
+                                        variant="outlined"
+                                        name="city"
+                                        id="city"
+                                        select
+                                        fullWidth
+                                        label="Select Your city"
+                                        value={formik.values.city ? formik.values.city : ""}
+                                        onChange={formik.handleChange}
+                                        error={
+                                            formik.touched.city &&
+                                            Boolean(formik.errors.city)
+                                        }
+                                        helperText={
+                                            formik.touched.city && formik.errors.city
+                                        }
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        <MenuItem value={"uTrinC9Mb1xUJp7hBhFs"}>Bulandshahar</MenuItem>
+                                        <MenuItem value={"XNYE2aGK1QP6y7TFEo4t"}>Ghaziabad</MenuItem>
+                                        <MenuItem value={"kudlyUz1YV3mb5x8UewP"}>Kanpur</MenuItem>
+                                        <MenuItem value={"xk9a1yaOSn4eYLHCcRzY"}>Meerut</MenuItem>
+                                        <MenuItem value={"LcbMsHmo3vlyZBtVRISp"}>Muzaffarnagar</MenuItem>
+                                        <MenuItem value={"Lrgd20uPHAmjs0BgvTBO"}>Noida</MenuItem>
+                                        <MenuItem value={"oqc4tQFg2vNzwuTfEUWR"}>Saharanpur</MenuItem>
+                                    </TextField>
+                                </Grid>
+                            </Grid>
+                            <Grid item container pt={4} direction="row" alignItems="center" md={6}>
+                                <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
+                                    <WorkOutlineIcon style={{ marginRight: "10px" }} />
+                                    <TextField
+                                        variant="outlined"
+                                        name="department"
+                                        id="department"
+                                        select
+                                        fullWidth
+                                        label="Select Your Department"
+                                        value={formik.values.department ? formik.values.department : ""}
+                                        onChange={formik.handleChange}
+                                        error={
+                                            formik.touched.department &&
+                                            Boolean(formik.errors.department)
+                                        }
+                                        helperText={
+                                            formik.touched.department && formik.errors.department
+                                        }
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+                                        <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
+                                        <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
+                                        <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
+
+                                        <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
+                                        <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
+                                        <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
+
+                                        <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
+                                        <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
+                                        <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
+
+                                        <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
+                                        <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
+                                        <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
+
+                                        <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
+                                        <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
+                                    </TextField>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid container px={3} spacing={3} pt={4}>
+
+                            <Grid item container pt={4} md={6}>
+                                <Grid item md={11} sm={11} xs={10} display="flex" direction="row" alignItems="center">
+                                    <WarningAmberIcon style={{ marginRight: "10px" }} />
+                                    <FormControl component="fieldset" error={
+                                        formik.touched.complainType &&
+                                        Boolean(formik.errors.complainType)
+                                    }>
+                                        <RadioGroup row aria-label="gender" name="complainType" onChange={formik.handleChange} value={formik.values.complainType ? formik.values.complainType : ""}>
+                                            <FormLabel component="legend" style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
+                                            <FormControlLabel value="public" control={<Radio />} label="Public" />
+                                            <FormControlLabel value="private" control={<Radio />} label="Private" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormHelperText style={{ color: "red" }}>{
+                                        formik.touched.complainType &&
+                                        formik.errors.complainType
+                                    }</FormHelperText>
+                                </Grid>
+                            </Grid>
+                            <Grid item container pt={4} direction="row" alignItems="center" md={6}>
+                                <Grid item md={11} sm={11} xs={10} display="flex" direction="row" alignItems="center">
+                                    <FlashAutoIcon style={{ marginRight: "10px" }} />
+                                    <FormControl component="fieldset" error={
+                                        formik.touched.severity &&
+                                        Boolean(formik.errors.severity)
+                                    }>
+                                        <RadioGroup row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={formik.handleChange} value={formik.values.severity ? formik.values.severity : ""}>
+                                            <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}>Severity:</FormLabel>
+                                            <FormControlLabel value="critical" control={<Radio />} label="Critical" onClick={handleSeverityClick} />
+                                            <FormControlLabel value="high" control={<Radio />} label="Hign" onClick={handleSeverityClick} />
+                                            <FormControlLabel value="medium" control={<Radio />} label="Medium" onClick={handleSeverityClick} />
+                                            <FormControlLabel value="low" control={<Radio />} label="Low" onClick={handleSeverityClick} />
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormHelperText style={{ color: "red" }}>{
+                                        formik.touched.severity &&
+                                        formik.errors.severity
+                                    }</FormHelperText>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item container pt={4} px={3}>
+                            <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
+                                <SubjectIcon style={{ marginRight: "10px" }} />
+                                <TextField
+                                    color="primary"
+                                    margin="normal"
+                                    fullWidth
+                                    id="subject"
+                                    type="text"
+                                    label="Please provide the subject line"
+                                    name="subject"
+                                    autoComplete="subject"
+                                    autoFocus
+                                    variant="outlined"
+                                    value={formik.values.subject ? formik.values.subject : ""}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.subject && Boolean(formik.errors.subject)}
+                                    helperText={formik.touched.subject && formik.errors.subject}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid item container pt={4} px={3}>
+                            <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
+                                <FormatTextdirectionLToRIcon style={{ marginRight: "10px" }} />
+                                <Editor
+                                    apiKey="dd83bg0e7v7jnnfjjqwg7bktooeb1n4wcn2vn7vmeaof51y5"
+                                    onInit={(evt, editor) => editorRef.current = editor}
+                                    initialValue={complainData.ComplainDescription}
+                                    id="description"
+                                    name="description"
+                                    onEditorChange={(content, editor) =>
+                                        parseEditorData(content)
+                                    }
+
+                                    init={{
+                                        width: "100%",
+                                        height: 300,
+                                        menubar: false,
+                                        plugins: [
+                                            'advlist autolink lists link image charmap print preview anchor',
+                                            'searchreplace visualblocks code fullscreen',
+                                            'insertdatetime media table paste code help wordcount'
+                                        ],
+                                        toolbar: 'undo redo | formatselect | ' +
+                                            'bold italic backcolor | alignleft aligncenter ' +
+                                            'alignright alignjustify | bullist numlist outdent indent | ' +
+                                            'removeformat | help',
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                    }}
+                                />
+                                <FormHelperText style={{ color: "red" }}>{
+                                    descriptionError !== "" ? descriptionError : ""
+                                }</FormHelperText>
+                            </Grid>
+                        </Grid>
+
+                        <Grid item container pt={4} px={3}>
+                            <Grid item md={12} sm={11} xs={10} style={{ overflow: "hidden" }} display="flex" direction="row" alignItems="center">
+                                <CloudUploadIcon style={{ marginRight: "10px" }} />
+                                <Dropzone onDrop={onDrop}>
+                                    {({ getRootProps, getInputProps }) => (
+                                        <section className="container" style={{ width: "100%" }}>
+                                            <div {...getRootProps({ className: 'dropzone' })}>
+                                                <input {...getInputProps()} />
+                                                <p style={{
+                                                    border: "1px dashed grey",
+                                                    padding: "20px",
+                                                    background: "#f8f8f8",
+                                                }}>Drag 'n' drop some files here, or click to select files</p>
+                                            </div>
+                                            <aside>
+                                                <h4>{files.length > 0 ? "Files" : ""}</h4>
+                                                < ul > {newFiles}</ul>
+                                            </aside>
+                                        </section>
+                                    )}
+                                </Dropzone>
+                            </Grid>
+                        </Grid>
+                        <Grid item container style={{ background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} py={4} px={4} direction="row" alignItems="center">
+                            <Button
+                                onClick={handleClick}
+                                style={{ color: "#fff" }}
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                            >
+                                Update Complain
+                            </Button>
+                        </Grid>
+                    </form>
                 </Grid>
-                <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                        <Grid item md={1} sm={1} xs={2} mt={2}>
-                            <PublicIcon />
-                        </Grid>
-
-                        <Grid container item md={11} sm={11} xs={10}>
-                            <TextField
-                                variant="standard"
-                                name="city"
-                                id="city"
-                                select
-                                fullWidth
-                                label="Select Your city"
-                                value={formik.values.city ? formik.values.city : ""}
-                                onChange={formik.handleChange}
-                                error={
-                                    formik.touched.city &&
-                                    Boolean(formik.errors.city)
-                                }
-                                helperText={
-                                    formik.touched.city && formik.errors.city
-                                }
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={"uTrinC9Mb1xUJp7hBhFs"}>Bulandshahar</MenuItem>
-                                <MenuItem value={"XNYE2aGK1QP6y7TFEo4t"}>Ghaziabad</MenuItem>
-                                <MenuItem value={"kudlyUz1YV3mb5x8UewP"}>Kanpur</MenuItem>
-                                <MenuItem value={"xk9a1yaOSn4eYLHCcRzY"}>Meerut</MenuItem>
-                                <MenuItem value={"LcbMsHmo3vlyZBtVRISp"}>Muzaffarnagar</MenuItem>
-                                <MenuItem value={"Lrgd20uPHAmjs0BgvTBO"}>Noida</MenuItem>
-                                <MenuItem value={"oqc4tQFg2vNzwuTfEUWR"}>Saharanpur</MenuItem>
-                            </TextField>
-                        </Grid>
-                    </Grid>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                        <Grid item md={1} sm={1} xs={2}>
-                            <WarningAmberIcon />
-                        </Grid>
-                        <Grid item md={11} sm={11} xs={10}>
-                            <FormControl component="fieldset" error={
-                                formik.touched.complainType &&
-                                Boolean(formik.errors.complainType)
-                            }>
-                                <RadioGroup row aria-label="gender" name="complainType" onChange={formik.handleChange} value={formik.values.complainType ? formik.values.complainType : ""}>
-                                    <FormLabel component="legend" style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
-                                    <FormControlLabel value="public" control={<Radio />} label="Public" />
-                                    <FormControlLabel value="private" control={<Radio />} label="Private" />
-                                </RadioGroup>
-                            </FormControl>
-                            <FormHelperText style={{ color: "red" }}>{
-                                formik.touched.complainType &&
-                                formik.errors.complainType
-                            }</FormHelperText>
-                        </Grid>
-                    </Grid>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                        <Grid item md={1} sm={1} xs={2}>
-                            <FlashAutoIcon />
-                        </Grid>
-                        <Grid item md={11} sm={11} xs={10}>
-                            <FormControl component="fieldset" error={
-                                formik.touched.severity &&
-                                Boolean(formik.errors.severity)
-                            }>
-                                <RadioGroup row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={formik.handleChange} value={formik.values.severity ? formik.values.severity : ""}>
-                                    <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}>Severity:</FormLabel>
-                                    <FormControlLabel value="high" control={<Radio />} label="Hign" />
-                                    <FormControlLabel value="medium" control={<Radio />} label="Medium" />
-                                    <FormControlLabel value="low" control={<Radio />} label="Low" />
-                                </RadioGroup>
-                            </FormControl>
-                            <FormHelperText style={{ color: "red" }}>{
-                                formik.touched.severity &&
-                                formik.errors.severity
-                            }</FormHelperText>
-                        </Grid>
-                    </Grid>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                        <Grid item md={1} sm={1} xs={2} mt={2}>
-                            <WorkOutlineIcon />
-                        </Grid>
-                        <Grid item md={11} sm={11} xs={10}>
-                            <TextField
-                                variant="standard"
-                                name="department"
-                                id="department"
-                                select
-                                fullWidth
-                                label="Select Your Department"
-                                value={formik.values.department ? formik.values.department : ""}
-                                onChange={formik.handleChange}
-                                error={
-                                    formik.touched.department &&
-                                    Boolean(formik.errors.department)
-                                }
-                                helperText={
-                                    formik.touched.department && formik.errors.department
-                                }
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
-                                <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
-                                <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
-
-                                <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
-                                <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
-                                <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
-
-                                <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
-                                <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
-                                <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
-
-                                <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
-                                <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
-                                <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
-
-                                <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
-                                <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
-                            </TextField>
-                        </Grid>
-                    </Grid>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                        <Grid item md={1} sm={1} xs={2} mt={3}>
-                            <SubjectIcon />
-                        </Grid>
-
-                        <Grid container item md={11} sm={11} xs={10}>
-                            <TextField
-                                color="primary"
-                                margin="normal"
-                                fullWidth
-                                id="subject"
-                                type="text"
-                                label="Please provide the subject line"
-                                name="subject"
-                                autoComplete="subject"
-                                autoFocus
-                                variant="standard"
-                                value={formik.values.subject ? formik.values.subject : ""}
-                                onChange={formik.handleChange}
-                                error={formik.touched.subject && Boolean(formik.errors.subject)}
-                                helperText={formik.touched.subject && formik.errors.subject}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="start">
-                        <Grid item md={1} sm={1} xs={2} mt={2}>
-                            <FormatTextdirectionLToRIcon />
-                        </Grid>
-                        <Grid item md={11} sm={11} xs={10}>
-                            <Editor
-                                apiKey="dd83bg0e7v7jnnfjjqwg7bktooeb1n4wcn2vn7vmeaof51y5"
-                                onInit={(evt, editor) => editorRef.current = editor}
-                                initialValue={complainData.ComplainDescription}
-                                id="description"
-                                name="description"
-                                onEditorChange={(content, editor) =>
-                                    parseEditorData(content)
-                                }
-
-                                init={{
-                                    height: 300,
-                                    menubar: false,
-                                    plugins: [
-                                        'advlist autolink lists link image charmap print preview anchor',
-                                        'searchreplace visualblocks code fullscreen',
-                                        'insertdatetime media table paste code help wordcount'
-                                    ],
-                                    toolbar: 'undo redo | formatselect | ' +
-                                        'bold italic backcolor | alignleft aligncenter ' +
-                                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                                        'removeformat | help',
-                                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                                }}
-                            />
-                            <FormHelperText style={{ color: "red" }}>{
-                                descriptionError !== "" ? descriptionError : ""
-                            }</FormHelperText>
-                        </Grid>
-                    </Grid>
-
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" justifyContent="center">
-                        <Grid item md={1} sm={1} xs={2} mt={4}>
-                            <CloudUploadIcon />
-                        </Grid>
-                        <Grid item md={11} sm={11} xs={10} style={{ overflow: "hidden" }}>
-                            <Dropzone onDrop={onDrop}>
-                                {({ getRootProps, getInputProps }) => (
-                                    <section className="container">
-                                        <div {...getRootProps({ className: 'dropzone' })}>
-                                            <input {...getInputProps()} />
-                                            <p style={{
-                                                border: "1px dashed grey",
-                                                padding: "20px",
-                                                background: "#f8f8f8",
-                                            }}>Drag 'n' drop some files here, or click to select files</p>
-                                        </div>
-                                        <aside>
-                                            <h4>{files.length > 0 ? "Files" : ""}</h4>
-                                            < ul > {newFiles}</ul>
-                                        </aside>
-                                    </section>
-                                )}
-                            </Dropzone>
-                        </Grid>
-                    </Grid>
-                    <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
-                        <Button
-                            onClick={handleClick}
-                            style={{ color: "#fff" }}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                        >
-                            Update Complain
-                        </Button>
-                    </Grid>
-                </form>
             </Grid>
         );
 }
 const mapStateToProps = (state) => ({
     auth: state.auth,
 });
-export default connect(mapStateToProps)(UpdateComplaints);
+export default connect(mapStateToProps, { imageupload })(UpdateComplaints);

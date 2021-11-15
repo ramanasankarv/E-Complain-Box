@@ -1,14 +1,10 @@
 import {
-  REGISTER_FAILED,
   REGISTER_SUCCESS,
   LOGIN_SUCCESS,
-  LOGIN_FAILED,
   USER_LOADED,
   AUTH_ERROR,
   LOGOUT,
   CLEAR_PROFILE,
-  GET_PROFILE,
-  APP_ERROR,
   LOADING,
 } from "./types";
 import { toast } from "react-toastify";
@@ -60,7 +56,6 @@ const register =
         type: LOADING,
         payload: false,
       });
-      //push('/email-verification');
       history.push("/email-verification");
     } catch (error) {
       console.log(error);
@@ -74,6 +69,7 @@ const register =
 const login =
   ({ email, password }, history) =>
   async (dispatch) => {
+    debugger;
     const config = {
       headers: {
         "Content-type": "Application/json",
@@ -171,12 +167,11 @@ const emailverifications =
         localStorage.setItem("userIsEmailVerified", "Yes");
         window.location.href = "/mobile-verification";
       } else {
-        //('Invalid OTP!');
-        //dispatch(setAlert("Invalid OTP", "danger"));
+        toast.error("Invalid OTP");
       }
       console.log(response);
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -202,18 +197,15 @@ const mobileverifications =
           localStorage.setItem("userIsMobileVerified", "Yes");
           window.location.href = "/raise";
         } else {
-          //dispatch(setAlert("Invalid OTP", "danger"));
+          toast.error("Invalid OTP");
         }
       });
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
 const loadUser = () => async (dispatch) => {
-  // if (localStorage.token) {
-  //     setAuthToken(localStorage.token);
-  // }
   try {
     let data = {
       email: localStorage.getItem("userEmail"),
@@ -226,12 +218,16 @@ const loadUser = () => async (dispatch) => {
       },
       data: data,
     });
+    console.log(response);
     console.log(response.data.user[0]);
     dispatch({
       type: USER_LOADED,
       payload: response.data.user[0],
     });
   } catch (error) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userID");
     dispatch({
       type: AUTH_ERROR,
     });
@@ -248,251 +244,6 @@ const logout = (history) => async (dispatch) => {
   history.push("/login");
 };
 
-const imageupload =
-  (
-    { files, city, department, complainType, severity, subject, description },
-    urls,
-    setUrls,
-    history
-  ) =>
-  async (dispatch) => {
-    var len1 = files.length;
-    let images = [];
-    let completedCount = 0;
-    for (var i = 0; i < len1; i++) {
-      var image = files[i];
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-          console.log("error:-", error);
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            images.push(downloadURL.toString());
-            completedCount = completedCount + 1;
-            console.log(completedCount);
-            console.log(len1);
-            if (completedCount == len1) {
-              console.log(images);
-              let data = {
-                city: city,
-                department: department,
-                description: description,
-                subject: subject,
-                complainType: complainType,
-                severity: severity,
-                userid: localStorage.getItem("userID"),
-                urls: images,
-                token: localStorage.getItem("token"),
-              };
-
-              client({
-                method: "post",
-                url: "/createcomplaint",
-                headers: {
-                  AuthToken: localStorage.getItem("token"),
-                },
-                data: data,
-              }).then(() => {
-                history.push("/dashboard");
-              });
-            }
-          });
-        }
-      );
-    }
-  };
-
-// const getDashboardData = () => async (dispatch) => {
-//   client({
-//     method: "get",
-//     url: "/getcomplaints",
-//     headers: {
-//       AuthToken: localStorage.getItem("token"),
-//     },
-//   }).then((res) => {
-//     console.log(res);
-//     //history.push("/dashboard");
-//   });
-// };
-const getDashboardData = async (page, rowsPerPage, userType, userId) => {
-  try {
-    let data = null;
-    if (userType === "department") {
-      data = await client({
-        method: "get",
-        url: `/complaintbydep/${userId}/${page}/${rowsPerPage}`,
-        headers: {
-          AuthToken: localStorage.getItem("token"),
-        },
-      });
-    } else if (userType === "complainant") {
-      data = await client({
-        method: "get",
-        url: `/complaintbyuser/${userId}/${page}/${rowsPerPage}`,
-        headers: {
-          AuthToken: localStorage.getItem("token"),
-        },
-      });
-    } else {
-      data = await client({
-        method: "get",
-        url: `/getcomplaints/${page}/${rowsPerPage}`,
-        headers: {
-          AuthToken: localStorage.getItem("token"),
-        },
-      });
-    }
-    console.log(data);
-    return data.data.Complains;
-  } catch (error) {
-    console.log(error);
-  }
-
-  // .then((res) => {
-  //   setRows(res.data.Complains);
-  //   setDataLoaded(!dataLoaded)
-  // });
-};
-const getSingleComplainData = async (id) => {
-  try {
-    const { data } = await client({
-      method: "get",
-      url: `/complaint/${id}`,
-      headers: {
-        AuthToken: localStorage.getItem("token"),
-      },
-    });
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-
-  // .then((res) => {
-  //   setRows(res.data.Complains);
-  //   setDataLoaded(!dataLoaded)
-  // });
-};
-
-const getComplainGroupData = async (userId) => {
-  try {
-    const { data } = await client({
-      method: "get",
-      url: `/complaintgroupbydata/${userId}`,
-      headers: {
-        AuthToken: localStorage.getItem("token"),
-      },
-    });
-    return data.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const updateComplain =
-  (
-    { files, city, department, complainType, severity, subject, description },
-    urls,
-    setUrls,
-    history,
-    complianID
-  ) =>
-  async (dispatch) => {
-    try {
-      debugger;
-      let len1 = files.length;
-      let images = [];
-      let completedCount = 0;
-      for (var i = 0; i < len1; i++) {
-        var image = files[i];
-        const uploadTask = storage.ref(`images/${image.name}`).put(image);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-          },
-          (error) => {
-            // Handle unsuccessful uploads
-            console.log("error:-", error);
-          },
-          () => {
-            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-              console.log("File available at", downloadURL);
-              images.push(downloadURL.toString());
-              completedCount = completedCount + 1;
-              console.log(completedCount);
-              console.log(len1);
-              if (completedCount == len1) {
-                console.log(images);
-                let data = {
-                  city: city,
-                  department: department,
-                  description: description,
-                  subject: subject,
-                  complainType: complainType,
-                  severity: severity,
-                  userid: localStorage.getItem("userID"),
-                  urls: images,
-                  token: localStorage.getItem("token"),
-                };
-
-                client({
-                  method: "put",
-                  url: `/complaint/${complianID}`,
-                  headers: {
-                    AuthToken: localStorage.getItem("token"),
-                  },
-                  data: data,
-                })
-                  .then(() => {
-                    toast.success("The complain is updated");
-                    history.push("/dashboard");
-                  })
-                  .catch((error) => toast.error(error.message));
-              }
-            });
-          }
-        );
-      }
-    } catch (error) {
-      toast.error(error);
-    }
-  };
-
-const updateComplainStatus = async (complainStatus, userid, complianID) => {
-  try {
-    debugger;
-    let data = {
-      userid: userid,
-      complainstatus: complainStatus,
-    };
-    client({
-      method: "put",
-      url: `/complaint/${complianID}`,
-      headers: {
-        AuthToken: localStorage.getItem("token"),
-      },
-      data: data,
-    })
-      .then(() => {
-        toast.success("The status complain is updated");
-      })
-      .catch((error) => toast.error(error.message));
-  } catch (error) {
-    toast.error(error.message);
-  }
-};
-
 export {
   register,
   loadUser,
@@ -500,10 +251,4 @@ export {
   logout,
   emailverifications,
   mobileverifications,
-  imageupload,
-  getDashboardData,
-  getSingleComplainData,
-  getComplainGroupData,
-  updateComplain,
-  updateComplainStatus,
 };
