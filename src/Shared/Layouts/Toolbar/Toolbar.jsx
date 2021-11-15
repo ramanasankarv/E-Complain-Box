@@ -78,7 +78,7 @@ const AppToolbar = (props) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}><LockOpenIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Login</MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link style={{ textDecoration: "none", color: "#000" }}><LockOpenIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} />Login</Link></MenuItem>
       <MenuItem onClick={handleMenuClose}><VpnKeyIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Registration</MenuItem>
       <MenuItem onClick={handleMenuClose}><ExitToAppIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Logout</MenuItem>
       <MenuItem onClick={handleMenuClose}><PersonIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Profile</MenuItem>

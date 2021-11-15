@@ -44,7 +44,7 @@ function Login({ login, auth }) {
 
   useEffect(() => {
     let token = localStorage.getItem("token");
-    if (token && auth.user) {
+    if (token) {
       history.push("/dashboard");
     } else {
       history.push("/login");

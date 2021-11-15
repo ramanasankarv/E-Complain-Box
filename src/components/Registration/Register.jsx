@@ -80,7 +80,12 @@ function Register({ register, loading }) {
             await new Promise((r) => setTimeout(register(allValues, history)));
         },
     });
-
+    useEffect(() => {
+        let token = localStorage.getItem("token");
+        if (token) {
+            history.push("/dashboard");
+        }
+    })
 
     return (
         <Grid item bgcolor="#fff" borderRadius="25px" boxShadow={8} xs={12} sm={6} my={12}>

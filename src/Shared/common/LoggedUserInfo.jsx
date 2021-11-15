@@ -5,6 +5,9 @@ import { Grid } from "@mui/material";
 import './styles/styles.css'
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import Clock from 'react-live-clock';
+import moment from 'react-moment'
+
 export default function LoggedUserInfo({ auth }) {
     return (
         <Grid container mx={{ xs: 2, sm: 4, md: 8 }}>
@@ -18,43 +21,59 @@ export default function LoggedUserInfo({ auth }) {
                         {auth.user.FullName.charAt(0).toString().toUpperCase()}
                     </Avatar>
                 </Stack>
-                <Grid container ml={3}>
-                    <Typography>
-                        <span>
-                            Logged in as
-                        </span>
-                        <b> {auth.user.FullName}</b>
-                    </Typography>
+                <Grid container item md={12}>
+                    <Grid item md={6} sm={12} xs={12}>
+                        <Grid container ml={3}>
+                            <Typography>
+                                <span>
+                                    Logged in as
+                                </span>
+                                <b> {auth.user.FullName}</b>
+                            </Typography>
+                        </Grid>
+                        <Grid container ml={3}>
+                            <Typography mt={3}>
+                                <b>Role: </b>
+                                <span>
+                                    {auth.user.UserRole}
+                                </span>
+                            </Typography>
+                        </Grid>
+                        <Grid container ml={3}>
+                            <Typography>
+                                <Typography>
+                                    <b>Email: </b>
+                                    <span>
+                                        {auth.user.Email}
+                                    </span>
+                                </Typography>
+                            </Typography>
+                        </Grid>
+                        <Grid container ml={3}>
+                            <Typography>
+                                <Typography>
+                                    <b>Contact: </b>
+                                    <span>
+                                        {auth.user.Mobile}
+                                    </span>
+                                </Typography>
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid item md={6} sm={12} xs={12} px={3}>
+                        <Grid item sx={{ textAlign: { xs: 'left', sm: 'left', md: 'right' } }} style={{ fontWeight: "bold", fontSize: "20px", color: "#3AAFA7" }}>
+                            <Clock style={{ textShadow: "2px 2px 3px #eee" }}
+                                date={new Date().now}
+                                format={'dddd, MMMM Mo, YYYY, h:mm:ss A'}
+                                ticking={true}
+                            />
+                        </Grid>
+                    </Grid>
                 </Grid>
-                <Grid container ml={3}>
-                    <Typography mt={3}>
-                        <b>Role: </b>
-                        <span>
-                            {auth.user.UserRole}
-                        </span>
-                    </Typography>
-                </Grid>
-                <Grid container ml={3}>
-                    <Typography>
-                        <Typography>
-                            <b>Email: </b>
-                            <span>
-                                {auth.user.Email}
-                            </span>
-                        </Typography>
-                    </Typography>
-                </Grid>
-                <Grid container ml={3}>
-                    <Typography>
-                        <Typography>
-                            <b>Contact: </b>
-                            <span>
-                                {auth.user.Mobile}
-                            </span>
-                        </Typography>
-                    </Typography>
-                </Grid>
+
+
             </Grid>
-        </Grid>
+
+        </Grid >
     );
 }
