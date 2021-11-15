@@ -22,13 +22,16 @@
     "firebase": "^7.20.0",
     "formik": "^2.2.9",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "react": "^17.0.2",
     "react-chartjs-2": "^3.2.0",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
     "react-html-parser": "^2.0.2",
     "react-invisible-element": "0.1.0",
+    "react-live-clock": "^5.3.1",
     "react-modal": "^3.14.3",
+    "react-moment": "^1.1.1",
     "react-redux": "^7.2.6",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
@@ -39,6 +42,12 @@
     "typewriter-effect": "^2.18.2",
     "web-vitals": "^1.1.2",
     "yup": "^0.32.11"
+  },
+  "peerDependencies": {
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
+    "react": "^16.8 || ^17",
+    "react-moment": "1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
