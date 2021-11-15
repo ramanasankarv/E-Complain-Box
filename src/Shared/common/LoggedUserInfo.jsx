@@ -9,13 +9,13 @@ export default function LoggedUserInfo({ auth }) {
     return (
         <Grid container mx={{ xs: 2, sm: 4, md: 8 }}>
             <Grid item md={12} sm={12} xs={12} my={12} py={5} className="avatar-container" boxShadow={8} borderRadius="20px">
-                <Stack direction="row" spacing={2} className="avatar">
+                <Stack direction="row" spacing={2} className="avatar" sx={{ left: { xs: '35%', sm: '40%', md: '45%' } }}>
                     <Avatar
                         sx={{ width: 100, height: 100, bgcolor: "#3aafa8" }}
                         alt="Remy Sharp"
                         src="/broken-image.jpg"
                     >
-                        {auth.user.FullName.charAt(0)}
+                        {auth.user.FullName.charAt(0).toString().toUpperCase()}
                     </Avatar>
                 </Stack>
                 <Grid container ml={3}>

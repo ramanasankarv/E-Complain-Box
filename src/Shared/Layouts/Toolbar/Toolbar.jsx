@@ -104,38 +104,10 @@ const AppToolbar = (props) => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Typography>
-            <Link to="/">Home</Link>
-          </Typography>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      <MenuItem onClick={handleMenuClose}><LockOpenIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Login</MenuItem>
+      <MenuItem onClick={handleMenuClose}><VpnKeyIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Registration</MenuItem>
+      <MenuItem onClick={handleMenuClose}><ExitToAppIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Logout</MenuItem>
+      <MenuItem onClick={handleMenuClose}><PersonIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Profile</MenuItem>
     </Menu>
   );
 
@@ -175,7 +147,7 @@ const AppToolbar = (props) => {
               Contact Us
             </Link>
 
-            {!localStorage.getItem("token") || !props.auth.isAuthenticated ? (
+            {!localStorage.getItem("token") ? (
               < React.Fragment >
                 <Button variant="contained" size="small" color="success" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff", marginRight: "10px" }} component={Link} to={'/login'}>
                   Login

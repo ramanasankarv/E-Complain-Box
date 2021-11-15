@@ -12,7 +12,7 @@ import { Grid, Typography } from '@mui/material';
 import { columns } from './TableData';
 import moment from 'moment'
 import PanelHeader from '../../Shared/common/PanelHeader';
-import { getDashboardData } from "../../redux/actions/auth"
+import { getDashboardData } from "../../Shared/Api/api"
 import { useHistory } from "react-router-dom"
 
 
@@ -42,13 +42,8 @@ function DashboardTable({ auth }) {
 
     const redirectToSingleComplain = (id) => {
         console.log(id)
-        debugger
 
-        if (auth.user.UserRole !== "Department Employee" && auth.user.UserRole !== "SuperAdmin") {
-            history.push(`complain-details/${id}`)
-        } else {
-            history.push(`complain-department-details/${id}`)
-        }
+        history.push(`complain-department-details/${id}`)
     }
 
 

@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { FormHelperText } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react';
-import { getSingleComplainData } from '../../redux/actions/auth';
+import { getSingleComplainData } from '../../Shared/Api/api';
 import { useParams } from "react-router-dom";
 import ReactHtmlParser from "react-html-parser";
 import DateRangeIcon from '@mui/icons-material/DateRange';

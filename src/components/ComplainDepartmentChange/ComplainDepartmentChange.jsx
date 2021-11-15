@@ -14,8 +14,8 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import WorkOutline from '@mui/icons-material/WorkOutline';
 import Public from '@mui/icons-material/Public';
 import Subject from '@mui/icons-material/Subject';
-import { getSingleComplainData, updateComplainStatus, createComment, departmentChange } from '../../redux/actions/auth';
-import { useParams } from "react-router-dom"
+import { getSingleComplainData, updateComplainStatus, createComment, departmentChange } from '../../Shared/Api/api';
+import { useHistory, useParams } from "react-router-dom"
 import { connect } from 'react-redux';
 import ReactHtmlParser from "react-html-parser";
 import moment from 'moment'
@@ -24,6 +24,9 @@ import PausePresentationIcon from '@mui/icons-material/PausePresentation';
 import Loader from '../../Shared/common/Loader';
 import FormatTextdirectionLToRIcon from '@mui/icons-material/FormatTextdirectionLToR';
 import MenuItem from '@mui/material/MenuItem';
+import CreateIcon from '@mui/icons-material/Create';
+import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 
 function ComplainDepartmentChange({ auth }) {
     const [description, setDescription] = useState("");
@@ -31,14 +34,14 @@ function ComplainDepartmentChange({ auth }) {
     const [descriptionError, setDescriptionError] = useState("");
     const editorRef = useRef(null);
     const [department, setDepartment] = useState("");
-
-
+    let history = useHistory()
 
     const [complainData, setComplainData] = useState(null)
     let { id } = useParams()
     const [loader, setLoader] = useState(true)
 
     useEffect(async () => {
+        debugger
         const data = getSingleComplainData(id)
             .then(res => {
                 setComplainData(res)
@@ -55,7 +58,6 @@ function ComplainDepartmentChange({ auth }) {
         }
         console.log(descriptionError);
     }
-    console.log(complainData)
     const handleChangeStatus = (e) => {
         setComplainStatus({ complainStatus: e.target.value })
     }
@@ -78,8 +80,12 @@ function ComplainDepartmentChange({ auth }) {
         }
     }
 
+    const redirectToComplainUpdatePage = () => {
+        history.push(`/update/${id}`)
+    }
+
     const handleSubmitForward = (e) => {
-        departmentChange(department, history, id)
+        departmentChange(department, complainData.ComplainStatus, auth.user.id, history, id)
     }
     const handleChangeDepartment = (e) => {
         setDepartment({ department: e.target.value })
@@ -98,71 +104,82 @@ function ComplainDepartmentChange({ auth }) {
         return newDate;
     }
 
-    return loader || !complainData.ComplainStatus || !auth.user ? (<Grid container px={12} mt={12} style={{ height: "100%" }}>
+    return loader || !complainData || !auth.user ? (<Grid container px={12} mt={12} style={{ height: "100%" }}>
         <Loader />
     </Grid>) : (
         <Grid container >
             <LoggedUserInfo auth={auth} />
-            <Grid item container py={4} px={{ xs: 2, sm: 4, md: 8 }}>
-                <Grid item >
-                    <FormControl component="fieldset">
-                        <RadioGroup size="large"
-                            row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={handleChangeStatus} value={complainStatus.complainStatus || complainData.ComplainStatus}>
-                            <FormLabel component="legend" name="severity"></FormLabel>
-                            <FormControlLabel value="Raise" control={<Radio />} label="Raised" />
-                            <FormControlLabel value="In Progress" control={<Radio />} label="In Progress" />
-                            <FormControlLabel value="Completed" control={<Radio />} label="Completed" />
-                        </RadioGroup>
-                    </FormControl>
-                    <Button variant="contained" size="large" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff" }} onClick={handleSubmitStatus}>
-                        Change the status
-                    </Button>
+            {auth.user.UserDepartmentId === complainData.ComplainDepartmentID && auth.user.UserRole === "Department Employee" ? (<Fragment>
+                <Grid item container py={4} px={{ xs: 2, sm: 4, md: 8 }}>
+                    <Grid item >
+                        <FormControl component="fieldset">
+                            <RadioGroup size="large"
+                                row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={handleChangeStatus} value={complainStatus.complainStatus || complainData.ComplainStatus}>
+                                <FormLabel component="legend" name="severity"></FormLabel>
+                                <FormControlLabel value="Raise" control={<Radio />} label="Raised" />
+                                <FormControlLabel value="In Progress" control={<Radio />} label="In Progress" />
+                                <FormControlLabel value="Completed" control={<Radio />} label="Completed" />
+                            </RadioGroup>
+                        </FormControl>
+                        <Button variant="contained" size="large" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff" }} onClick={handleSubmitStatus}>
+                            Change the status
+                        </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
 
-            <Grid item container pb={4} px={{ xs: 2, sm: 4, md: 8 }}>
-                <Grid container item md={6} sm={11} xs={10} display="flex" direction="row" alignItems="center" pr={2} pt={1}>
-                    <TextField
-                        ml={1}
-                        variant="outlined"
-                        name="department"
-                        id="department"
-                        select
-                        fullWidth
-                        value={department.department || complainData.ComplainDepartmentID}
-                        label="Forward to the department"
-                        onChange={handleChangeDepartment}
-                    >
+                <Grid item container pb={4} px={{ xs: 2, sm: 4, md: 8 }}>
+                    <Grid container item md={6} sm={11} xs={12} display="flex" direction="row" alignItems="center" pr={2} pt={1}>
+                        <TextField
+                            ml={1}
+                            variant="outlined"
+                            name="department"
+                            id="department"
+                            select
+                            fullWidth
+                            value={department.department || complainData.ComplainDepartmentID}
+                            label="Forward to the department"
+                            onChange={handleChangeDepartment}
+                        >
 
-                        <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
-                        <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
-                        <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
+                            <MenuItem value={'6VrJzEXTR7WHBulqNDWP'}>Minority Welfare</MenuItem>
+                            <MenuItem value={'Gb3z3ZQCLhKjD7pzgNZP'}>Agriculture</MenuItem>
+                            <MenuItem value={'CBBIARsd1YKnkxD23P5V'}>Commecial Tax</MenuItem>
 
-                        <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
-                        <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
-                        <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
+                            <MenuItem value={'JxWoAzlKXQWMFwJf4lbE'}>Women & Child Caree</MenuItem>
+                            <MenuItem value={'Oxf0szUJ7pSeuoDfPsZi'}>Mines</MenuItem>
+                            <MenuItem value={'WB1ae51Oqmj5NWr2iPZ5'}>Healthx</MenuItem>
 
-                        <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
-                        <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
-                        <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
+                            <MenuItem value={'WfVCykHbeym4z5tDOkTv'}>Police</MenuItem>
+                            <MenuItem value={'eIdRA3fc4DjWQExyuTnP'}>Backward Welfare</MenuItem>
+                            <MenuItem value={'hRLEQdeY7i9Q04AGEllW'}>Electricity</MenuItem>
 
-                        <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
-                        <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
-                        <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
+                            <MenuItem value={'kIzRUuKsMD4I8TWSnOOF'}>Road & Transportation</MenuItem>
+                            <MenuItem value={'nsgvszjIilWddwNmFsHy'}>Technical Education</MenuItem>
+                            <MenuItem value={'nwSV5YsEQXmYbOtBodPx'}>Primary Education</MenuItem>
 
-                        <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
-                        <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
-                    </TextField>
+                            <MenuItem value={'wPxaRdNrieG7BJbOOUNm'}>Excise</MenuItem>
+                            <MenuItem value={'wcyuQ8BHs5yKJKNPr2Ls'}>Election</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid container item md={6} sm={12} xs={12} pt={{ xs: 4, sm: 3, md: 1 }}>
+                        <Button variant="contained" size="large" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff" }} onClick={handleSubmitForward}>
+                            Forward Complain
+                        </Button>
+                    </Grid>
                 </Grid>
-                <Grid container item md={6} sm={12} sx={12} pt={1}>
-                    <Button variant="contained" size="large" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff" }} onClick={handleSubmitForward}>
-                        Forward to this Department
-                    </Button>
-                </Grid>
-            </Grid>
+            </Fragment>) : ""}
+
+
+
+            {auth.user.id === complainData.ComplainUserID && auth.user.UserRole === "Complainant" ? (<Grid container item md={6} sm={12} xs={12} pt={4} my={2} px={{ xs: 2, sm: 4, md: 8 }}>
+                <Button startIcon={<CreateIcon />} variant="contained" size="large" style={{ borderRadius: "30px", background: "#23A94B", color: "#fff" }} onClick={redirectToComplainUpdatePage}>
+                    Edit Complain
+                </Button>
+            </Grid>) : ""}
+
             <Grid container display="flex" justifyContent="center" alignItems="flex-start">
-                <Grid container item mx={{ xs: 2, sm: 4, md: 8 }} pr={{ xs: 2, sm: 4, md: 0 }} mb={8} md={12} sm={12} xs={12}>
-                    <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={3} px={3} mt={12} boxShadow={8} borderRadius="20px">
+                <Grid container item px={{ xs: 2, sm: 4, md: 8 }} mb={8} md={12} sm={12} xs={12}>
+                    <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={3} px={3} mt={1} boxShadow={8} borderRadius="20px">
                         <Grid container>
                             <Grid item md={6} sm={12} xs={12} pt={4}>
                                 <Typography variant="subtitle1" style={{
@@ -223,6 +240,24 @@ function ComplainDepartmentChange({ auth }) {
                                     verticalAlign: 'middle',
                                     display: 'inline-flex'
                                 }}>
+                                    <PermIdentityIcon style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Complainer: </b> {complainData.user.FullName}
+                                </Typography>
+                            </Grid>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
+                                    <PermPhoneMsgIcon style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Mobile: </b> {complainData.user.Mobile}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                        <Grid container>
+                            <Grid item md={6} sm={12} xs={12} pt={4}>
+                                <Typography variant="subtitle1" style={{
+                                    verticalAlign: 'middle',
+                                    display: 'inline-flex'
+                                }}>
                                     <Subject style={{ marginRight: "10px " }} /> <b style={{ marginRight: "10px " }}>Subject Line: </b> {complainData.ComplainSubject}
                                 </Typography>
                             </Grid>
@@ -244,7 +279,7 @@ function ComplainDepartmentChange({ auth }) {
                         {complainData && complainData.ComplainDocument && Array.isArray(complainData.ComplainDocument.ComplainDocumentPath) && complainData.ComplainDocument.ComplainDocumentPath.map((document, i) => {
                             return (
                                 <Grid item container direction="row" alignItems="center" md={12} key={i}>
-                                    <Grid item md={8} sm={12} xs={12} pt={4}>
+                                    <Grid item md={12} sm={12} xs={12} pt={4}>
                                         <Typography variant="subtitle1" style={{
                                             verticalAlign: 'middle',
                                             display: 'inline-flex'
