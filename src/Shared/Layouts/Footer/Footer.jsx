@@ -10,20 +10,25 @@ export default function AppFooter() {
                 bgcolor="primary.main"
             >
                 <Container maxWidth="lg">
-                    <Grid item container spacing={5}>
-                        <Grid item xs={12} sm={3}>
-                            <Box>Public Complains</Box>
+                    <Grid item container spacing={5} style={{ color: "#fff", fontWeight: "bold" }}>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Typography variant="h5" mb={2}>E-Complain-Box</Typography>
+                            <Box mb={1}>About us</Box>
                             <Box>Contact Us</Box>
-                            <Box>tusher</Box>
                         </Grid>
-                        <Grid item xs={12} sm={3}>
-                            tusher
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Typography variant="h5" mb={2}>Need Help?</Typography>
+                            <Box>Customer Support</Box>
                         </Grid>
-                        <Grid item xs={12} sm={3}>
-                            tusher
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Typography variant="h5" mb={2}>Join Us</Typography>
+                            <Box mb={1}>Sign In</Box>
+                            <Box>Sign Up</Box>
                         </Grid>
-                        <Grid item xs={12} sm={3}>
-                            tusher
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Typography variant="h5" mb={2}>Privacy & You</Typography>
+                            <Box mb={1}>Terms Condition</Box>
+                            <Box>Privacy Policy</Box>
                         </Grid>
                     </Grid>
                 </Container>

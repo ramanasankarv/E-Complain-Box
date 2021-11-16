@@ -52,7 +52,19 @@ function ComplainDepartmentChange({ auth }) {
     }, [setComplainData, loader]);
 
     const downloadImage = (url) => {
-        saveAs(url, 'image.jpg') // Put your image url here.
+        var element = document.createElement("a");
+
+        var file = new Blob(
+            [
+                url
+            ],
+            { type: "image/*" }
+        );
+        window.URL.createObjectURL(new Blob([url]));
+        element.href = URL.createObjectURL(file);
+        element.download = "image.jpg";
+        element.click();
+        // saveAs(url, 'image.jpg') // Put your image url here.
     }
 
     const parseEditorData = (content) => {
