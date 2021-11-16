@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
 import UpdateComplain from "./components/RaiseComplain/UpdateComplain";
 import Aboutus from "./components/Aboutus/Aboutus";
+import PublicDashboard from "./components/PublicDashboard/PublicDashboard";
 const App = ({ auth }) => {
   const history = useHistory();
 
@@ -81,6 +82,8 @@ const App = ({ auth }) => {
             <Route exact path="/raise" component={RaiseComplaints} />
             <Route exact path="/dashboard" component={Dashboard} />{" "}
             <Route exact path="/about-us" component={Aboutus} />{" "}
+            <Route exact path="/public-complain" component={PublicDashboard} />
+            {""}
             <Route
               path="/complain-department-details/:id"
               component={ComplainDepartmentChange}

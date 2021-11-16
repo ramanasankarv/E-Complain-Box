@@ -12,7 +12,7 @@ import { Grid, Typography } from '@mui/material';
 import { columns } from './TableData';
 import moment from 'moment'
 import PanelHeader from '../../Shared/common/PanelHeader';
-import { getDashboardData } from "../../Shared/Api/api"
+import { getDashboardData, publicComplain } from "../../Shared/Api/api"
 import { useHistory } from "react-router-dom"
 
 
@@ -24,19 +24,11 @@ function DashboardTable({ auth }) {
     let history = useHistory()
 
     useEffect(() => {
-        if (auth.user && auth.user.UserRole === "Department Employee") {
-            getDashboardData(page, rowsPerPage, "department", auth.user.UserDepartmentId).then((res) => {
-                setRows(res);
-            })
-        } else if (auth.user && auth.user.UserRole === "Complainant") {
-            getDashboardData(page, rowsPerPage, "complainant", auth.user.id).then((res) => {
-                setRows(res);
-            })
-        } else {
-            getDashboardData(page, rowsPerPage, null, null).then((res) => {
-                setRows(res);
-            })
-        }
+
+        publicComplain(page, rowsPerPage).then((res) => {
+            debugger
+            setRows(res);
+        })
 
     }, [setRowsPerPage, setRows, auth.user, rowsPerPage, page]);
 

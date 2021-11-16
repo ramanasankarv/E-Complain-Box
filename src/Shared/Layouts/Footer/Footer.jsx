@@ -12,8 +12,8 @@ export default function AppFooter() {
                 <Container maxWidth="lg">
                     <Grid item container spacing={5}>
                         <Grid item xs={12} sm={3}>
-                            <Box>tusher</Box>
-                            <Box>tusher</Box>
+                            <Box>Public Complains</Box>
+                            <Box>Contact Us</Box>
                             <Box>tusher</Box>
                         </Grid>
                         <Grid item xs={12} sm={3}>

@@ -14,7 +14,6 @@ const imageupload =
     history
   ) =>
   async (dispatch) => {
-    debugger;
     var len1 = files.length;
     let images = [];
     let completedCount = 0;
@@ -76,7 +75,6 @@ const updateComplain = (
   complianID
 ) => {
   try {
-    debugger;
     let len1 = files && files.length;
     let images = [];
     let completedCount = 0;
@@ -140,7 +138,6 @@ const updateComplain = (
 
 const updateComplainStatus = async (complainStatus, userid, complianID) => {
   try {
-    debugger;
     let data = {
       userid: userid,
       complainstatus: complainStatus,
@@ -178,7 +175,6 @@ const getSingleComplainData = async (id) => {
 
 const getComplainGroupData = async (userId) => {
   try {
-    debugger;
     const { data } = await client({
       method: "get",
       url: `/complaintgroupbydata/${userId}`,
@@ -200,8 +196,6 @@ const departmentChange = (
   complianID
 ) => {
   try {
-    debugger;
-
     let data = {
       department: department,
       complainstatus: complainStatus,
@@ -228,7 +222,6 @@ const departmentChange = (
 
 const createComment = async (comment, userid, complianID) => {
   try {
-    debugger;
     let data = {
       userid: userid,
       comments: comment,
@@ -284,11 +277,38 @@ const getDashboardData = async (page, rowsPerPage, userType, userId) => {
   } catch (error) {
     console.log(error);
   }
+};
 
-  // .then((res) => {
-  //   setRows(res.data.Complains);
-  //   setDataLoaded(!dataLoaded)
-  // });
+const publicComplain = async (page, rowsPerPage) => {
+  try {
+    let data = null;
+    debugger;
+    data = await client({
+      method: "get",
+      url: `/publiccomplaints/${page}/${rowsPerPage}`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+    });
+    return data.data.Complains;
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
+
+const getPublicComplainGroupData = async (userId) => {
+  try {
+    const { data } = await client({
+      method: "get",
+      url: `publiccomplaintgroupbydata`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+    });
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 export {
   imageupload,
@@ -299,4 +319,6 @@ export {
   updateComplainStatus,
   createComment,
   departmentChange,
+  publicComplain,
+  getPublicComplainGroupData,
 };
