@@ -161,7 +161,7 @@ const AppToolbar = (props) => {
                 <Link to="/raise" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
                   Raise Complain
                 </Link>
-                <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
+                <Link to="/public-complain" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>
                   Complains
                 </Link>
                 <Link to="/dashboard" variant="contained" size="small" color="success" style={{ color: "#fff", textDecoration: "none", alignItems: "center", fontWeight: "bold", marginRight: "10px" }}>

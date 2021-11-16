@@ -10,9 +10,9 @@ import Loader from '../../Shared/common/Loader';
 import "./styles/Dashboard.css"
 import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 import DashboardTable from './DashboardTable';
-import { getComplainGroupData } from '../../Shared/Api/api';
+import { publicComplain, getComplainGroupData, getPublicComplainGroupData } from '../../Shared/Api/api';
 
-function Dashboard({ auth }) {
+function PublicDashboard({ auth }) {
   const [totalData, setTotalData] = useState(null)
   const [totalRasiedData, setTotalRasiedData] = useState([])
   const [totalInComplainData, setTotalInComplainData] = useState([])
@@ -25,7 +25,8 @@ function Dashboard({ auth }) {
   useEffect(() => {
     const userId = localStorage.getItem("userID")
     if (userId) {
-      getComplainGroupData(userId).then((res) => {
+      debugger
+      getPublicComplainGroupData(userId).then((res) => {
         res.length && res.forEach(datas => {
           let firstnumber = Math.floor(Math.random() * 256);
           let secondnumber = Math.floor(Math.random() * 256);
@@ -119,4 +120,4 @@ function Dashboard({ auth }) {
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps)(PublicDashboard);

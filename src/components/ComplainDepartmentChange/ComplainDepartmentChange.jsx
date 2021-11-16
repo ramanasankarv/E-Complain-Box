@@ -27,6 +27,8 @@ import MenuItem from '@mui/material/MenuItem';
 import CreateIcon from '@mui/icons-material/Create';
 import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import { saveAs } from 'file-saver'
+
 
 function ComplainDepartmentChange({ auth }) {
     const [description, setDescription] = useState("");
@@ -48,6 +50,11 @@ function ComplainDepartmentChange({ auth }) {
                 setLoader(false)
             })
     }, [setComplainData, loader]);
+
+    const downloadImage = (url) => {
+        saveAs(url, 'image.jpg') // Put your image url here.
+    }
+
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -178,7 +185,7 @@ function ComplainDepartmentChange({ auth }) {
             </Grid>) : ""}
 
             <Grid container display="flex" justifyContent="center" alignItems="flex-start">
-                <Grid container item px={{ xs: 2, sm: 4, md: 8 }} mb={8} md={12} sm={12} xs={12}>
+                <Grid container item px={{ xs: 2, sm: 4, md: 8 }} mb={0} md={12} sm={12} xs={12}>
                     <Grid container style={{ background: "#fff", color: "#1F5B88" }} py={3} px={3} mt={1} boxShadow={8} borderRadius="20px">
                         <Grid container>
                             <Grid item md={6} sm={12} xs={12} pt={4}>
@@ -289,7 +296,7 @@ function ComplainDepartmentChange({ auth }) {
                                     </Grid>
                                     <Grid item md={4} sm={7} xs={12} pt={4}>
                                         <Typography variant="subtitle1" >
-                                            <img style={{ width: "100%", maxHeight: "200px" }} src={document} alt="" />
+                                            <img style={{ width: "100%", maxHeight: "200px" }} src={document} alt="" onClick={() => downloadImage(document)} />
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -307,28 +314,23 @@ function ComplainDepartmentChange({ auth }) {
                                 </Grid>
                                 <Grid item md={4} sm={7} xs={12} pt={4}>
                                     <Typography variant="subtitle1" >
-                                        <img style={{ width: "100%", maxHeight: "300px", borderRadius: "20px" }} src={complainData.ComplainDocument.ComplainDocumentPath} alt="" />
+                                        <img style={{ width: "100%", maxHeight: "300px", borderRadius: "20px" }} src={complainData.ComplainDocument.ComplainDocumentPath} alt="" onClick={() => downloadImage(document)} />
                                     </Typography>
                                 </Grid>
                             </Fragment>
                         ) : ""}
-                    </Grid>
-
-                </Grid >
-                <Grid container item px={{ xs: 2, sm: 4, md: 8 }} mb={8} md={12} sm={12} xs={12}>
-                    <Grid container mt={12}>
-                        <Typography variant="h6" mb={3}>
-                            Comments
-                        </Typography>
-                    </Grid>
-                    <Grid container style={{ background: "#fff", color: "#1F5B88" }} px={5} py={5} boxShadow={8} borderRadius="20px">
                         <Grid container>
+                            <Grid container mt={6}>
+                                <Typography variant="h6" mb={1}>
+                                    Comments
+                                </Typography>
+                            </Grid>
                             {complainData && complainData.comments && complainData.comments.sort((a, b) => b.createdAt._seconds - a.createdAt._seconds)
                                 .map((comment, i) => {
                                     return auth.user.id === comment.userid ? (
-                                        <Grid container my={5} key={i}>
-                                            <Grid item md={12} sm={12} xs={12} container>
-                                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
+                                        <Grid container my={3} key={i}>
+                                            <Grid item md={10} sm={12} xs={12} container>
+                                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={1}>
                                                     <Typography style={{ textAlign: "start" }}>
                                                         <b>{comment.by}</b>
                                                     </Typography>
@@ -344,22 +346,21 @@ function ComplainDepartmentChange({ auth }) {
                                             </Grid>
                                         </Grid>
                                     ) : (
-                                        <Grid container my={5}
+                                        <Grid container my={3}
                                             container
                                             direction="row"
                                             justifyContent="flex-end"
                                             alignItems="center"
                                             key={i}
                                         >
-                                            <Grid item md={12} sm={12} xs={12} container>
-                                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={2}>
-                                                    <Typography style={{ textAlign: "start" }}>
-                                                        {toDateTime(comment.createdAt._seconds)}
-                                                    </Typography>
+                                            <Grid item md={10} sm={12} xs={12} container>
+                                                <Box style={{ width: "100%", display: "flex", justifyContent: "space-between" }} mb={1}>
                                                     <Typography style={{ textAlign: "start" }}>
                                                         <b>{comment.by}</b>
                                                     </Typography>
-
+                                                    <Typography style={{ textAlign: "start" }}>
+                                                        {toDateTime(comment.createdAt._seconds)}
+                                                    </Typography>
                                                 </Box>
                                             </Grid>
                                             <Grid item md={10} sm={12} xs={12} py={1} pl={3} style={{ background: "#eee", borderRadius: "20px", color: "#000" }}>
@@ -369,6 +370,17 @@ function ComplainDepartmentChange({ auth }) {
                                     )
                                 })}
                         </Grid>
+                    </Grid>
+
+                </Grid >
+                <Grid container item px={{ xs: 2, sm: 4, md: 8 }} mb={4} md={12} sm={12} xs={12}>
+                    <Grid container mt={12}>
+                        <Typography variant="h6" mb={3}>
+                            Additional Comments
+                        </Typography>
+                    </Grid>
+                    <Grid container style={{ background: "#fff", color: "#1F5B88" }} px={5} py={5} boxShadow={8} borderRadius="20px">
+
                         <Grid item container style={{ background: "#fff" }} py={4} px={0} direction="row" alignItems="start">
                             <Grid item md={12} sm={12} xs={12}>
                                 <Editor
@@ -382,7 +394,7 @@ function ComplainDepartmentChange({ auth }) {
                                     }
 
                                     init={{
-                                        height: 100,
+                                        height: 150,
                                         menubar: false,
                                         plugins: [
                                             'advlist autolink lists link image charmap print preview anchor',
@@ -400,7 +412,7 @@ function ComplainDepartmentChange({ auth }) {
                                     descriptionError !== "" ? descriptionError : ""
                                 }</FormHelperText>
                             </Grid>
-                            <Grid item container style={{ background: "#fff" }} py={4} px={4} direction="row" alignItems="center">
+                            <Grid item container style={{ background: "#fff" }} py={4} display="flex" direction="row" justifyContent="flex-end">
                                 <Button
                                     onClick={handleClick}
                                     style={{ color: "#fff" }}
