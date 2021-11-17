@@ -81,10 +81,7 @@ const AppToolbar = (props) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}><Link to="login" style={{ textDecoration: "none", color: "#000" }}><LockOpenIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} />Login</Link></MenuItem>
-      <MenuItem onClick={handleMenuClose}><VpnKeyIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Registration</MenuItem>
-      <MenuItem onClick={handleMenuClose}><ExitToAppIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Logout</MenuItem>
-      <MenuItem onClick={handleMenuClose}><PersonIcon mr={1} style={{ fontSize: "16px", marginBottom: "2px" }} />Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}><Link to="/profile" style={{ textDecoration: "none", color: "#000" }}><PersonIcon mr={1} style={{ fontSize: "16px", marginBottom: "-2px" }} />Profile</Link></MenuItem>
     </Menu >
   );
 
@@ -117,10 +114,12 @@ const AppToolbar = (props) => {
         (<Box>
           <MenuItem onClick={handleMenuClose}><Link to="/raise" style={{ textDecoration: "none", color: "#000" }}><PanToolIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} />Raise Complain</Link></MenuItem>
           <MenuItem onClick={handleMenuClose}><Link to="/public-complain" style={{ textDecoration: "none", color: "#000" }}><AllInboxIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} /> Complains</Link></MenuItem>
+          <MenuItem onClick={handleMenuClose}><Link to="/dashboard" style={{ textDecoration: "none", color: "#000" }}><AllInboxIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} /> Dashboard</Link></MenuItem>
           <MenuItem onClick={handleMenuClose}><Link to="/profile" style={{ textDecoration: "none", color: "#000" }}><PersonIcon mr={1} style={{ fontSize: "16px", marginBottom: "-2px" }} />Profile</Link></MenuItem>
           <MenuItem onClick={handleMenuClose}><Link to="#" style={{ textDecoration: "none", color: "#000" }} onClick={logout}><ExitToAppIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} />Logout</Link></MenuItem>
         </Box>) : (<Box>
           <MenuItem onClick={handleMenuClose}><Link to="/public-complain" style={{ textDecoration: "none", color: "#000" }}><AllInboxIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} /> Complains</Link></MenuItem>
+          <MenuItem onClick={handleMenuClose}><Link to="/dashboard" style={{ textDecoration: "none", color: "#000" }}><AllInboxIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} /> Dashboard</Link></MenuItem>
           <MenuItem onClick={handleMenuClose}><Link to="/profile" style={{ textDecoration: "none", color: "#000" }}><PersonIcon mr={1} style={{ fontSize: "16px", marginBottom: "-2px" }} />Profile</Link></MenuItem>
           <MenuItem onClick={handleMenuClose}><Link to="#" onClick={logout} style={{ textDecoration: "none", color: "#000" }}><ExitToAppIcon mr={1} style={{ fontSize: "16px", marginBottom: "-1px" }} />Logout</Link></MenuItem>
         </Box>)
@@ -232,7 +231,7 @@ const AppToolbar = (props) => {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {renderMenu}
+      {props.auth.user && props.auth.user ? renderMenu : ""}
     </Box >
   );
 }

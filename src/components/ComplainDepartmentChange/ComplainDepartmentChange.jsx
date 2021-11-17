@@ -43,7 +43,6 @@ function ComplainDepartmentChange({ auth }) {
     const [loader, setLoader] = useState(true)
 
     useEffect(async () => {
-        debugger
         const data = getSingleComplainData(id)
             .then(res => {
                 setComplainData(res)

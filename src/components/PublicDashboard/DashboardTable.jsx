@@ -26,7 +26,6 @@ function DashboardTable({ auth }) {
     useEffect(() => {
 
         publicComplain(page, rowsPerPage).then((res) => {
-            debugger
             setRows(res);
         })
 
