@@ -70,7 +70,6 @@ function Dashboard({ auth }) {
 
   }, [setLoaded, setTotalData]);
   const redirectTo = () => {
-    debugger
     history.push('/raise')
   }
   const showTotalRaised = totalRasiedData.filter(numbers => numbers !== 0).reduce((sum, data) => {
@@ -97,7 +96,7 @@ function Dashboard({ auth }) {
         }
         {
           auth.user.UserRole === "Complainant" ?
-            (<Grid container display="flex" justifyContent="flex-end" mx={8} py={2}>
+            (<Grid container display="flex" justifyContent="flex-end" mx={8} py={2} >
               <Tooltip title="Raise Complain" placement="left">
                 <Fab color="primary" aria-label="add" style={{ color: "#fff" }} onClick={redirectTo}>
                   <AddIcon />

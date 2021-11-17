@@ -25,7 +25,6 @@ function PublicDashboard({ auth }) {
   useEffect(() => {
     const userId = localStorage.getItem("userID")
     if (userId) {
-      debugger
       getPublicComplainGroupData(userId).then((res) => {
         res.length && res.forEach(datas => {
           let firstnumber = Math.floor(Math.random() * 256);

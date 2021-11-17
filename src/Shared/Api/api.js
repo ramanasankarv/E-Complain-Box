@@ -282,7 +282,6 @@ const getDashboardData = async (page, rowsPerPage, userType, userId) => {
 const publicComplain = async (page, rowsPerPage) => {
   try {
     let data = null;
-    debugger;
     data = await client({
       method: "get",
       url: `/publiccomplaints/${page}/${rowsPerPage}`,

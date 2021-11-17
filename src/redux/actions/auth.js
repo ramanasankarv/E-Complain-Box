@@ -69,7 +69,6 @@ const register =
 const login =
   ({ email, password }, history) =>
   async (dispatch) => {
-    debugger;
     const config = {
       headers: {
         "Content-type": "Application/json",
