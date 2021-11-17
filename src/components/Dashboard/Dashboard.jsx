@@ -110,10 +110,8 @@ function Dashboard({ auth }) {
 
         <Grid container display="flex" alignItems="flex-start" mb={3}>
           <Grid container pl={{ xs: 2, sm: 4, md: 8 }} pr={{ xs: 2, sm: 4, md: 0 }} item md={8}>
-
             {auth.user && (auth.user.UserRole === "Department Employee" || auth.user.UserRole === "SuperAdmin") ? (<DashboardCriticalComplain />
             ) : ""}
-
             <DashboardTable />
             <TodayRecord showTotalRaised={showTotalRaised} showTotalInProgress={showTotalInProgress} showTotalDone={showTotalDone} />
             <VerticalChart

@@ -26,7 +26,8 @@ import PublicDashboard from "./components/PublicDashboard/PublicDashboard";
 import Profile from "./components/profile/Profile";
 import Contactus from "./components/Contactus/Contactus";
 import FAQ from "./components/FAQ/FAQ";
-
+import TermsAndConditions from "./components/terms and conditions/TermsAndConditions";
+import PrivacyAndPolicy from "./components/Privacy and Policy/PrivacyAndPolicy";
 const App = ({ auth }) => {
   const history = useHistory();
 
@@ -83,6 +84,13 @@ const App = ({ auth }) => {
             <PrivateRoute exact path="/profile" component={Profile} />{" "}
             <Route exact path="/FAQ" component={FAQ} />{" "}
             <Route exact path="/public-complain" component={PublicDashboard} />
+            <Route
+              exact
+              path="/terms-conditions"
+              component={TermsAndConditions}
+            />
+            {""}
+            <Route exact path="/privacy-policy" component={PrivacyAndPolicy} />
             {""}
             <PrivateRoute
               path="/complain-department-details/:id"

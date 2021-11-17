@@ -40,13 +40,13 @@ export default function LoggedUserInfo({ auth }) {
                             </Typography>
                         </Grid>
                         <Grid container ml={3}>
-                            <Typography>
-                                <Typography>
-                                    <b>Email: </b>
-                                    <span>
-                                        {auth.user.Email}
-                                    </span>
-                                </Typography>
+                            <Typography style={{ wordWrap: 'break-word' }}
+                            >
+                                <b>Email: </b>
+                                <span style={{ wordWrap: 'break-word' }}
+                                >
+                                    {auth.user.Email}
+                                </span>
                             </Typography>
                         </Grid>
                         <Grid container ml={3}>

@@ -27,18 +27,18 @@ export default function AppFooter() {
                             <Box><Link to="/register" style={{ textDecoration: "none", color: "#fff" }}>Sign Up</Link></Box>
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <Typography variant="h5" mb={2}>Privacy & You</Typography>
-                            <Box mb={1}>Terms Condition</Box>
-                            <Box>Privacy Policy</Box>
+                            <Typography variant="h5" mb={1}>Privacy & You</Typography>
+                            <Box mb={2}><Link to="/terms-conditions" style={{ textDecoration: "none", color: "#fff" }}>Terms & Conditions</Link></Box>
+                            <Box mb={2}><Link to="/privacy-policy" style={{ textDecoration: "none", color: "#fff" }}>Privacy & Policies</Link></Box>
                         </Grid>
                     </Grid>
                 </Container>
-            </Box>
+            </Box >
             <Grid item xs={12} bgcolor="secondary.main" color="white" py={3} textAlign="center">
                 <Typography variant="h6" component="h6" style={{ fontStyle: "italic", fontSize: "15px" }}>
                     All Rights Reserved © 2021 E-ComplainBox.com
                 </Typography>
             </Grid>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
