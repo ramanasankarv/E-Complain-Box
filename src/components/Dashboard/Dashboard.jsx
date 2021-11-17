@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Tooltip } from '@mui/material';
 import TodayRecord from './TodayRecord';
 import { Fragment } from 'react';
 import VerticalChart from './VerticalChart';
@@ -11,7 +11,10 @@ import "./styles/Dashboard.css"
 import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 import DashboardTable from './DashboardTable';
 import { getComplainGroupData } from '../../Shared/Api/api';
-
+import DashboardCriticalComplain from "./DashboardCriticalComplain"
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import { useHistory } from "react-router-dom"
 function Dashboard({ auth }) {
   const [totalData, setTotalData] = useState(null)
   const [totalRasiedData, setTotalRasiedData] = useState([])
@@ -22,6 +25,7 @@ function Dashboard({ auth }) {
   const [dataChanged, setdataChanged] = useState(false)
   const [totalDepartments, setTotalDepartments] = useState([])
   const [loaded, setLoaded] = React.useState(true);
+  let history = useHistory()
   useEffect(() => {
     const userId = localStorage.getItem("userID")
     if (userId) {
@@ -65,6 +69,10 @@ function Dashboard({ auth }) {
     }
 
   }, [setLoaded, setTotalData]);
+  const redirectTo = () => {
+    debugger
+    history.push('/raise')
+  }
   const showTotalRaised = totalRasiedData.filter(numbers => numbers !== 0).reduce((sum, data) => {
     return sum += data
   }, 0)
@@ -80,18 +88,33 @@ function Dashboard({ auth }) {
       <Loader />
     </Grid>) : (
       <Fragment>
+
         {
           auth.user ?
             (<LoggedUserInfo auth={auth} />)
             :
             ""
         }
+        {
+          auth.user.UserRole === "Complainant" ?
+            (<Grid container display="flex" justifyContent="flex-end" mx={8} py={2}>
+              <Tooltip title="Raise Complain" placement="left">
+                <Fab color="primary" aria-label="add" style={{ color: "#fff" }} onClick={redirectTo}>
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
+            </Grid>)
+            :
+            ""
+        }
 
-        {/* {auth.user ? (<Grid container mt={12} pl={{ xs: 2, sm: 4, md: 8 }}><Typography style={{ fontWeight: "bold", fontSize: "20px" }}>Welcome {auth.user ? auth.user.FullName : ""}</Typography></Grid>
-        ) : ""
-        } */}
+
         <Grid container display="flex" alignItems="flex-start" mb={3}>
           <Grid container pl={{ xs: 2, sm: 4, md: 8 }} pr={{ xs: 2, sm: 4, md: 0 }} item md={8}>
+
+            {auth.user && (auth.user.UserRole === "Department Employee" || auth.user.UserRole === "SuperAdmin") ? (<DashboardCriticalComplain />
+            ) : ""}
+
             <DashboardTable />
             <TodayRecord showTotalRaised={showTotalRaised} showTotalInProgress={showTotalInProgress} showTotalDone={showTotalDone} />
             <VerticalChart
