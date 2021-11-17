@@ -23,18 +23,15 @@ import { connect } from "react-redux";
 import UpdateComplain from "./components/RaiseComplain/UpdateComplain";
 import Aboutus from "./components/Aboutus/Aboutus";
 import PublicDashboard from "./components/PublicDashboard/PublicDashboard";
+import Profile from "./components/profile/Profile";
+import Contactus from "./components/Contactus/Contactus";
+import FAQ from "./components/FAQ/FAQ";
+
 const App = ({ auth }) => {
   const history = useHistory();
 
   useEffect(() => {
     store.dispatch(loadUser());
-    let token = localStorage.getItem("token");
-    if (token && !auth.token) {
-      localStorage.removeItem("token");
-      history.push("/login");
-    } else if (!token) {
-      history.push("/login");
-    }
   }, []);
   const theme = createTheme({
     palette: {
@@ -79,17 +76,23 @@ const App = ({ auth }) => {
           <Switch>
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
-            <Route exact path="/raise" component={RaiseComplaints} />
-            <Route exact path="/dashboard" component={Dashboard} />{" "}
+            <PrivateRoute exact path="/raise" component={RaiseComplaints} />
+            <PrivateRoute exact path="/dashboard" component={Dashboard} />{" "}
             <Route exact path="/about-us" component={Aboutus} />{" "}
+            <Route exact path="/contactus" component={Contactus} />{" "}
+            <PrivateRoute exact path="/profile" component={Profile} />{" "}
+            <Route exact path="/FAQ" component={FAQ} />{" "}
             <Route exact path="/public-complain" component={PublicDashboard} />
             {""}
-            <Route
+            <PrivateRoute
               path="/complain-department-details/:id"
               component={ComplainDepartmentChange}
             />{" "}
-            <Route path="/complain-details/:id" component={ComplainDetails} />{" "}
-            <Route path="/update/:id" component={UpdateComplain} />{" "}
+            <PrivateRoute
+              path="/complain-details/:id"
+              component={ComplainDetails}
+            />{" "}
+            <PrivateRoute path="/update/:id" component={UpdateComplain} />{" "}
             <Route
               exact
               path="/email-verification"

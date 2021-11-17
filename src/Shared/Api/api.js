@@ -310,6 +310,21 @@ const getPublicComplainGroupData = async (userId) => {
     console.log(error);
   }
 };
+
+const getCriticalComplain = async (severity, page, rowsPerPage) => {
+  try {
+    const { data } = await client({
+      method: "get",
+      url: `complaintsbyseverity/${severity}/${page}/${rowsPerPage}`,
+      headers: {
+        AuthToken: localStorage.getItem("token"),
+      },
+    });
+    return data.Complains;
+  } catch (error) {
+    toast.error(error.message);
+  }
+};
 export {
   imageupload,
   getDashboardData,
@@ -321,4 +336,5 @@ export {
   departmentChange,
   publicComplain,
   getPublicComplainGroupData,
+  getCriticalComplain,
 };

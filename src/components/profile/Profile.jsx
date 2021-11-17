@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Box, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
@@ -6,11 +6,12 @@ import './styles/styles.css'
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import Clock from 'react-live-clock';
-import moment from 'react-moment'
-
-export default function LoggedUserInfo({ auth }) {
-    return (
-        <Grid container mx={{ xs: 2, sm: 4, md: 8 }}>
+import { connect } from "react-redux";
+import Loader from "../../Shared/common/Loader";
+function Profile({ auth }) {
+    console.log(auth)
+    return !auth.user ? <Loader /> : (
+        <Grid container mx={{ xs: 2, sm: 4, md: 36 }}>
             <Grid item md={12} sm={12} xs={12} my={12} py={5} className="avatar-container" boxShadow={8} borderRadius="20px">
                 <Stack direction="row" spacing={2} className="avatar" sx={{ left: { xs: '35%', sm: '40%', md: '45%' } }}>
                     <Avatar
@@ -74,3 +75,7 @@ export default function LoggedUserInfo({ auth }) {
         </Grid >
     );
 }
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+});
+export default connect(mapStateToProps)(Profile);
