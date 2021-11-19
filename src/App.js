@@ -28,9 +28,22 @@ import Contactus from "./components/Contactus/Contactus";
 import FAQ from "./components/FAQ/FAQ";
 import TermsAndConditions from "./components/terms and conditions/TermsAndConditions";
 import PrivacyAndPolicy from "./components/Privacy and Policy/PrivacyAndPolicy";
-const App = ({ auth }) => {
-  const history = useHistory();
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 
+const App = ({ auth }) => {
+  
+  Sentry.init({
+    dsn: "https://800f7072bedc400295a6cab3a99f9335@o1072748.ingest.sentry.io/6071993",
+    integrations: [new Integrations.BrowserTracing()],
+  
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 1.0,
+  });
+
+  const history = useHistory();
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
