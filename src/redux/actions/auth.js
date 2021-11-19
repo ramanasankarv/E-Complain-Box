@@ -1,14 +1,11 @@
 import {
-  REGISTER_FAILED,
   REGISTER_SUCCESS,
   LOGIN_SUCCESS,
-  LOGIN_FAILED,
   USER_LOADED,
   AUTH_ERROR,
   LOGOUT,
   CLEAR_PROFILE,
-  GET_PROFILE,
-  APP_ERROR,
+  LOADING,
 } from "./types";
 import { toast } from "react-toastify";
 import { auth, storage } from "../../firebase";
@@ -22,6 +19,10 @@ const register =
   ({ fullname, email, password, mobile }, history) =>
   async (dispatch) => {
     try {
+      dispatch({
+        type: LOADING,
+        payload: true,
+      });
       const registrationInfo = await auth.createUserWithEmailAndPassword(
         email,
         password
@@ -51,11 +52,18 @@ const register =
         type: REGISTER_SUCCESS,
         payload: response.data.message,
       });
-      //push('/email-verification');
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
       history.push("/email-verification");
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
     }
   };
 const login =
@@ -66,6 +74,10 @@ const login =
         "Content-type": "Application/json",
       },
     };
+    dispatch({
+      type: LOADING,
+      payload: true,
+    });
     const newUser = {
       email,
       password,
@@ -112,17 +124,24 @@ const login =
         type: LOGIN_SUCCESS,
         payload: response.data.user[0],
       });
-      console.log(response);
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
       if (localStorage.getItem("userIsEmailVerified") == "No") {
         history.push("/email-verification");
       } else if (localStorage.getItem("userIsMobileVerified") == "No") {
         history.push("/mobile-verification");
       } else {
-        history.push("/raise");
+        history.push("/dashboard");
       }
     } catch (error) {
       console.log(error);
       toast.error(error.message);
+      dispatch({
+        type: LOADING,
+        payload: false,
+      });
     }
   };
 
@@ -147,12 +166,11 @@ const emailverifications =
         localStorage.setItem("userIsEmailVerified", "Yes");
         window.location.href = "/mobile-verification";
       } else {
-        //('Invalid OTP!');
-        //dispatch(setAlert("Invalid OTP", "danger"));
+        toast.error("Invalid OTP");
       }
       console.log(response);
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -178,18 +196,15 @@ const mobileverifications =
           localStorage.setItem("userIsMobileVerified", "Yes");
           window.location.href = "/raise";
         } else {
-          //dispatch(setAlert("Invalid OTP", "danger"));
+          toast.error("Invalid OTP");
         }
       });
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     }
   };
 
 const loadUser = () => async (dispatch) => {
-  // if (localStorage.token) {
-  //     setAuthToken(localStorage.token);
-  // }
   try {
     let data = {
       email: localStorage.getItem("userEmail"),
@@ -202,18 +217,22 @@ const loadUser = () => async (dispatch) => {
       },
       data: data,
     });
+    console.log(response);
     console.log(response.data.user[0]);
     dispatch({
       type: USER_LOADED,
       payload: response.data.user[0],
     });
   } catch (error) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userID");
     dispatch({
       type: AUTH_ERROR,
     });
   }
 };
-const logout = () => async (dispatch) => {
+const logout = (history) => async (dispatch) => {
   await auth.signOut();
   dispatch({
     type: CLEAR_PROFILE,
@@ -221,84 +240,7 @@ const logout = () => async (dispatch) => {
   dispatch({
     type: LOGOUT,
   });
-};
-
-const imageupload =
-  (
-    { files, city, department, complainType, severity, subject, description },
-    urls,
-    setUrls,
-    history
-  ) =>
-  async (dispatch) => {
-
-    var len1=files.length;
-    let images=[];
-    let completedCount=0;
-    for (var i=0; i < len1; i++) {
-      var image= files[i];
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      uploadTask.on('state_changed',
-        (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-        },
-        (error) => {
-            // Handle unsuccessful uploads
-            console.log("error:-", error)
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-              console.log('File available at', downloadURL);
-              images.push(downloadURL.toString());
-              completedCount=completedCount+1;
-              console.log(completedCount)
-              console.log(len1)
-              if(completedCount==len1){
-                console.log(images) 
-                let data = {
-                  city: city,
-                  department: department,
-                  description:description,
-                  subject: subject,
-                  complainType:complainType,
-                  severity:severity,
-                  userid: localStorage.getItem("userID"),
-                  urls: images,
-                  token: localStorage.getItem("token"),
-                };
-
-                client({
-                    method: "post",
-                    url: "/createcomplaint",
-                    headers: {
-                      AuthToken: localStorage.getItem("token"),
-                    },
-                    data: data,
-                }).then(()=>{
-                    history.push('/dashboard')
-                });
-              }
-              
-          });
-        }
-      );
-    }
-      
-  };
-
-
-const getDashboardData = () => async (dispatch) => {
-  client({
-    method: "get",
-    url: "/getcomplaints",
-    headers: {
-      AuthToken: localStorage.getItem("token"),
-    },
-  }).then((res) => {
-    console.log(res);
-    //history.push("/dashboard");
-  });
+  history.push("/login");
 };
 
 export {
@@ -308,5 +250,4 @@ export {
   logout,
   emailverifications,
   mobileverifications,
-  imageupload,
 };
