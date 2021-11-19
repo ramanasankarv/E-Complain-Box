@@ -1,13 +1,11 @@
 import React, { Fragment, useEffect } from "react";
 import AppToolbar from "./Shared/Layouts/Toolbar/Toolbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Provider } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 import { loadUser } from "./redux/actions/auth";
 import Login from "./components/Login/Login";
 import AppFooter from "./Shared/Layouts/Footer/Footer";
 import { Grid } from "@mui/material";
-import { AuthProvider } from "./contexts/AuthContext";
 import Register from "./components/Registration/Register";
 import Dashboard from "./components/Dashboard/Dashboard";
 import RaiseComplaints from "./components/RaiseComplain/RaiseComplaints";
@@ -17,20 +15,24 @@ import MobileVerifications from "./components/Mobileverification/MobileVerificat
 import PrivateRoute from "./components/Routing/PrivateRoute";
 import ComplainDetails from "./components/ComplainDetails/ComplainDetails";
 import ComplainDepartmentChange from "./components/ComplainDepartmentChange/ComplainDepartmentChange";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import store from "./redux/store";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const App = () => {
+import { connect } from "react-redux";
+import UpdateComplain from "./components/RaiseComplain/UpdateComplain";
+import Aboutus from "./components/Aboutus/Aboutus";
+import PublicDashboard from "./components/PublicDashboard/PublicDashboard";
+import Profile from "./components/profile/Profile";
+import Contactus from "./components/Contactus/Contactus";
+import FAQ from "./components/FAQ/FAQ";
+import TermsAndConditions from "./components/terms and conditions/TermsAndConditions";
+import PrivacyAndPolicy from "./components/Privacy and Policy/PrivacyAndPolicy";
+const App = ({ auth }) => {
   const history = useHistory();
 
   useEffect(() => {
     store.dispatch(loadUser());
-    let token = localStorage.getItem("token");
-    if (!token) {
-      history.push("/login");
-    }
   }, []);
   const theme = createTheme({
     palette: {
@@ -39,7 +41,7 @@ const App = () => {
       },
       secondary: {
         light: "#0066ff",
-        main: "#0c0921",
+        main: "rgb(36,98,95)",
         // dark: will be calculated from palette.secondary.main,
         contrastText: "#ffcc00",
       },
@@ -68,20 +70,37 @@ const App = () => {
           direction="row"
           justifyContent="center"
           alignItems="center"
-          bgcolor="#DEF2FA"
+          bgcolor="#eee"
         >
           <ToastContainer autoClose={5000} />
 
           <Switch>
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
-            <Route exact path="/raise" component={RaiseComplaints} />
-            <Route exact path="/dashboard" component={Dashboard} />{" "}
+            <PrivateRoute exact path="/raise" component={RaiseComplaints} />
+            <PrivateRoute exact path="/dashboard" component={Dashboard} />{" "}
+            <Route exact path="/about-us" component={Aboutus} />{" "}
+            <Route exact path="/contactus" component={Contactus} />{" "}
+            <PrivateRoute exact path="/profile" component={Profile} />{" "}
+            <Route exact path="/FAQ" component={FAQ} />{" "}
+            <Route exact path="/public-complain" component={PublicDashboard} />
             <Route
-              path="/complain-department-details"
+              exact
+              path="/terms-conditions"
+              component={TermsAndConditions}
+            />
+            {""}
+            <Route exact path="/privacy-policy" component={PrivacyAndPolicy} />
+            {""}
+            <PrivateRoute
+              path="/complain-department-details/:id"
               component={ComplainDepartmentChange}
             />{" "}
-            <Route path="/complain-details/:id" component={ComplainDetails} />{" "}
+            <PrivateRoute
+              path="/complain-details/:id"
+              component={ComplainDetails}
+            />{" "}
+            <PrivateRoute path="/update/:id" component={UpdateComplain} />{" "}
             <Route
               exact
               path="/email-verification"
@@ -100,5 +119,7 @@ const App = () => {
     </ThemeProvider>
   );
 };
-
-export default App;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps)(App);

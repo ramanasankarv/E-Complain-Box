@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useState, useRef, Fragment } from 'react';
+import React, { useState, useRef, Fragment, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -22,12 +22,12 @@ import { FormHelperText } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import PanelHeader from '../../Shared/common/PanelHeader';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { imageupload } from "../../Shared/Api/api";
-import { useEffect } from 'react';
-import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
+import { getSingleComplainData, updateComplain } from '../../Shared/Api/api';
 import Loader from '../../Shared/common/Loader';
+import LoggedUserInfo from '../../Shared/common/LoggedUserInfo';
 
 const validationSchema = yup.object({
     department: yup
@@ -49,24 +49,50 @@ const validationSchema = yup.object({
 
 });
 
-function RaiseComplaints({ auth }) {
+function UpdateComplaints({ auth }) {
     const [description, setDescription] = useState("");
     const [files, setFiles] = useState([]);
     const [descriptionError, setDescriptionError] = useState("");
-    const [urls, setUrls] = useState([]);
+    const [complainData, setComplainData] = useState({})
+    const [dataLoaded, setDataLoaded] = useState(false)
     const [severityMessage, setSeverityMessage] = useState("")
-    let history = useHistory();
 
+    const [initialValuesForm, setInitialValuesForm] = useState({
+        department: "",
+        city: '',
+        complainType: "",
+        severity: '',
+        subject: ''
+    })
+    const [loader, setLoader] = useState(true)
+    let history = useHistory();
+    let { id } = useParams()
     const editorRef = useRef(null);
+
+
 
     const onDrop = (files) => {
         setFiles(files)
     };
-    useEffect(() => {
-        if (auth.user && (auth.user.UserRole === "Department Employee" || auth.user.UserRole === "SuperAdmin")) {
-            history.push('/dashboard')
-        }
-    }, [])
+    useEffect(async () => {
+        const data = await getSingleComplainData(id)
+            .then(res => {
+                setComplainData(res)
+                setInitialValues();
+                setDataLoaded(true)
+                setLoader(false);
+            })
+    }, [setComplainData, dataLoaded]);
+    const setInitialValues = () => {
+        setInitialValuesForm({
+            department: complainData.ComplainDepartmentID,
+            city: complainData.ComplainCity,
+            complainType: complainData.ComplainType,
+            severity: complainData.ComplainSeverity,
+            subject: complainData.ComplainSubject
+        })
+    }
+    console.log(initialValuesForm)
     const parseEditorData = (content) => {
         let textContent = editorRef.current.getContent({ format: 'text' })
         if (textContent !== "" && textContent !== "undefined") {
@@ -78,16 +104,6 @@ function RaiseComplaints({ auth }) {
         console.log(descriptionError);
     }
 
-
-    const handleClick = () => {
-        let textContent = editorRef.current.getContent({ format: 'text' })
-        if (textContent !== "" && textContent !== "undefined") {
-            setDescription({ description: editorRef.current.getContent() });
-            setDescriptionError("")
-        } else {
-            setDescriptionError("Description field is required")
-        }
-    }
     const handleSeverityClick = (e) => {
         switch (e.target.value) {
             case "critical":
@@ -106,17 +122,21 @@ function RaiseComplaints({ auth }) {
                 setSeverityMessage("")
         }
     }
+    const handleClick = () => {
+        let textContent = editorRef.current.getContent({ format: 'text' })
+        if (textContent !== "" && textContent !== "undefined") {
+            setDescription({ description: editorRef.current.getContent() });
+            setDescriptionError("")
+        } else {
+            setDescriptionError("Description field is required")
+        }
+    }
+
 
     const formik = useFormik({
-        initialValues: {
-            department: '',
-            city: '',
-            complainType: "",
-            severity: '',
-            subject: ''
-        },
+        initialValues: initialValuesForm,
         validationSchema: validationSchema,
-
+        enableReinitialize: true,
         onSubmit: async (allValues) => {
             let textContent = editorRef.current.getContent({ format: 'text' })
             if (textContent !== "" && textContent !== "undefined") {
@@ -128,7 +148,7 @@ function RaiseComplaints({ auth }) {
                 setDescriptionError(descriptionErrorMessage)
             }
             console.log(allValues)
-            await new Promise((r) => setTimeout(imageupload(allValues, urls, setUrls, history)));
+            await new Promise((r) => setTimeout(updateComplain(allValues, history, id)));
         },
     });
     const newFiles = files.map((file, i) => (
@@ -148,17 +168,18 @@ function RaiseComplaints({ auth }) {
         </Fragment>
 
     ));
-    return !auth.user ?
-        (<Grid container px={12} style={{ height: "100%" }}>
+    return loader && initialValuesForm.city === "" ?
+        (<Grid container px={12} mt={12} style={{ height: "100%" }}>
             <Loader />
         </Grid>) : (
-            <Grid container>
+            <Grid container >
                 {auth.user ? (<LoggedUserInfo auth={auth} />) : ""
                 }
                 <Grid item container mx={{ xs: 2, sm: 4, md: 8 }} mb={8} borderRadius="20px" boxShadow={20} style={{ background: "#fff" }}>
-                    <PanelHeader title={"Raise Complain"} />
+                    <PanelHeader title={"Update Complain"} />
                     <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
                         <Grid container px={3} pt={4} spacing={3}>
+
                             <Grid item container pt={4} md={6}>
                                 <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <PublicIcon style={{ marginRight: "10px" }} />
@@ -169,7 +190,7 @@ function RaiseComplaints({ auth }) {
                                         select
                                         fullWidth
                                         label="Select Your city"
-                                        value={formik.values.city}
+                                        value={formik.values.city ? formik.values.city : ""}
                                         onChange={formik.handleChange}
                                         error={
                                             formik.touched.city &&
@@ -192,18 +213,17 @@ function RaiseComplaints({ auth }) {
                                     </TextField>
                                 </Grid>
                             </Grid>
-                            <Grid item container pt={4} md={6}>
+                            <Grid item container pt={4} direction="row" alignItems="center" md={6}>
                                 <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <WorkOutlineIcon style={{ marginRight: "10px" }} />
                                     <TextField
-                                        ml={1}
                                         variant="outlined"
                                         name="department"
                                         id="department"
                                         select
                                         fullWidth
                                         label="Select Your Department"
-                                        value={formik.values.department}
+                                        value={formik.values.department ? formik.values.department : ""}
                                         onChange={formik.handleChange}
                                         error={
                                             formik.touched.department &&
@@ -239,57 +259,41 @@ function RaiseComplaints({ auth }) {
                             </Grid>
                         </Grid>
                         <Grid container px={3} spacing={3} pt={4}>
+
                             <Grid item container pt={4} md={6}>
                                 <Grid item md={11} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <WarningAmberIcon style={{ marginRight: "10px" }} />
-
                                     <FormControl component="fieldset" error={
                                         formik.touched.complainType &&
                                         Boolean(formik.errors.complainType)
                                     }>
-                                        <FormLabel component="legend" sx={{ display: { xs: 'block', sm: 'block', md: 'none' } }}
-                                            style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
-                                        <RadioGroup row aria-label="gender" name="complainType" onChange={formik.handleChange}>
-                                            <FormLabel component="legend" sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
-                                                style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
+                                        <RadioGroup row aria-label="gender" name="complainType" onChange={formik.handleChange} value={formik.values.complainType ? formik.values.complainType : ""}>
+                                            <FormLabel component="legend" style={{ marginRight: "15px", marginTop: "10px" }} name="complainType">Complain Type:</FormLabel>
                                             <FormControlLabel value="public" control={<Radio />} label="Public" />
                                             <FormControlLabel value="private" control={<Radio />} label="Private" />
                                         </RadioGroup>
                                     </FormControl>
-
-                                </Grid>
-                                <Grid container ml={4}>
                                     <FormHelperText style={{ color: "red" }}>{
                                         formik.touched.complainType &&
                                         formik.errors.complainType
                                     }</FormHelperText>
                                 </Grid>
                             </Grid>
-                            <Grid item container pt={4} md={6}>
+                            <Grid item container pt={4} direction="row" alignItems="center" md={6}>
                                 <Grid item md={11} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                     <FlashAutoIcon style={{ marginRight: "10px" }} />
                                     <FormControl component="fieldset" error={
                                         formik.touched.severity &&
                                         Boolean(formik.errors.severity)
                                     }>
-                                        <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }} sx={{ display: { xs: 'block', sm: 'block', md: 'none' } }}>Severity:</FormLabel>
-
-                                        <RadioGroup row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={formik.handleChange}>
-                                            <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }} sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>Severity:</FormLabel>
+                                        <RadioGroup row aria-label="gender" name="row-radio-buttons-group" name="severity" onChange={formik.handleChange} value={formik.values.severity ? formik.values.severity : ""}>
+                                            <FormLabel component="legend" name="severity" style={{ marginRight: "15px", marginTop: "10px" }}>Severity:</FormLabel>
                                             <FormControlLabel value="critical" control={<Radio />} label="Critical" onClick={handleSeverityClick} />
                                             <FormControlLabel value="high" control={<Radio />} label="Hign" onClick={handleSeverityClick} />
                                             <FormControlLabel value="medium" control={<Radio />} label="Medium" onClick={handleSeverityClick} />
                                             <FormControlLabel value="low" control={<Radio />} label="Low" onClick={handleSeverityClick} />
                                         </RadioGroup>
                                     </FormControl>
-
-                                </Grid>
-                                <Grid container ml={4}>
-                                    <FormHelperText>{
-                                        severityMessage !== "" &&
-                                        `NOTE: ${severityMessage}`
-
-                                    }</FormHelperText>
                                     <FormHelperText style={{ color: "red" }}>{
                                         formik.touched.severity &&
                                         formik.errors.severity
@@ -297,6 +301,7 @@ function RaiseComplaints({ auth }) {
                                 </Grid>
                             </Grid>
                         </Grid>
+
                         <Grid item container pt={4} px={3}>
                             <Grid item md={12} sm={11} xs={10} display="flex" direction="row" alignItems="center">
                                 <SubjectIcon style={{ marginRight: "10px" }} />
@@ -311,7 +316,7 @@ function RaiseComplaints({ auth }) {
                                     autoComplete="subject"
                                     autoFocus
                                     variant="outlined"
-                                    value={formik.values.subject}
+                                    value={formik.values.subject ? formik.values.subject : ""}
                                     onChange={formik.handleChange}
                                     error={formik.touched.subject && Boolean(formik.errors.subject)}
                                     helperText={formik.touched.subject && formik.errors.subject}
@@ -324,7 +329,7 @@ function RaiseComplaints({ auth }) {
                                 <Editor
                                     apiKey="dd83bg0e7v7jnnfjjqwg7bktooeb1n4wcn2vn7vmeaof51y5"
                                     onInit={(evt, editor) => editorRef.current = editor}
-                                    initialValue=""
+                                    initialValue={complainData.ComplainDescription}
                                     id="description"
                                     name="description"
                                     onEditorChange={(content, editor) =>
@@ -344,13 +349,10 @@ function RaiseComplaints({ auth }) {
                                             'bold italic backcolor | alignleft aligncenter ' +
                                             'alignright alignjustify | bullist numlist outdent indent | ' +
                                             'removeformat | help',
-                                        content_style: 'body {font - family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                                     }}
                                 />
-
-                            </Grid>
-                            <Grid container ml={4}>
-                                <FormHelperText style={{ color: "red" }} ml={5}>{
+                                <FormHelperText style={{ color: "red" }}>{
                                     descriptionError !== "" ? descriptionError : ""
                                 }</FormHelperText>
                             </Grid>
@@ -359,7 +361,7 @@ function RaiseComplaints({ auth }) {
                         <Grid item container pt={4} px={3}>
                             <Grid item md={12} sm={11} xs={10} style={{ overflow: "hidden" }} display="flex" direction="row" alignItems="center">
                                 <CloudUploadIcon style={{ marginRight: "10px" }} />
-                                <Dropzone onDrop={onDrop} >
+                                <Dropzone onDrop={onDrop}>
                                     {({ getRootProps, getInputProps }) => (
                                         <section className="container" style={{ width: "100%" }}>
                                             <div {...getRootProps({ className: 'dropzone' })}>
@@ -379,24 +381,23 @@ function RaiseComplaints({ auth }) {
                                 </Dropzone>
                             </Grid>
                         </Grid>
-                        <Grid item container ml={2}
-                            style={{ borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} py={4} px={4} direction="row" alignItems="center">
+                        <Grid item container style={{ background: "#fff", borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px" }} py={4} px={4} direction="row" alignItems="center">
                             <Button
                                 onClick={handleClick}
                                 style={{ color: "#fff" }}
                                 type="submit"
+                                fullWidth
                                 variant="contained"
                             >
-                                Raise Complain
+                                Update Complain
                             </Button>
                         </Grid>
                     </form>
-                </Grid >
-            </Grid >
-
+                </Grid>
+            </Grid>
         );
 }
 const mapStateToProps = (state) => ({
     auth: state.auth,
 });
-export default connect(mapStateToProps)(RaiseComplaints);
+export default connect(mapStateToProps, { imageupload })(UpdateComplaints);

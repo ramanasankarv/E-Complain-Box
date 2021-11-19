@@ -56,15 +56,15 @@ const recordUseStyles = makeStyles({
   },
   numbers: {
     boxShadow: "3px 5px 8px 2px #888888;",
-    width: "18%",
-    height: "100px",
+    height: "250px",
     background: "#fff",
     borderRadius: "10px",
     padding: "10px",
-    textAlign: "center",
-    alignItems: "center",
     fontSize: "35px",
-    fontWeight: "bolder"
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center"
   },
   grid: {
     display: "flex",
