@@ -30,7 +30,7 @@ function DashboardCriticalComplain({ auth }) {
             })
         }
         else if (auth.user && auth.user.UserRole === "SuperAdmin") {
-            getCriticalComplain('critical', page, rowsPerPage).then((res) => {
+            getCriticalComplain('critical', auth.user.id, page, rowsPerPage).then((res) => {
                 setRows(res);
             })
         }
