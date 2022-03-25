@@ -30,7 +30,7 @@
 
 ### First Run Express server
 
-*Node JS as Backend code uploaded under "https://github.com/pesto-students/server-complainbox-n9-beta" Github repo. It utilizes the Firebase Functions feature from Firebase suite of tools.*
+*Node JS as Backend code uploaded under "https://github.com/ramanasankarv/server-complainbox-n9-beta" Github repo. It utilizes the Firebase Functions feature from Firebase suite of tools.*
 
 **Requirment:** NPM v6.14.11, Node v14.15.4 and [Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli)
 
