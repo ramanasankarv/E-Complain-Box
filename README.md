@@ -84,33 +84,6 @@ You can set the port in .env file or default will be http://localhost:3001
 ![alt text](https://storage.googleapis.com/sector17-chandigarh.appspot.com/readme/performance.jpg)
 
 
-## Features
-
-- **Authentication** - Authentication using Facebook, Google One user, one account
-- **Search** - Help users to search shops, products, categories etc.
-- **Filters** - Filter products according Price, size, brand etc.
-- **Cart** - Bag to put all items you are willing to purchase
-- **Guest Checkout** - No strings attached
-- **Payment Method** - Pay using different payment methods
-- **Dynamic Pricing/Shipping** - Different pricing for different users, Loyalty Program, Express Delivery.
-- **Services** - OrderHistory, Wishlist, Manage profile, Recently Viewed/Searched, Trending etc.
-- **Security** - React provides protection from XSS out of the box. CORS applied on Node.JS server, so no other request from unknown origin gets executed.
-- **Wishlist** - Shortlist now, Buy later
-
-
-## Upcoming Features
-
-- Vendor Admin Panel
-- Virtual Rendering for Pagination
-- Switcher for Incremental Rollout
-- .env File for Controlling Different Environments
-- Show complete order details on Order History
-- Return Exchange on Order History
-- Better and more Optimised Filters
-- Frequently Bought Together
-- Best Deals
-- Product Review System
-
 
 ## Third party tools
 
