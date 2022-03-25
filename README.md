@@ -20,9 +20,7 @@
 
 **Please feel free to contact on Slack in case of any setup related issue or post in** [#e-comp_proj](https://join.slack.com/share/zt-sa486201-IYsy2Ms6fvqvauMmtmmbnQ)
 
-- Kapil - [LinkedIn](https://www.linkedin.com/in/pardeep2411/) - [GitHub](https://github.com/pardeep24)
 - Ramana Sankar - [LinkedIn](https://www.linkedin.com/in/ramanasankar/) - [GitHub](https://github.com/ramanasankarv)
-- Sazzad Mahmud - [LinkedIn](www.linkedin.com/in/tusher-mahmud-49602a146) - [GitHub](https://github.com/tushermahmud)
 
 
 ## How to run the project
