@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# E-Complain-Box
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[E-Complain-Box](https://ecomplainbox-598a53.netlify.app/) refers to the vision of the E Complain Box in Govt. Department. It is a simple platform to Raise Complaint to any department through the online. The Department have to complete complaint.  
 
-## Available Scripts
+## Table of Contents
+- [Stakeholders](#stakeholders)
+- [How to run project](#how-to-run-the-project)
+  * [First run Express server](#first-run-express-server)
+  * [For running frontend code](#for-running-frontend-code)
+- [Environments and Deployments](#environments-and-deployments)
+- [Error Monitoring and Logs](#error-monitoring-and-logs)
+- [Artefacts](#artefacts)
+- [Performance Screenshot](#performance-screenshot)
+- [Features](#features)
+- [Upcoming Features](#upcoming-features)
+- [Third party tools](#third-party-tools)
+- [Tech Stack](#tech-stack)
 
-In the project directory, you can run:
+## Stakeholders 
 
-### `yarn start`
+**Please feel free to contact on Slack in case of any setup related issue or post in** [#e-comp_proj](https://join.slack.com/share/zt-sa486201-IYsy2Ms6fvqvauMmtmmbnQ)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Ramana Sankar - [LinkedIn](https://www.linkedin.com/in/ramanasankar/) - [GitHub](https://github.com/ramanasankarv)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
+## How to run the project
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Run `git clone https://github.com/pesto-students/complainbox-n9-beta.git`
 
-### `yarn build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### First Run Express server
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+*Node JS as Backend code uploaded under "https://github.com/pesto-students/server-complainbox-n9-beta" Github repo. It utilizes the Firebase Functions feature from Firebase suite of tools.*
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Requirment:** NPM v6.14.11, Node v14.15.4 and [Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli)
 
-### `yarn eject`
+- Go to path `cd server-complainbox-n9-beta/`
+- Run `npm install` to install all required project dependencies
+- Run `npm start` to start project on http://localhost:3030
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+You can set the port in .env file or default will be http://localhost:3001
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**Note: When you execute the deploy command, public URL for the server will be visible in CLI**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### For Running frontend code
 
-## Learn More
+- Go to main project folder `cd complainbox-n9-beta`
+- Run `npm i` to install all required project dependencies
+- Run `npm start` to the project in dev mode
+- Open the `https://localhost:3000` to run the project 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## Environments and Deployments
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| Environment | Base URL | Description  | Deployment |
+| :-------:   | :------: | :----------: | :--------: |
+| Development | [http://localhost:3000](http://localhost:3000) | When running locally on your machine  | When PR is Raise Netlify will create a preview URL on related environement on based on base branch  |
+| Statging | [https://amazing-goldberg-f93133.netlify.app](https://amazing-goldberg-f93133.netlify.app) | An environment corresponding to `master` branch of this repo  |  Any changes merge to `master` branch will auto deploy on `staging` environment |
+| Preproduction | [https://preprod-e-complain-d8ec06.netlify.app](https://preprod-e-complain-d8ec06.netlify.app) | `preproduction` branch for QA  | Any changes merge to `preproduction` branch will auto deploy on `preproduction` environment |
+| Production | [https://ecomplainbox-598a53.netlify.app](https://ecomplainbox-598a53.netlify.app) | Main production environment  | Any changes merge to `production` branch will auto deploy on `production` environment |
 
-### Analyzing the Bundle Size
+## Error Monitoring and Logs
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- We are using [Sentry](https://sentry.io/organizations/sector-17/issues/?environment=production&project=5814430
+) for application monitoring and error traking **Please feel free to contact on Slack for access to Sentry** [#e-comp_proj](https://join.slack.com/share/zt-sa486201-IYsy2Ms6fvqvauMmtmmbnQ)
 
-### Making a Progressive Web App
+## Artefacts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- [PRD](https://drive.google.com/file/d/1ckHVe4Kk2GM-xAC1W_pyM_t5bmrI6s_p/view)
 
-### Advanced Configuration
+- [One Pager](https://drive.google.com/file/d/1KfyLHK_ECKgkQULg7VghJDqAvYIZodW2/view)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- [UI Design Figma](https://www.figma.com/file/Fzt1upFpkfYxKEiBLtVAof/E-ComplainBox?node-id=0%3A1)
 
-### Deployment
+- [User Flowchart Figma](https://www.figma.com/proto/qaFqDsQnEg2wQ3NA4qWavN/FlowChart?node-id=13%3A2&scaling=scale-down-width&page-id=0%3A1)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- [System Design Figma](https://www.figma.com/proto/knwI6lMdUkmkazuGlO45Rb/HLDS---Sector-17?node-id=2%3A1&scaling=contain&page-id=0%3A1)
 
-### `yarn build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Performance Screenshot
+
+![alt text](https://storage.googleapis.com/sector17-chandigarh.appspot.com/readme/performance.jpg)
+
+
+## Features
+
+- **Authentication** - Authentication using Facebook, Google One user, one account
+- **Search** - Help users to search shops, products, categories etc.
+- **Filters** - Filter products according Price, size, brand etc.
+- **Cart** - Bag to put all items you are willing to purchase
+- **Guest Checkout** - No strings attached
+- **Payment Method** - Pay using different payment methods
+- **Dynamic Pricing/Shipping** - Different pricing for different users, Loyalty Program, Express Delivery.
+- **Services** - OrderHistory, Wishlist, Manage profile, Recently Viewed/Searched, Trending etc.
+- **Security** - React provides protection from XSS out of the box. CORS applied on Node.JS server, so no other request from unknown origin gets executed.
+- **Wishlist** - Shortlist now, Buy later
+
+
+## Upcoming Features
+
+- Vendor Admin Panel
+- Virtual Rendering for Pagination
+- Switcher for Incremental Rollout
+- .env File for Controlling Different Environments
+- Show complete order details on Order History
+- Return Exchange on Order History
+- Better and more Optimised Filters
+- Frequently Bought Together
+- Best Deals
+- Product Review System
+
+
+## Third party tools
+
+- Netlify (To deploy the build)
+- Sentry.io (For error and performance insights)
+- Heroku (To deploy the build)
+
+
+## Tech Stack
+
+- Next JS
+- React JS
+- Node JS / Express JS
+- Firebase (Firestore DB, Authentication, Storage, Cloud Functions)
+- Netlify
+- Heroku
+
